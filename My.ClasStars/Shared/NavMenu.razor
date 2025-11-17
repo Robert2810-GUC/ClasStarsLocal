@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Components;
+@using System.Web;
+@inject NavigationManager navManager
+@inject SchoolListService SchoolServices
+@inject CommonLocalizationService LocalizationService
+@inject NavigationManager NavigationManager
+@inject IInvokeServices InvokeServices;
+
+<div class="sidebar @NavMenuCssClass">
+    <div class="p-2 navbar-dark text-center d-flex align-items-center justify-content-between" style="background: #ededed;">
+        @* <p class="navbar-brand">@LocalizationService.GetString("Resources.StringsResource", "Classstars")</p> *@
+        @* <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+        </button> *@
+        <img src="Images/ClasStars%20Wide.svg" class="img-fluid forLarge">
+        @* <img src="Images/Star.svg" class="img-fluid forSmall"> *@
+        <div class="asideToggler"><span @onclick="ToggleNavMenu" class="fa fa-bars asideListner">                
+        </span></div>
+    </div>
+
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <NavLink class="nav-link" href="homePage">
+                    <span class="oi oi-home" aria-hidden="true"></span>@LocalizationService.GetString("Resources.StringsResource", "HomePage")
+                </NavLink>
+                <NavLink class="nav-link" href="students">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span>@LocalizationService.GetString("Resources.StringsResource", "ViewStudents")
+                </NavLink>
+                <NavLink @onclick="Logout" class="nav-link">
+                    <span class="oi oi-account-logout" aria-hidden="true"></span>@LocalizationService.GetString("Resources.StringsResource", "Logout")
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+
+
+@code {
+    private bool collapseNavMenu = false;
+
+    public NavMenu()
+    {
+    }
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapseAside" : null;
+
+    async Task ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+        //NavigationManager.NavigateTo("/homepage"); 
+        await Task.Delay(1000);
+        await My.ClasStars.Pages.GlobalChart.Chart.RefreshAsync();
+    }
+
+    private void Logout()
+    {
+        SchoolServices.NavDisplay = false;
+        SchoolServices.Initialized = false;
+        SchoolServices.SelectedSchool = null;
+        SchoolServices.SchoolList = null;
+        AppInfo.UserInfo = null;
+        InvokeServices.Logout();
+        SchoolServices.Email = null;
+        navManager.NavigateTo("", forceLoad: true);
+    }
+}

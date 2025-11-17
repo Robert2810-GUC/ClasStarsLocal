@@ -1,0 +1,122 @@
+﻿@page "/selectSchool"
+@inject NavigationManager navManager
+@inject SchoolListService SchoolListService
+@using My.ClasStars.Resources
+
+<style>
+    .frm-logo {
+        text-align: center;
+        font-size: 28px;
+        color: #2d65c7;
+        font-weight: 400;
+        display: inline-block;
+        margin-left: 5px;
+    }
+
+    .borderdiv {
+        border: 1px solid;
+        border-color: #2d65c7;
+        border-radius: 15px;
+        padding-bottom: 10px;
+        margin-top: 4%;
+    }
+
+  
+    .button {
+        background: #fff;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 7px;
+        text-align: left;
+        width: 51%;
+        height: 56px;
+        font-size: 16px;
+        margin: auto;
+        font-weight: 500;
+        margin-top: 8px;
+    }
+
+    .image-container {
+        flex: 1;
+        text-align: right;
+    }
+
+        .image-container img {
+        }
+</style>
+
+<div class="col-12 pb-2">
+    <div>
+        <img style="width: 8%;" src="Images/ClasStars Wide.svg" alt="logo" class="img-fluid">
+    </div>
+    <div>
+    </div>
+</div>
+
+@if (SchoolListService.SchoolList == null)
+{
+    <p>Loading...</p>
+}
+else if (SchoolListService.SchoolList.Count == 0)
+{
+    <p>No schools available.</p>
+}
+else
+{
+
+    <div class="text-center">
+        <div class="frm-logo ">
+            <span>Welcome to ClasStars</span>
+        </div>
+        <div class="container borderdiv">
+
+            <p class="button text-center" style="background-color:#d1d3d4;width:100%;">@SchoolListService.Email</p>
+            <p style="padding-top:17px;">Please select a school</p>
+            @foreach (var school in SchoolListService.SchoolList)
+            {
+                if (school.Logo != null)
+                {
+                    string imageBase64 = Convert.ToBase64String(school.Logo);
+                    string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
+                    <button class="button" @onclick="() => HandleSchoolSelection(school)">
+                        <div class="row ml-0">
+                            @school.Name
+                            <div class="image-container mr-4">
+                                <img style="height:40px;margin-top:-8px;" src="@imageSrc" alt="Image" />
+                            </div>
+                        </div>
+                    </button>
+                }
+                else
+                {
+                    <button class="button" @onclick="() => HandleSchoolSelection(school)">@school.Name</button>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            if (SchoolListService.Email == null)
+            {
+                throw new ArgumentNullException(StringsResource.UserNotFound);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+    private void HandleSchoolSelection(SharedTypes.RegisteredOrganizationInfo school)
+    {
+        SchoolListService.NavDisplay = true;
+        SchoolListService.SelectedSchool = school;
+        SchoolListService.Initialized = false;
+        navManager.NavigateTo("/homePage");
+    }
+}

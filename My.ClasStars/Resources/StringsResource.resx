@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Classstars" xml:space="preserve">
+    <value>ClasStars</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>No User Found. Please Contact Admin...</value>
+  </data>
+  <data name="Pleaselogin" xml:space="preserve">
+    <value>Please Login</value>
+  </data>
+  <data name="selectionmessage" xml:space="preserve">
+    <value>Please select a existing user or login a user below.</value>
+  </data>
+  <data name="ViewStudents" xml:space="preserve">
+    <value>View Students</value>
+  </data>
+  <data name="WelcomeClasstar" xml:space="preserve">
+    <value>Welcome to ClasStars</value>
+  </data>
+  <data name="HP_Absent" xml:space="preserve">
+    <value>Absent</value>
+  </data>
+  <data name="HP_AcademicEngagements" xml:space="preserve">
+    <value>Academic Engagements</value>
+  </data>
+  <data name="HP_AttendanceRecorded" xml:space="preserve">
+    <value>Attendance Recorded</value>
+  </data>
+  <data name="HP_ClosePicker" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="HP_Demographics" xml:space="preserve">
+    <value>Demographics</value>
+  </data>
+  <data name="HP_InclusitivityQuotient" xml:space="preserve">
+    <value>Inclusitivity Quotient</value>
+  </data>
+  <data name="HP_MenuItem#2" xml:space="preserve">
+    <value>Menu Item #2</value>
+  </data>
+  <data name="HP_MenuItem#3" xml:space="preserve">
+    <value>Menu Item #3</value>
+  </data>
+  <data name="HP_NeedsSupport" xml:space="preserve">
+    <value>Needs Support</value>
+  </data>
+  <data name="HP_Neg" xml:space="preserve">
+    <value>Neg</value>
+  </data>
+  <data name="HP_NegativeEngagements" xml:space="preserve">
+    <value>Negative Engagements</value>
+  </data>
+  <data name="HP_Overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="HP_Pos" xml:space="preserve">
+    <value>Pos</value>
+  </data>
+  <data name="HP_PositiveEngagements" xml:space="preserve">
+    <value>Positive Engagements</value>
+  </data>
+  <data name="HP_PositivityQuotient" xml:space="preserve">
+    <value>Positivity Quotient</value>
+  </data>
+  <data name="HP_ProperlyEngaged" xml:space="preserve">
+    <value>Properly Engaged</value>
+  </data>
+  <data name="HP_SelectDate" xml:space="preserve">
+    <value>Select Date</value>
+  </data>
+  <data name="HP_SelectDates" xml:space="preserve">
+    <value>Select Dates</value>
+  </data>
+  <data name="HP_Session" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="HP_Students" xml:space="preserve">
+    <value>Students</value>
+  </data>
+  <data name="HP_Teachers" xml:space="preserve">
+    <value>Teachers</value>
+  </data>
+  <data name="HP_TrackingData" xml:space="preserve">
+    <value>Tracking Data</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>Home Page</value>
+  </data>
+  <data name="HP_Information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="HP_NOChartDetailsfound" xml:space="preserve">
+    <value>There was no data returned for the selected request.</value>
+  </data>
+  <data name="HP_EngagementsChart" xml:space="preserve">
+    <value>Engagements Rating</value>
+  </data>
+  <data name="HP_Excellent" xml:space="preserve">
+    <value>Excellent</value>
+  </data>
+  <data name="HP_Fair" xml:space="preserve">
+    <value>Fair</value>
+  </data>
+  <data name="HP_Good" xml:space="preserve">
+    <value>Good</value>
+  </data>
+  <data name="HP_Severe" xml:space="preserve">
+    <value>Severe</value>
+  </data>
+  <data name="HP_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="HP_AcademicNegativeEngagements" xml:space="preserve">
+    <value>Academic Negative Engagements</value>
+  </data>
+  <data name="HP_SelectDateRange" xml:space="preserve">
+    <value>Select Date Range</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>No Data Found</value>
+  </data>
+  <data name="HP_SelectPictures" xml:space="preserve">
+    <value>Select Pictures</value>
+  </data>
+  <data name="PrivacyLink" xml:space="preserve">
+    <value>View our Privacy Policy</value>
+  </data>
+</root>

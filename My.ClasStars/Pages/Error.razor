@@ -1,0 +1,9 @@
+﻿@page "/error"
+
+<h3>An error occurred:</h3>
+<p>@ErrorMessage</p>
+
+@code {
+    [Parameter]
+    public string ErrorMessage { get; set; }
+}

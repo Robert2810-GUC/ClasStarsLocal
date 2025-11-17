@@ -1,0 +1,76 @@
+﻿@inherits LayoutComponentBase
+@inject SchoolListService SchoolServices
+@inject NavigationManager navmanager
+@inject IInvokeServices InvokeServices;
+
+<head>
+    <link href="css/CustomStyle.css" rel="stylesheet" />    
+</head>
+<style>
+    .sidebar {
+        background: @ColorsResource.AppBlueOcean80Color;
+    }
+</style>
+@{
+    bool showNav = false;
+
+    // Check if we're on the home page
+    if (navmanager.Uri.Contains("/students") || navmanager.Uri.Contains("/homePage"))
+    {
+        if (SchoolServices.NavDisplay)
+        {
+            showNav = true;
+        }
+
+    }
+}
+
+@if (showNav)
+{
+    <div>
+        <NavMenu />
+    </div>
+}
+<div class="main">
+
+    <div class="content px-4">
+        <ErrorBoundary @ref="errorBoundary">
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <ErrorContent Context="Exception">
+                <div class="col-12 pb-2 border-bottom">
+                    <div>
+                        <img style="width: 8%;" src="Images/ClasStars Wide.svg" alt="logo" class="img-fluid">
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                <div class="alert alert-danger" style="width: 46%;margin-top: 4%;margin-left: 25%;text-align: center;">
+                    <h3>@Exception.Message</h3>
+                    <button class="btn btn-danger" @onclick="BacktoLogin">Back To Login Page</button>
+                </div>
+            </ErrorContent>
+        </ErrorBoundary>
+    </div>
+</div>
+
+@code {
+    private ErrorBoundary errorBoundary;
+    protected override void OnInitialized()
+    {
+        errorBoundary = new ErrorBoundary();
+    }
+    public void BacktoLogin()
+    {
+        SchoolServices.Initialized = false;
+        SchoolServices.SelectedSchool = null;
+        SchoolServices.SchoolList = null;
+        AppInfo.UserInfo = null;
+        InvokeServices.Logout();
+        SchoolServices.Email = null;
+        SchoolServices.NavDisplay = false;
+        navmanager.NavigateTo("", forceLoad: true);
+    }
+
+}

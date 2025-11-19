@@ -26,17 +26,15 @@ window.triggerClick = function (inputFile) {
 
 function openModal() {
     var modal = document.getElementById("custom-modal");
-    var modalLayer = document.getElementById("modal-overlay")
+    document.body.classList.add('modal-open');
     modal.style.display = "block";
-    modalLayer.style.display = "block";
 }
 
 // Function to close the modal
 function closeModal() {
     var modal = document.getElementById("custom-modal");
-    var modalLayer = document.getElementById("modal-overlay")
+    document.body.classList.remove('modal-open');
     modalLayer.style.display = "none";
-    modal.style.display = "none";
 
     var cameraDiv = document.getElementById('camera');
     cameraDiv.style.width = '0px';
@@ -124,7 +122,5 @@ function take_snapshot() {
     });
     return data;
 }
-
-
 
 

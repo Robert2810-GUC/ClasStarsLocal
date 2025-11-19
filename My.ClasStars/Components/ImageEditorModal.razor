@@ -1,0 +1,124 @@
+﻿@using Syncfusion.Blazor.ImageEditor
+@using Microsoft.AspNetCore.Components.Forms
+@using My.ClasStars.Models
+@using System.IO
+
+@if (Visible)
+{
+    <div id="custom-modal" class="cst-modal">
+        <div class="myModalHead">
+            <span>@FName</span>
+            <button class="modalKill" @onclick="CloseModelPopup">X</button>
+        </div>
+        <div class="cst-modalBody">
+            @if (isProcessing)
+            {
+                <div class="modal-loader-overlay">
+                    <div class="loader">Processing…</div>
+                </div>
+            }
+            @if (IsContact == true)
+            {
+                <div class="editorIcons upDown-icon">
+                    <div class="iconMain">
+                        <span class="label">Use Camera</span>
+                        <div class="e-avatar e-avatar-circle e-avatar-xlarge @camera">
+                            @{
+                                string cameraImg = Path.Combine(wwwRootPath, "\\images\\camera.png");
+                            }
+                            <img src="@cameraImg" @onclick="PerformCamera" title="Use Camera" />
+                        </div>
+
+                    </div>
+                    <div class="iconMain">
+
+                        <span class="label">Load Picture</span>
+                        <div class="e-avatar e-avatar-circle e-avatar-xlarge">
+                            @{
+                                var loadImg = Path.Combine(wwwRootPath, "\\images\\load.png");
+                            }
+                            <img src="@loadImg" @onclick="PerformLoad" title="Load Picture" />
+                        </div>
+                    </div>
+                    <div class="iconMain">
+                        <span class="label">Delete</span>
+                        <div class="e-avatar e-avatar-circle e-avatar-xlarge">
+                            @{
+                                string deleteImg = Path.Combine(wwwRootPath, "\\images\\delete.png");
+                            }
+                            <img src="@deleteImg" @onclick="PerformDelete" title="Delete" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div id="CameraContent" class="@cameraVisiblility">
+                <div id="camera"></div>
+                <button class="captureBtn" @onclick="Capture">Capture</button>
+            </div>
+
+            <div class="modalEditor">
+                <SfImageEditor id="SfImageEditor" @ref="ImageEditorRef" Toolbar="@customToolbarItem" ShowImageEditorTool="false" Height="400px" Width="500px" TValue="string">
+                </SfImageEditor>
+            </div>
+
+
+            <div class="editorIcons upDown-icon spaceEven">
+                <div class="iconMain">
+                    <span class="label">Crop</span>
+                    <div class="e-avatar e-avatar-circle e-avatar-xlarge @cropClass">
+                        @{
+                            string cropImg = Path.Combine(wwwRootPath, "\\images\\crop.png");
+                        }
+                        <img id="imgCrop" src="@cropImg" @onclick="PerformCrop" onmouseover="" title="Crop" />
+                    </div>
+                </div>
+                <div class="iconMain">
+                    <span class="label">Accept</span>
+                    <div class="e-avatar e-avatar-circle e-avatar-xlarge @acceptClass">
+                        @{
+                            string acceptImg = Path.Combine(wwwRootPath, "\\images\\accept.png");
+                        }
+                        <img id="imgAccept" src="@acceptImg" @onclick="PerformAccept" title="Accept" />
+                    </div>
+                </div>
+                <div class="iconMain">
+                    <span class="label">Rotate</span>
+                    <div class="e-avatar e-avatar-circle e-avatar-xlarge @rotateClass">
+                        @{
+                            string rotateImg = Path.Combine(wwwRootPath, "\\images\\rotate.png");
+                        }
+                        <img id="imgRotate" src="@rotateImg" @onclick="PerformRotate" title="Rotate" />
+                    </div>
+                </div>
+                <div class="iconMain">
+                    <span class="label">Save</span>
+                    <div class="e-avatar e-avatar-circle e-avatar-xlarge @saveClass @(isProcessing ? "processing" : "")">
+                        @{
+                            string saveImg = Path.Combine(wwwRootPath, "\\images\\save.png");
+                        }
+                        <img id="imgSave" disabled="@isProcessing" title="Save" @onclick="SaveEditedImage" src="@saveImg" />
+                            @if (isProcessing)
+                            {
+                                <div class="btn-spinner" aria-hidden="true"></div>
+                            }
+                    </div>
+                </div>
+
+                <div class="iconMain">
+                    <span class="label">Undo</span>
+                    <div class="e-avatar e-avatar-circle e-avatar-xlarge @undoClass">
+                        @{
+                            string undoImg = Path.Combine(wwwRootPath, "\\images\\undo.png");
+                        }
+                        <img id="imgUndo" src="@undoImg" @onclick="PerformUndo" title="Undo" />
+                    </div>
+                </div>
+
+            </div>
+
+            @* Hidden InputFile inside component so Load Picture in modal works exactly as before (component handles the input change) *@
+            <InputFile style="display:none" @ref="fileInputSingle" OnChange="LoadFiles" accept=".jpg,.jpeg,.png" multiple="@(isLoadImageButtonClicked ? false : true)" />
+        </div>
+    </div>
+}

@@ -57,9 +57,17 @@
                 <button class="captureBtn" @onclick="Capture">Capture</button>
             </div>
 
-            <div class="modalEditor">
-                <SfImageEditor id="SfImageEditor" @ref="ImageEditorRef" Toolbar="@customToolbarItem" ShowImageEditorTool="false" Height="400px" Width="500px" TValue="string">
+            <div class="modalEditor" id="modalEditor">
+                <SfImageEditor id="SfImageEditor"
+                               @ref="ImageEditorRef"
+                               Toolbar="@customToolbarItem"
+                               ShowImageEditorTool="false"
+                               Height="300px"
+                               Width="400px"
+                               TValue="string"
+                               ImageLoaded="OnImageLoaded">
                 </SfImageEditor>
+
             </div>
 
 
@@ -116,9 +124,6 @@
                 </div>
 
             </div>
-
-            @* Hidden InputFile inside component so Load Picture in modal works exactly as before (component handles the input change) *@
-            <InputFile style="display:none" @ref="fileInputSingle" OnChange="LoadFiles" accept=".jpg,.jpeg,.png" multiple="@(isLoadImageButtonClicked ? false : true)" />
-        </div>
+            </div>
     </div>
 }

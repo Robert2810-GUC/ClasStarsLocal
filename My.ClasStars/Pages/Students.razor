@@ -5,11 +5,6 @@
 @using System.IO;
 @using My.ClasStars.Components
 
-@inject SchoolListService SchoolServices;
-@inject IClasStarsServices ClasStarsServices;
-@inject IJSRuntime JSRuntime;
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment;
-
 
 
 @if (_contacts == null)
@@ -27,9 +22,29 @@ else
                         <button class="inputSrchBTN p-0" @onclick="GetFilterList"><i class="fa fa-search" aria-hidden="true"></i></button>
                     </div>
                 </div>
+                <div class="contact-filters mt-2">
+                    <label class="me-3">
+                        <input type="checkbox"
+                               @bind="filterWithImage"
+                               @bind:event="onchange"
+                               @bind:after="ApplyFilters" />
+                        With image
+                    </label>
+
+                    <label>
+                        <input type="checkbox"
+                               @bind="filterWithoutImage"
+                               @bind:event="onchange"
+                               @bind:after="ApplyFilters" />
+                        W/O image
+                    </label>
+                </div>
+
+
+
             </div>
             <div class="cstUserLists">
-                @foreach (ContactInfoModel student in _contactModels)
+                @foreach (ContactInfoModel student in _displayContactModels)
                 {
                     <div id="@student.ContactID" @ondragover="DragOver" @ondragover:preventDefault="true"
                          @ondrop="@(e => DragDrop(e, student))"
@@ -97,25 +112,31 @@ else
                 <div class="inputImages" id="imageContainer" @onmousedown="All">
                     @if (!isProcessingFiles)
                     {
-                        @if ((from c in ImageURI where c.IsVis == true select c).ToList().Count > 0)
+                        var visibleList = ImageURI.Where(c => c.IsVis).ToList();
+                        if (visibleList.Count > 0)
                         {
-                            foreach (ImageDetail ss in ImageURI)
+                            foreach (var ss in visibleList)
                             {
-                                if (ss.IsVis == true && ss.ImageUrl != "")
+                                if (!string.IsNullOrWhiteSpace(ss.ImageUrl))
                                 {
-                                    <div class="imgName-wrap">
-                                        @if (ss.IsSqu == true)
-                                        {
-                                            <img class="imgGreen" src="@ss.ImageUrl" @onclick="() => LoadImage(ss)" draggable="true" @ondragstart="@(e => DragStart(e, ss))" />
-                                        }
-                                        else
-                                        {
-                                            <img class="imgRed" src="@ss.ImageUrl" @onclick="() => LoadImage(ss)" draggable="true" @ondragstart="@(e => DragStart(e, ss))" />
-                                        }
-                                        <span class="label">@Path.GetFileNameWithoutExtension(ss.ImageName)</span>
+                                    <div class="img-card">
+                                        <img class="img-item @(ss.IsSqu.Value ? "imgGreen" : "imgRed")"
+                                             src="@ss.ImageUrl"
+                                             @onclick="() => LoadImage(ss)"
+                                             draggable="true"
+                                             @ondragstart="@(e => DragStart(e, ss))"
+                                             loading="lazy" />
+
+                                        <div class="inputImages-label">
+                                            @Path.GetFileNameWithoutExtension(ss.ImageName)
+                                        </div>
                                     </div>
                                 }
                             }
+                        }
+                        else
+                        {
+                            <div class="empty-state">No images</div>
                         }
                     }
                     else
@@ -123,10 +144,10 @@ else
                         <div class="loader">Loading images…</div>
                     }
                 </div>
+
             </div>
         }
     </div>
-    @* Component: now with ImageURIChanged callback *@
     <ImageEditorModal @ref="editorModal"
                       ImageURI="@ImageURI"
                       ImageURIChanged="@OnImageUriChanged"

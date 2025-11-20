@@ -10,6 +10,10 @@
     .sidebar {
         background: @ColorsResource.AppBlueOcean80Color;
     }
+    :root {
+        /* Define the CSS variable using the C# constant */
+        --app-blue-ocean: @ColorsResource.AppBlueOcean80Color;
+    }
 </style>
 @{
     bool showNav = false;

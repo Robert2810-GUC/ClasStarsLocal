@@ -1,0 +1,17 @@
+﻿global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Forms;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.JSInterop;
+global using My.ClasStars.Components;
+global using My.ClasStars.Helpers;
+global using My.ClasStars.Models;
+global using My.ClasStars.Resources;
+global using SharedTypes;
+global using Syncfusion.Blazor.ImageEditor;
+global using System;
+global using System.Collections.Generic;
+global using System.Drawing.Imaging;
+global using System.IO;
+global using System.Linq;
+global using System.Text.RegularExpressions;
+global using System.Threading.Tasks;

@@ -1,47 +1,26 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
-using My.ClasStars.Helpers;
-using My.ClasStars.Models;
-using My.ClasStars.Resources;
-using SharedTypes;
-using Syncfusion.Blazor.Data;
-using Syncfusion.Blazor.ImageEditor;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-#pragma warning disable CA1416
+﻿#pragma warning disable CA1416
 
 namespace My.ClasStars.Components
 {
     public partial class ImageEditorModal
     {
-        // --- DI ---
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected Microsoft.AspNetCore.Hosting.IWebHostEnvironment WebHostEnvironment { get; set; }
         [Inject] protected IClasStarsServices ClasStarsServices { get; set; }
 
-        // --- Parameters / callbacks ---
         [Parameter] public bool Visible { get; set; }
         [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
         [Parameter] public List<ImageDetail> ImageURI { get; set; } = new();
         [Parameter] public EventCallback<List<ImageDetail>> ImageURIChanged { get; set; }
         [Parameter] public EventCallback<(int ContactId, byte[] Picture,bool IsDeleted)> ContactPictureUpdated { get; set; }
 
-        // --- Editor reference and toolbar config ---
         public SfImageEditor ImageEditorRef;
         public List<ImageEditorToolbarItemModel> customToolbarItem = new();
 
-        // --- UI state ---
         private bool isProcessing = false;
-        private bool _actionInProgress = false; // guard double-click
+        private bool _actionInProgress = false;   
         private TaskCompletionSource<bool> _editorReadyTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        // Camera / load / delete / toolbar classes
         string camera = "enablerImg";
         string cameraVisiblility = "cameraSzeHidden";
         bool isLoadImageButtonClicked = false;
@@ -62,7 +41,9 @@ namespace My.ClasStars.Components
         public bool IsContact = false;
         public static string isSquareError = "";
 
-        // Local small locks
+        private DotNetObjectReference<ImageEditorModal> _dotNetRef;
+
+
         private readonly object _saveLock = new();
 
         protected override Task OnInitializedAsync()
@@ -71,16 +52,41 @@ namespace My.ClasStars.Components
             return base.OnInitializedAsync();
         }
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
-        {
-            // Resolve the TCS when editor ref is set
-            if (ImageEditorRef != null && !_editorReadyTcs.Task.IsCompleted)
-            {
-                _editorReadyTcs.SetResult(true);
-            }
-            return base.OnAfterRenderAsync(firstRender);
-        }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ImageEditorRef != null && !_editorReadyTcs.Task.IsCompleted)
+        {
+            _editorReadyTcs.SetResult(true);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+        [JSInvokable]
+        public async Task OnSfEditorFileSelected(string fileName, bool isSquare)
+         {
+            try
+            {
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    FName = Path.GetFileNameWithoutExtension(fileName);
+                }
+
+                SetToolbarForSquare(isSquare);
+
+                if (isSquare)
+                    StatusMessage = "Selected image is square.";
+                else
+                    StatusMessage = "Selected image is NOT square (use Crop).";
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("OnSfEditorFileSelected Exception: " + ex.Message);
+            }
+        }
         private async Task EnsureEditorReadyAsync(int timeoutMs = 5000)
         {
             if (ImageEditorRef != null) return;
@@ -91,93 +97,6 @@ namespace My.ClasStars.Components
             }
         }
 
-        // -----------------------
-        // Image loading (component's hidden InputFile)
-        // -----------------------
-        private async Task LoadFiles(InputFileChangeEventArgs e)
-        {
-            StatusMessage = "";
-            isSquareError = string.Empty;
-            isProcessing = true;
-            StateHasChanged();
-
-            try
-            {
-                var maxFiles = isLoadImageButtonClicked ? 1 : 100;
-                IReadOnlyList<IBrowserFile> files;
-                if (maxFiles == 1 && e.FileCount > 1)
-                {
-                    await JSRuntime.InvokeVoidAsync("alert", "You can only select one image at a time.");
-                    return;
-                }
-                else
-                {
-                    files = e.GetMultipleFiles(maxFiles);
-                    // Note: clearing the shared ImageURI here keeps behavior consistent with parent bulk load.
-                    ImageURI.Clear();
-                }
-
-                foreach (var file in files)
-                {
-                    using var stream = file.OpenReadStream(1024 * 1024 * 30);
-                    using MemoryStream ms = new();
-                    await stream.CopyToAsync(ms);
-
-                    var format = GetImageFormatFromStream(ms);
-                    var isSquare = IsSquareImage(ms, out isSquareError);
-
-                    // If editor load flow (single file)
-                    var imgUrl = $"data:image/{(format == EditorImageFormat.Png ? "png" : "jpeg")};base64,{Convert.ToBase64String(ms.ToArray())}";
-
-                    if (isLoadImageButtonClicked)
-                    {
-                        // open directly in editor
-                        await OpenForImage(new ImageDetail { ImgId = Guid.NewGuid(), ImageName = file.Name, ImageUrl = imgUrl });
-                    }
-                    else
-                    {
-                        var ImgDetail = new ImageDetail
-                        {
-                            ImgId = Guid.NewGuid(),
-                            ImageName = file.Name
-                        };
-
-                        if (isSquare != null)
-                        {
-                            ImgDetail.ImageUrl = imgUrl;
-                            ImgDetail.IsSqu = isSquare;
-                            ImgDetail.IsVis = true;
-                        }
-                        else
-                        {
-                            ImgDetail.ImageUrl = "";
-                            ImgDetail.IsSqu = null;
-                            ImgDetail.IsVis = false;
-                        }
-
-                        ImageURI.Add(ImgDetail);
-                    }
-                }
-
-                // notify parent of changes
-                if (ImageURIChanged.HasDelegate)
-                    await ImageURIChanged.InvokeAsync(ImageURI);
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = "LoadFiles failed: " + ex.Message;
-            }
-            finally
-            {
-                isProcessing = false;
-                isLoadImageButtonClicked = false;
-                StateHasChanged();
-            }
-        }
-
-        // -----------------------
-        // Image helpers
-        // -----------------------
         public enum EditorImageFormat { Unknown, Jpeg, Png }
 
         public EditorImageFormat GetImageFormatFromStream(MemoryStream ms)
@@ -219,15 +138,10 @@ namespace My.ClasStars.Components
             }
         }
 
-        // -----------------------
-        // Drag helpers (simplified)
-        // -----------------------
         public void DragStart(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ImageDetail iDetail)
         {
             try
             {
-                // store source in JS clipboard or local field if needed (parent expects data uri in DragDrop)
-                // In this component we don't need to keep DraggedImageSrc permanently.
             }
             catch (Exception er)
             {
@@ -235,17 +149,13 @@ namespace My.ClasStars.Components
             }
         }
 
-        public void DragOver(Microsoft.AspNetCore.Components.Web.DragEventArgs e) { /* intentionally empty */ }
+        public void DragOver(Microsoft.AspNetCore.Components.Web.DragEventArgs e) {     }
 
         public async Task DragDrop(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ContactInfoModel contact)
         {
-            // Minimal behavior kept for compatibility. The Students page handles drag-drop to set contact picture.
             await JSRuntime.InvokeVoidAsync("alert", "DragDrop inside modal is not supported in this component.");
         }
 
-        // -----------------------
-        // Modal lifecycle / helpers
-        // -----------------------
         public async Task CloseModelPopup()
         {
             if (_actionInProgress) return;
@@ -258,6 +168,11 @@ namespace My.ClasStars.Components
                 Visible = false;
                 await VisibleChanged.InvokeAsync(Visible);
                 try { await JSRuntime.InvokeVoidAsync("closeModal"); } catch { }
+                try { await JSRuntime.InvokeVoidAsync("imageEditorModal_detachGlobalInputChangeListener"); } catch { }
+                _dotNetRef?.Dispose();
+                _dotNetRef = null;
+
+
             }
             finally
             {
@@ -272,9 +187,6 @@ namespace My.ClasStars.Components
             return System.IO.Path.Combine(root.TrimEnd('\\', '/'), System.IO.Path.Combine(parts)).Replace("\\", "/");
         }
 
-        // -----------------------
-        // Camera / load / delete / toolbar commands
-        // -----------------------
         public async Task PerformCamera()
         {
             camera = "disableImg";
@@ -284,7 +196,6 @@ namespace My.ClasStars.Components
             }
             catch
             {
-                // ignore
             }
 
             await Task.Delay(2000);
@@ -309,10 +220,9 @@ namespace My.ClasStars.Components
 
             try
             {
-                // trigger hidden input inside modal; JS fallback triggers page-level input
                 await JSRuntime.InvokeVoidAsync("imageEditorModal_triggerFile", "custom-modal");
             }
-            catch { /* ignore */ }
+            catch {    }
 
             isDeleteClicked = false;
             isLoadImageButtonClicked = true;
@@ -338,7 +248,6 @@ namespace My.ClasStars.Components
             }
             catch
             {
-                // create 1x1 transparent png fallback
                 imageBytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
             }
 
@@ -354,7 +263,6 @@ namespace My.ClasStars.Components
             }
             catch
             {
-                // ignore
             }
 
             cropClass = "disableImg";
@@ -373,38 +281,31 @@ namespace My.ClasStars.Components
             {
                 await EnsureEditorReadyAsync();
 
-                // ask the browser for the canvas size -> use JS interop
                 var rect = await JSRuntime.InvokeAsync<object>("imageEditorModal_getCanvasRect", "custom-modal");
                 int canvasWidth = 0, canvasHeight = 0;
 
                 if (rect != null)
                 {
-                    // rect is a JS object with width/height; use JSON roundtrip
                     var jObj = Newtonsoft.Json.Linq.JObject.FromObject(rect);
                     canvasWidth = jObj.Value<int?>("width") ?? 0;
                     canvasHeight = jObj.Value<int?>("height") ?? 0;
                 }
 
-                // If we couldn't get canvas size, fall back to canvas-relative -1 selection
                 if (canvasWidth <= 0 || canvasHeight <= 0)
                 {
-                    // old behavior (Syncfusion will try to make a reasonable selection)
                     if (ImageEditorRef != null)
                         await ImageEditorRef.SelectAsync("Square", -1, -1, -1, -1);
                 }
                 else
                 {
-                    // compute a centered square selection, 50% of the smaller dimension (tweakable)
                     int minSide = Math.Min(canvasWidth, canvasHeight);
-                    int selSize = (int)Math.Round(minSide * 0.5); // 50% of smaller side
+                    int selSize = (int)Math.Round(minSide * 0.5);     
                     int selX = (canvasWidth - selSize) / 2;
                     int selY = (canvasHeight - selSize) / 2;
 
-                    // Syncfusion SelectAsync expects pixel coords relative to the image canvas area
                     if (ImageEditorRef != null)
                         await ImageEditorRef.SelectAsync("Square", selX, selY, selSize, selSize);
 
-                    // small delay + force resize so selection gets rendered and handlers bound
                     await Task.Delay(30);
                     try { await JSRuntime.InvokeVoidAsync("imageEditorModal_dispatchResize"); } catch { }
                     await Task.Delay(30);
@@ -412,7 +313,6 @@ namespace My.ClasStars.Components
             }
             catch (Exception ex)
             {
-                // keep UX graceful if something fails
                 Console.WriteLine("PerformCrop exception: " + ex.Message);
                 try
                 {
@@ -422,7 +322,6 @@ namespace My.ClasStars.Components
                 catch { }
             }
 
-            // set toolbar/btn states so UI reflects selection mode
             acceptClass = "enablerImg";
             rotateClass = "enablerImg";
             undoClass = "disableImg";
@@ -487,15 +386,10 @@ namespace My.ClasStars.Components
             StateHasChanged();
         }
 
-        // -----------------------
-        // Save edited / contact image
-        // -----------------------
         public async Task SaveEditedImage()
         {
-            // fast guard
             if (_actionInProgress) return;
 
-            // lightweight lock to avoid double click/race
             lock (_saveLock)
             {
                 if (_actionInProgress) return;
@@ -510,7 +404,6 @@ namespace My.ClasStars.Components
                 await EnsureEditorReadyAsync();
                 byte[] editedImageData = await ImageEditorRef.GetImageDataAsync();
 
-                // ---------- Delete contact picture flow ----------
                 if (isDeleteClicked && selectedContactId > 0)
                 {
                     await ClasStarsServices.RemoveContactPicture(selectedContactId);
@@ -523,7 +416,6 @@ namespace My.ClasStars.Components
                     return;
                 }
 
-                // ---------- Save contact picture flow ----------
                 if (selectedContactId > 0)
                 {
                     using var mem = new MemoryStream(editedImageData);
@@ -544,22 +436,16 @@ namespace My.ClasStars.Components
                     return;
                 }
 
-                // ---------- Non-contact image (update ImageURI list) ----------
-                // selectedGuid identifies which ImageDetail we are editing
                 if (selectedGuid != Guid.Empty && ImageURI != null)
                 {
-                    // find the item
                     var item = ImageURI.FirstOrDefault(x => x.ImgId == selectedGuid);
                     if (item != null)
                     {
-                        // compute data URI
-                        // determine format (png/jpeg) from data — reuse helper or assume jpeg if unknown
                         using var msCheck = new MemoryStream(editedImageData);
                         var fmt = GetImageFormatFromStream(msCheck);
                         var ext = fmt == EditorImageFormat.Png ? "png" : "jpeg";
                         var dataUri = $"data:image/{ext};base64,{Convert.ToBase64String(editedImageData)}";
 
-                        // update square status
                         using var msForSquare = new MemoryStream(editedImageData);
                         bool? isSquare = IsSquareImage(msForSquare, out isSquareError);
 
@@ -567,28 +453,23 @@ namespace My.ClasStars.Components
                         item.IsSqu = isSquare;
                         item.IsVis = true;
 
-                        // notify parent/listeners
                         if (ImageURIChanged.HasDelegate)
                         {
-                            // pass the same list reference (parent updates a reference to it)
                             await ImageURIChanged.InvokeAsync(ImageURI);
                         }
 
-                        // give feedback
                         StatusMessage = "Image updated.";
                         await CloseModalAfterSave();
                         return;
                     }
                     else
                     {
-                        // fallback: behave as if a new image was created
                         StatusMessage = "Warning: edited image item not found in list.";
                         await CloseModalAfterSave();
                         return;
                     }
                 }
 
-                // If reached here: nothing to update (shouldn't happen)
                 StatusMessage = "Nothing to save.";
             }
             catch (Exception ex)
@@ -600,7 +481,6 @@ namespace My.ClasStars.Components
                 isProcessing = false;
                 _actionInProgress = false;
 
-                // reset UI buttons
                 cropClass = "enablerImg";
                 rotateClass = "disableImg";
                 acceptClass = "disableImg";
@@ -619,9 +499,6 @@ namespace My.ClasStars.Components
             StateHasChanged();
         }
 
-        // -----------------------
-        // Camera capture
-        // -----------------------
         public async Task Capture()
         {
             try
@@ -644,19 +521,13 @@ namespace My.ClasStars.Components
             }
             catch
             {
-                // ignore
             }
             StateHasChanged();
         }
 
-        // -----------------------
-        // Public helpers for parent
-        // -----------------------
         public async Task OpenForImage(ImageDetail imgg)
         {
             if (imgg == null) throw new ArgumentNullException(nameof(imgg));
-            //if (Visible && selectedGuid == imgg.ImgId) return;
-
             StatusMessage = string.Empty;
             IsContact = false;
             selectedContactId = 0;
@@ -665,29 +536,30 @@ namespace My.ClasStars.Components
             Visible = true;
             await VisibleChanged.InvokeAsync(Visible);
 
-            // ensures modal DOM appears before JS runs
             await InvokeAsync(StateHasChanged);
-            await Task.Delay(50);   // ❗ required for first click
+            await Task.Delay(50);        
 
             try { await JSRuntime.InvokeVoidAsync("openModal"); } catch { }
 
-            // give modal time to fully attach elements
             await Task.Delay(50);
             await EnsureEditorReadyAsync(5000);
+
+            if (_dotNetRef == null) _dotNetRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("imageEditorModal_attachGlobalInputChangeListener", "custom-modal", _dotNetRef);
+
+
 
             selectedGuid = imgg.ImgId;
             try
             {
                 await Task.Delay(150);
                 await ImageEditorRef.OpenAsync(imgg.ImageUrl);
-                // small delay and force a window resize to ensure Syncfusion renders the image
                 await Task.Delay(60);
                 try { await JSRuntime.InvokeVoidAsync("imageEditorModal_dispatchResize"); } catch { }
                 await Task.Delay(50);
             }
             catch
             {
-                // ignore open errors
             }
 
             cropClass = "enablerImg";
@@ -698,11 +570,30 @@ namespace My.ClasStars.Components
             StateHasChanged();
         }
 
+        private void SetToolbarForSquare(bool isSquare)
+        {
+            if (isSquare)
+            {
+                saveClass = "enablerImg";
+                cropClass = "enablerImg";
+                acceptClass = "disableImg";
+                rotateClass = "disableImg";
+                undoClass = "disableImg";
+            }
+            else
+            {
+                saveClass = "disableImg";
+                cropClass = "enablerImg";
+                acceptClass = "disableImg";
+                rotateClass = "disableImg";
+                undoClass = "disableImg";
+            }
+        }
+
+
         public async Task OpenForContact(ContactInfoModel contact)
         {
             if (contact == null) throw new ArgumentNullException(nameof(contact));
-            //if (Visible && IsContact && selectedContactId == contact.ContactID) return;
-
             StatusMessage = string.Empty;
             isLoadImageButtonClicked = false;
             IsContact = true;
@@ -711,26 +602,28 @@ namespace My.ClasStars.Components
             Visible = true;
             await VisibleChanged.InvokeAsync(Visible);
 
-            // ensures modal DOM appears before JS runs
             await InvokeAsync(StateHasChanged);
-            await Task.Delay(50);   // ❗ required for first click
+            await Task.Delay(50);        
 
             try { await JSRuntime.InvokeVoidAsync("openModal"); } catch { }
 
-            // give modal time to fully attach elements
             await Task.Delay(50);
             await EnsureEditorReadyAsync(5000);
+
+            if (_dotNetRef == null) _dotNetRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("imageEditorModal_attachGlobalInputChangeListener", "custom-modal", _dotNetRef);
+
 
 
             string blankPath = PathCombine(wwwRootPath, "Images", "EditorBlank1.png");
             byte[] imageBytes;
             try
             {
-                imageBytes = (contact.ContactPicture != null && contact.ContactPicture.Length > 0) ? contact.ContactPicture : null; //await File.ReadAllBytesAsync(blankPath);
+                imageBytes = (contact.ContactPicture != null && contact.ContactPicture.Length > 0) ? contact.ContactPicture : await File.ReadAllBytesAsync(blankPath);
             }
             catch
             {
-                imageBytes = null; //Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
+                imageBytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=");
             }
             if (imageBytes != null)
             {
@@ -745,19 +638,19 @@ namespace My.ClasStars.Components
                         await Task.Delay(150);
                         await ImageEditorRef.OpenAsync(dataUri);
 
-                        // Ensure rendering by forcing a small resize event after open
                         await Task.Delay(60);
                         try { await JSRuntime.InvokeVoidAsync("imageEditorModal_dispatchResize"); } catch { }
                         await Task.Delay(50);
+
                     }
                     catch
                     {
-                        // ignore
                     }
                 }
             }
             else
             {
+                selectedContactId = contact.ContactID;
                 await Task.Delay(150);
                 await ImageEditorRef.OpenAsync(null);
                 await Task.Delay(60);
@@ -774,7 +667,10 @@ namespace My.ClasStars.Components
             StateHasChanged();
         }
 
+
+
     }
+
 }
 
 public class ImageDetail

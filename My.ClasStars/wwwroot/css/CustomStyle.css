@@ -522,6 +522,18 @@ img.forSmall {
     border-radius: 50%;
 }
 
+.provider-logo {
+    margin-left: 3px;
+    margin-right: 8px;
+    width: 6%;
+    border-radius: 50%;
+}
+
+.provider-logo--small {
+    width: 30px;
+    border-radius: 30%;
+}
+
 .img-flud {
     max-width: 170%;
 }
@@ -546,3 +558,5 @@ img.forSmall {
 .login-logo { width: 8%; }
 .login-heading { margin-bottom: 0; }
 .login-subtitle { color: #3265bd; }
+.login-heading-title { font-size: 22px; }
+.login-provider-list { display: flex; flex-direction: column; }

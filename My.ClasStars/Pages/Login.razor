@@ -1,10 +1,10 @@
-﻿@page "/"
+@page "/"
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject SchoolListService SchoolServices
 @inject NavigationManager NavigationManager
 @inject CommonLocalizationService LocalizationService
 @inject IInvokeServices InvokeServices;
-
+@inject ILogger<Login> Logger
 
 <div class="container h-100  login-page">
     <div class="row align-items-center justify-content-center h-100">
@@ -21,44 +21,41 @@
                     <span>@LocalizationService.GetString("Resources.StringsResource", "WelcomeClasstar")</span>
                 </div>
                 <div class="frm-logo login-heading">
-                    <span style="font-size: 22px;">@LocalizationService.GetString("Resources.StringsResource", "Pleaselogin")</span>
+                    <span class="login-heading-title">@LocalizationService.GetString("Resources.StringsResource", "Pleaselogin")</span>
                     <p class="m-0 login-subtitle">@LocalizationService.GetString("Resources.StringsResource", "selectionmessage")</p>
                 </div>
 
-                @{
-                    if (ProviderList == null)
-                    {
-                        <p>Loading...</p>
-                    }
-                    else if (ProviderList.Count == 0)
-                    {
-                        <p>No providers available.</p>
-                    }
-                    else
-                    {
-                        int i = 0;
-                        foreach (var item in OrderButton.OrderByDescending(m => m.LastLoginDate))
+                @if (_isLoadingProviders)
+                {
+                    <p>Loading...</p>
+                }
+                else if (!string.IsNullOrEmpty(_loadError))
+                {
+                    <p class="text-danger">@_loadError</p>
+                }
+                else if (!ProviderButtons.Any())
+                {
+                    <p>No providers available.</p>
+                }
+                else
+                {
+                    <div class="login-provider-list">
+                        @foreach (var item in PrimaryProviders)
                         {
-                            // if(item.Name=="Google")
-                            // {
-                            //     HandleLogin("Google");
-                            // }
-                            if (i <= 2)
-                            {
-                                <button @onclick="() => HandleLogin(item.Name)" class="btn login-btn img-btn">
-                                    <img style="margin-left:3px;margin-right:8px;" src="@item.ImageUrl" class="img-flud" alt="">
-                                    <span>Sign in with @item.Name</span>
-                                </button>
-                            }
-                            else
-                            {
-                                <div class="circle-icon">
-                                    <button @onclick="() => HandleLogin(item.Name)" title="Sign in with @item.Name"><img style="width:30px;border-radius: 30%;" class="img-flud" src="@item.ImageUrl"></button>
-                                </div>
-                            }
-                            i++;
+                            <button @onclick="async () => await HandleLoginAsync(item.Name)" class="btn login-btn img-btn">
+                                <img class="provider-logo" src="@item.ImageUrl" alt="@item.Name">
+                                <span>Sign in with @item.Name</span>
+                            </button>
                         }
-                    }
+                        @foreach (var item in OverflowProviders)
+                        {
+                            <div class="circle-icon">
+                                <button @onclick="async () => await HandleLoginAsync(item.Name)" title="Sign in with @item.Name">
+                                    <img class="provider-logo--small" src="@item.ImageUrl" alt="@item.Name">
+                                </button>
+                            </div>
+                        }
+                    </div>
                 }
 
             </div>

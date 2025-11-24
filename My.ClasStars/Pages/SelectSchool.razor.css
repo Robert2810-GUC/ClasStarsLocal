@@ -1,0 +1,53 @@
+.frm-logo {
+    text-align: center;
+    font-size: 28px;
+    color: #2d65c7;
+    font-weight: 400;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.borderdiv {
+    border: 1px solid;
+    border-color: #2d65c7;
+    border-radius: 15px;
+    padding-bottom: 10px;
+    margin-top: 4%;
+}
+
+.button {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    text-align: left;
+    width: 51%;
+    height: 56px;
+    font-size: 16px;
+    margin: auto;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.image-container {
+    flex: 1;
+    text-align: right;
+}
+
+.select-school-logo {
+    width: 8%;
+}
+
+.user-email {
+    background-color: #d1d3d4;
+    width: 100%;
+}
+
+.selection-copy {
+    padding-top: 17px;
+}
+
+.school-logo {
+    height: 40px;
+    margin-top: -8px;
+}

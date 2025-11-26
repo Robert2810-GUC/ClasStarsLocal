@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="com.pnq.LogonServiceRequestTypes" Version="10.0.1" />
-    <PackageReference Include="com.pnq.SharedTypes" Version="2.0.1" />
+    <PackageReference Include="com.pnq.SharedTypes" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.0" />

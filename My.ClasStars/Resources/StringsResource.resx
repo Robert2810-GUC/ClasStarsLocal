@@ -246,4 +246,7 @@
   <data name="PrivacyLink" xml:space="preserve">
     <value>View our Privacy Policy</value>
   </data>
+  <data name="StudentList_PersonID" xml:space="preserve">
+    <value>ID</value>
+  </data>
 </root>

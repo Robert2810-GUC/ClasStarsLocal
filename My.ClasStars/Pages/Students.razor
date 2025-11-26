@@ -122,7 +122,7 @@ else
                                     <div class="img-card">
                                         <img class="img-item @(ss.IsSqu.Value ? "imgGreen" : "imgRed")"
                                              src="@ss.ImageUrl"
-                                             @onclick="() => LoadImage(ss)"
+                                             @ondblclick="() => LoadImage(ss)"
                                              draggable="true"
                                              @ondragstart="@(e => DragStart(e, ss))"
                                              loading="lazy" />

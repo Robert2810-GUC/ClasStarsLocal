@@ -129,8 +129,17 @@
   <data name="Pleaselogin" xml:space="preserve">
     <value>Please Login</value>
   </data>
+  <data name="LoadingProviders" xml:space="preserve">
+    <value>Loading available providers...</value>
+  </data>
+  <data name="NoProvidersAvailable" xml:space="preserve">
+    <value>No providers available.</value>
+  </data>
   <data name="selectionmessage" xml:space="preserve">
     <value>Please select a existing user or login a user below.</value>
+  </data>
+  <data name="SignInWith" xml:space="preserve">
+    <value>Sign in with</value>
   </data>
   <data name="ViewStudents" xml:space="preserve">
     <value>View Students</value>

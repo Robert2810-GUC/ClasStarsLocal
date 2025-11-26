@@ -86,7 +86,7 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("AppBlueOcean80Color", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to #393939.
         /// </summary>
@@ -156,6 +156,33 @@ namespace My.ClasStars.Resources {
         public static string AppRedColor {
             get {
                 return ResourceManager.GetString("AppRedColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #f1f1f1.
+        /// </summary>
+        public static string AppSurfaceBorderColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceBorderColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #fdffff.
+        /// </summary>
+        public static string AppSurfaceColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #2d374b29.
+        /// </summary>
+        public static string AppSurfaceShadowColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceShadowColor", resourceCulture);
             }
         }
         

@@ -383,6 +383,15 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("Logout", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading available providers....
+        /// </summary>
+        public static string LoadingProviders {
+            get {
+                return ResourceManager.GetString("LoadingProviders", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to No Data Found.
@@ -390,6 +399,15 @@ namespace My.ClasStars.Resources {
         public static string NoData {
             get {
                 return ResourceManager.GetString("NoData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No providers available..
+        /// </summary>
+        public static string NoProvidersAvailable {
+            get {
+                return ResourceManager.GetString("NoProvidersAvailable", resourceCulture);
             }
         }
         
@@ -417,6 +435,15 @@ namespace My.ClasStars.Resources {
         public static string selectionmessage {
             get {
                 return ResourceManager.GetString("selectionmessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in with.
+        /// </summary>
+        public static string SignInWith {
+            get {
+                return ResourceManager.GetString("SignInWith", resourceCulture);
             }
         }
         

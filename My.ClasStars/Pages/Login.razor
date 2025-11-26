@@ -7,133 +7,74 @@
 
 
 <style>
+    :root {
+        --app-surface: @ColorsResource.AppSurfaceColor;
+        --app-surface-border: @ColorsResource.AppSurfaceBorderColor;
+        --app-surface-shadow: @ColorsResource.AppSurfaceShadowColor;
+        --app-accent: @ColorsResource.AppDeepBlueOcean100Color;
+        --app-accent-muted: @ColorsResource.AppLightBlueOcean60Color;
+        --app-text: @ColorsResource.SteelGrayColor;
+    }
 
     .login-page {
         height: 100vh;
     }
 
-
     .login-frm {
-        background: #fdffff;
+        background: var(--app-surface);
         padding: 30px;
-        border: 1px solid #f1f1f1;
-        box-shadow: 0 1rem 1.75rem 0 #2d374b;
-        box-shadow: 0 1rem 1.75rem 0 rgba(45,55,75,0.1);
+        border: 1px solid var(--app-surface-border);
+        box-shadow: 0 1rem 1.75rem 0 var(--app-surface-shadow);
         border-radius: 10px;
     }
 
-        .login-frm .privacyLink {
-            text-align: center;
-            font-size: 14px;
-            color: #2d65c7;
-            font-weight: 400;
-            display: inline-block;
-            margin-top: 20px;
-            align-items: flex-end;
-        }
-
-
-        .login-frm .frm-logo {
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-            .login-frm .frm-logo img {
-                width: 60px;
-            }
-
-            .login-frm .frm-logo span {
-                font-size: 28px;
-                color: #2d65c7;
-                font-weight: 400;
-                display: inline-block;
-                margin-left: 5px;
-            }
-
-        .login-frm form .form-control {
-            /* min-height: 50px; */
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            border: 1px solid #959595;
-            /* padding: 10px 15px; */
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-
-        .login-frm .foget-sec {
-            display: flex;
-            align-items: center;
-            /* justify-content: space-between; */
-            width: 100%;
-            flex-wrap: nowrap;
-            margin: 30px 0 10px;
-        }
-
-    .forget-sec {
-        margin-left: 0;
+    .login-frm .privacyLink {
+        text-align: center;
+        font-size: 14px;
+        color: var(--app-accent);
+        font-weight: 400;
+        display: inline-block;
+        margin-top: 20px;
+        align-items: flex-end;
     }
 
-        .forget-sec img {
-            width: 100%;
-        }
-
-    .login-frm .foget-sec .form-check-label {
-        color: #a4a4a4;
-        margin-bottom: 0;
-        font-size: 16px;
-        position: relative;
+    .login-frm .frm-logo {
+        margin-bottom: 40px;
+        text-align: center;
+        color: var(--app-accent);
     }
 
-        .login-frm .foget-sec .form-check-label .form-check-input {
-            font-size: 16px;
-            position: absolute;
-            top: 1px;
-        }
-
-    .login-frm .foget-sec a {
-        border: 1px solid #5a5656;
-        padding: 10px;
-        border-radius: 50%;
+    .login-frm .frm-logo img {
+        width: 60px;
     }
 
-        .login-frm .foget-sec a:hover {
-            color: #37517E;
-        }
+    .login-frm .frm-logo span {
+        font-size: 28px;
+        color: var(--app-accent);
+        font-weight: 400;
+        display: inline-block;
+        margin-left: 5px;
+    }
 
     .login-frm .login-btn {
-        background: #fff;
+        background: var(--app-surface);
         padding: 10px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--app-surface-border);
         border-radius: 7px;
         text-align: left;
-        color: #6c7fae;
+        color: var(--app-accent-muted);
         width: 100%;
         font-size: 16px;
         margin: auto;
         font-weight: 500;
         margin-top: 8px;
+        transition: 0.3s;
     }
 
-        .login-frm .login-btn:hover {
-            background: #eef0f5;
-            color: #000;
-            transition: 0.3s;
-        }
-
-    .input-box {
-        position: relative;
+    .login-frm .login-btn:hover {
+        background: var(--app-accent-muted);
+        color: var(--app-surface);
     }
-
-        .input-box i {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            bottom: 0;
-            margin: auto;
-            color: #37517e;
-            font-size: 16px;
-        }
 
     .img-btn img {
         width: 6%;
@@ -145,10 +86,17 @@
     }
 
     .circle-icon button {
-        border: 1px solid #424040;
+        border: 1px solid var(--app-surface-border);
         padding: 5px;
         margin-top: 5px;
         border-radius: 50%;
+        background: var(--app-surface);
+        transition: 0.2s;
+    }
+
+    .circle-icon button:hover {
+        border-color: var(--app-accent);
+        box-shadow: 0 0 10px var(--app-surface-shadow);
     }
 
     .circle-icon img {
@@ -160,7 +108,6 @@
         position: unset;
         padding: 5px;
     }
-
 </style>
 
 
@@ -186,32 +133,28 @@
                 @{
                     if (ProviderList == null)
                     {
-                        <p>Loading...</p>
+                        <p class="text-muted">@LocalizationService.GetString("Resources.StringsResource", "LoadingProviders")</p>
                     }
                     else if (ProviderList.Count == 0)
                     {
-                        <p>No providers available.</p>
+                        <p class="text-muted">@LocalizationService.GetString("Resources.StringsResource", "NoProvidersAvailable")</p>
                     }
                     else
                     {
                         int i = 0;
                         foreach (var item in OrderButton.OrderByDescending(m => m.LastLoginDate))
                         {
-                            // if(item.Name=="Google")
-                            // {
-                            //     HandleLogin("Google");
-                            // }
                             if (i <= 2)
                             {
                                 <button @onclick="() => HandleLogin(item.Name)" class="btn login-btn img-btn">
                                     <img style="margin-left:3px;margin-right:8px;" src="@item.ImageUrl" class="img-flud" alt="">
-                                    <span>Sign in with @item.Name</span>
+                                    <span>@LocalizationService.GetString("Resources.StringsResource", "SignInWith") @item.Name</span>
                                 </button>
                             }
                             else
                             {
                                 <div class="circle-icon">
-                                    <button @onclick="() => HandleLogin(item.Name)" title="Sign in with @item.Name"><img style="width:30px;border-radius: 30%;" class="img-flud" src="@item.ImageUrl"></button>
+                                    <button @onclick="() => HandleLogin(item.Name)" title="@LocalizationService.GetString("Resources.StringsResource", "SignInWith") @item.Name"><img style="width:30px;border-radius: 30%;" class="img-flud" src="@item.ImageUrl"></button>
                                 </div>
                             }
                             i++;

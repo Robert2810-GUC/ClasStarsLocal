@@ -150,6 +150,15 @@
   <data name="AppRedColor" xml:space="preserve">
     <value>#D32629</value>
   </data>
+  <data name="AppSurfaceBorderColor" xml:space="preserve">
+    <value>#f1f1f1</value>
+  </data>
+  <data name="AppSurfaceColor" xml:space="preserve">
+    <value>#fdffff</value>
+  </data>
+  <data name="AppSurfaceShadowColor" xml:space="preserve">
+    <value>#2d374b29</value>
+  </data>
   <data name="AppSkyBlueColor" xml:space="preserve">
     <value>#61BAFD</value>
   </data>

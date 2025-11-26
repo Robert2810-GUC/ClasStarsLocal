@@ -2,14 +2,11 @@
 using LogonServiceRequestTypes.Enums;
 using LogonServiceRequestTypes;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
-#if !AUTOLOGIN
-using System.Web;
-#endif  
 
 namespace My.ClasStars.Pages;
 
@@ -31,12 +28,11 @@ public partial class Login
         var secInfo = new AnonymousRequestSecureInfo();
         var retData = await InvokeServices.InvokePostAsync<AnonymousRequestSecureInfo, List<ExternalDataProvider>>(ServiceEndpoint.ExternalIntegration,
     ServiceAction.GetSupportedLoginProviders, secInfo);
-        ProviderList = retData;
+        ProviderList = retData ?? new List<ExternalDataProvider>();
 
-
-        for (var i = 0; i < (ProviderList.Count); i++)
+        foreach (var provider in ProviderList)
         {
-            OrderButton.Add(new ExternalProviders { Name = ProviderList[i].ToString(), LastLoginDate = null, ImageUrl = "Images/" + getImageName(ProviderList[i].ToString()), ExpiryDate = null });
+            OrderButton.Add(new ExternalProviders { Name = provider.ToString(), LastLoginDate = null, ImageUrl = "Images/" + getImageName(provider.ToString()), ExpiryDate = null });
         }
 
         await LoadProvidersList();
@@ -96,7 +92,7 @@ public partial class Login
                     }
                 }
 
-                GenerateNewLocalStorage();
+                await GenerateNewLocalStorage();
                 if (CookieProvidersList.Count != 0)
                 {
                     foreach (var t in OrderButton)
@@ -120,13 +116,13 @@ public partial class Login
         }
     }
 
-    private async void GenerateNewLocalStorage()
+    private async Task GenerateNewLocalStorage()
     {
         var providerList = JsonConvert.SerializeObject(CookieProvidersList);
         await localStorage.SetItemAsync("ProvidersList", providerList);
     }
 
-    private async void HandleLogin(string item)
+    private async Task HandleLogin(string item)
     {
         try
         {

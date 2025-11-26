@@ -73,6 +73,9 @@ public partial class HomePage
     private bool DialogVisibleProperty { get; set; }
     private bool Ischanged = true;
 
+    [Inject]
+    private IAuthorizationService AuthorizationService { get; set; } = default!;
+
     #endregion
 
     protected override async Task OnInitializedAsync()
@@ -99,8 +102,7 @@ public partial class HomePage
                 _Name = queryVal.ToString();
             SchoolServices.Name = _Name;
             InvokeServices.SetApplicationInfo(new Version(1, 1), "Classtars Web", "web", "browser");
-            var authService = new AuthorizationService(InvokeServices);
-            var result = await authService.CheckUserAuthorized(_email, _provider, true, autoCreateUser: false, organizationId: _organizationId);
+            var result = await AuthorizationService.CheckUserAuthorized(_email, _provider, true, autoCreateUser: false, organizationId: _organizationId);
             School = result.SchoolName;
             if (result.SchoolChoiceList != null)
             {
@@ -121,7 +123,7 @@ public partial class HomePage
             if (result.IsAUser && result.OrganizationCode != null)
             {
                 var userAuth = new UserAuth(result.OrganizationCode, _email, "");
-                loginInfo = await authService.LoginAsync(userAuth);
+                loginInfo = await AuthorizationService.LoginAsync(userAuth);
                 if (loginInfo != null)
                 {
                     await SetLoginInformation(loginInfo);
@@ -137,8 +139,7 @@ public partial class HomePage
             School = SchoolServices.SelectedSchool.Name.ToString();
 
             var id = SchoolServices.SelectedSchool?.ID ?? 0;
-            var authService = new AuthorizationService(InvokeServices);
-            var result = await authService.CheckUserAuthorized(_email, _provider, true, id);
+            var result = await AuthorizationService.CheckUserAuthorized(_email, _provider, true, id);
             if (SchoolServices.SelectedSchool.ChildOrganizations.Count > 0)
             {
                 SchoolList = SchoolServices.SelectedSchool.ChildOrganizations;
@@ -158,7 +159,7 @@ public partial class HomePage
             if (result.IsAUser && result.OrganizationCode != null)
             {
                 var userAuth = new UserAuth(result.OrganizationCode, _email, "");
-                loginInfo = await authService.LoginAsync(userAuth);
+                loginInfo = await AuthorizationService.LoginAsync(userAuth);
                 if (loginInfo != null)
                 {
                     await SetLoginInformation(loginInfo);

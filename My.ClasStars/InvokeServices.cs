@@ -1,19 +1,20 @@
-﻿using LogonServiceRequestTypes;
-using LogonServiceRequestTypes.Exceptions;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using System.Globalization;
-using SharedTypes.Helpers;
-using SharedTypes;
+using LogonServiceRequestTypes;
 using LogonServiceRequestTypes.Enums;
-using System.Text.Json;
-using Microsoft.Extensions.Configuration;
+using LogonServiceRequestTypes.Exceptions;
+using Microsoft.Extensions.Options;
+using My.ClasStars.Configuration;
+using Newtonsoft.Json;
 using Serilog;
+using SharedTypes;
+using SharedTypes.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace My.ClasStars;
 
@@ -38,10 +39,11 @@ public class InvokeServices : IInvokeServices
     public string MobileAuthServiceAddress { get; }
     public string ServiceAddress { get; }
 
-    public InvokeServices(IConfiguration configuration)
+    public InvokeServices(IOptions<ServiceEndpointOptions> options)
     {
-        ServiceAddress = configuration["ServiceAddress"];
-        MobileAuthServiceAddress = configuration["ServiceAddress"];
+        var endpointOptions = options.Value;
+        ServiceAddress = endpointOptions.ServiceAddress;
+        MobileAuthServiceAddress = endpointOptions.MobileAuthServiceAddress;
     }
 
     public void SetApplicationInfo(Version version, string applicationName, string platform = "", string idiom = "")

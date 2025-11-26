@@ -1,11 +1,9 @@
-﻿using System;
-
 namespace My.ClasStars;
 
-public class ExternalProviders
+public sealed class ExternalProviders
 {
-    public string Name { get; set; } = null;
-    public DateTime? LastLoginDate { get; set; }=null;
-    public string ImageUrl { get; set; } = null;
-    public DateTime? ExpiryDate { get; set; } = null;
+    public string Name { get; set; } = string.Empty;
+    public DateTime? LastLoginDate { get; set; }
+    public string? ImageUrl { get; set; }
+    public DateTime? ExpiryDate { get; set; }
 }

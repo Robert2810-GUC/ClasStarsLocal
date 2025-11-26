@@ -1,37 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using LogonServiceRequestTypes.Enums;
 using LogonServiceRequestTypes.Exceptions;
+using Microsoft.Extensions.Options;
+using My.ClasStars.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharedTypes;
 using SharedTypes.ServiceRequestTypes;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace My.ClasStars;
 
 public class AuthorizationService : IAuthorizationService
 {
+    private readonly AuthOptions _authOptions;
     private readonly IInvokeServices _svc;
 
-    public AuthorizationService(IInvokeServices invokeServices)
+    public AuthorizationService(IInvokeServices invokeServices, IOptions<AuthOptions> authOptions)
     {
         _svc = invokeServices;
+        _authOptions = authOptions.Value;
     }
 
     public async Task<string> GetToken()
     {
-        var authorizationSecret = Startup.Configuration["ClasstarsAuthSecret"];
-        return await _svc.GetToken(authorizationSecret);
+        if (string.IsNullOrWhiteSpace(_authOptions.ClasstarsAuthSecret))
+        {
+            throw new InvalidOperationException("Classtars authorization secret is not configured.");
+        }
+
+        return await _svc.GetToken(_authOptions.ClasstarsAuthSecret);
     }
 
     public async Task<LoggedInUserInfo> CheckUserAuthorized(string email, string provider, bool activeUsersOnly,
         int organizationId = 0, bool autoCreateUser = false, bool isEnterpriseUser = false, bool failOnEnterpriseConflict = false)
     {
+        if (!Guid.TryParse(_authOptions.ClasstarsAuthSecret, out var authorizationSecret))
+        {
+            throw new InvalidOperationException("Classtars authorization secret is not configured correctly.");
+        }
+
         var userInfo = new CheckUserAuthorizedRequest()
         {
             SecurityKey = email,
-            AuthorizationSecret = Guid.Parse(Startup.Configuration["ClasstarsAuthSecret"]),
+            AuthorizationSecret = authorizationSecret,
             Provider = provider,
             ActiveUsersOnly = activeUsersOnly,
             IsEnterpriseAuthorized = isEnterpriseUser,

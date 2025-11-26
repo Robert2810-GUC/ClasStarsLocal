@@ -138,6 +138,30 @@
   <data name="WelcomeClasstar" xml:space="preserve">
     <value>Welcome to ClasStars</value>
   </data>
+  <data name="Home_WelcomeBack" xml:space="preserve">
+    <value>Welcome back, {0} [{1}]</value>
+  </data>
+  <data name="Layout_BackToLogin" xml:space="preserve">
+    <value>Back to login</value>
+  </data>
+  <data name="SelectSchool_Loading" xml:space="preserve">
+    <value>Loading schools...</value>
+  </data>
+  <data name="SelectSchool_None" xml:space="preserve">
+    <value>No schools available.</value>
+  </data>
+  <data name="SelectSchool_SelectPrompt" xml:space="preserve">
+    <value>Please select a school</value>
+  </data>
+  <data name="Login_LoadingProviders" xml:space="preserve">
+    <value>Loading providers...</value>
+  </data>
+  <data name="Login_NoProviders" xml:space="preserve">
+    <value>No providers available.</value>
+  </data>
+  <data name="Login_SignInWith" xml:space="preserve">
+    <value>Sign in with {0}</value>
+  </data>
   <data name="HP_Absent" xml:space="preserve">
     <value>Absent</value>
   </data>
@@ -149,6 +173,9 @@
   </data>
   <data name="HP_ClosePicker" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="HP_DateRangePlaceholder" xml:space="preserve">
+    <value>Choose a range</value>
   </data>
   <data name="HP_Demographics" xml:space="preserve">
     <value>Demographics</value>
@@ -191,6 +218,21 @@
   </data>
   <data name="HP_SelectDates" xml:space="preserve">
     <value>Select Dates</value>
+  </data>
+  <data name="HP_SelectSchoolLabel" xml:space="preserve">
+    <value>Select School</value>
+  </data>
+  <data name="HP_SelectTeacherLabel" xml:space="preserve">
+    <value>Select Teacher</value>
+  </data>
+  <data name="HP_SchoolPlaceholder" xml:space="preserve">
+    <value>School Name</value>
+  </data>
+  <data name="HP_SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="HP_TeacherPlaceholder" xml:space="preserve">
+    <value>Teacher Name</value>
   </data>
   <data name="HP_Session" xml:space="preserve">
     <value>Session</value>
@@ -248,5 +290,8 @@
   </data>
   <data name="StudentList_PersonID" xml:space="preserve">
     <value>ID</value>
+  </data>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

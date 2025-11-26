@@ -7,12 +7,29 @@
     <link href="css/CustomStyle.css" rel="stylesheet" />    
 </head>
 <style>
-    .sidebar {
-        background: @ColorsResource.AppBlueOcean80Color;
-    }
     :root {
-        /* Define the CSS variable using the C# constant */
-        --app-blue-ocean: @ColorsResource.AppBlueOcean80Color;
+        --color-app-blue-ocean-80: @ColorsResource.AppBlueOcean80Color;
+        --color-app-deep-blue: @ColorsResource.AppDeepBlueOcean100Color;
+        --color-app-green: @ColorsResource.AppGreenColor;
+        --color-app-red: @ColorsResource.AppRedColor;
+        --color-app-orange: @ColorsResource.AppOrangeColor;
+        --color-app-yellow: @ColorsResource.AppYellowColor;
+        --color-app-sky-blue: @ColorsResource.AppSkyBlueColor;
+        --color-app-light-blue: @ColorsResource.AppLightBlueOcean60Color;
+        --color-app-gray: @ColorsResource.AppGrayColor;
+        --color-app-light-gray: @ColorsResource.AppLightGrayColor;
+        --color-app-dark-gray: @ColorsResource.AppDarkGrayColor;
+        --color-academic-positive: @ColorsResource.AcademicPositiveColor;
+        --color-academic-negative: @ColorsResource.AcademicNegativeColor;
+        --color-positive-behavior: @ColorsResource.PositiveBehaviorColor;
+        --color-negative-behavior: @ColorsResource.NegativeBehaviorColor;
+        --color-steel-gray: @ColorsResource.SteelGrayColor;
+        --color-steel-gray-2: @ColorsResource.SteelGrayColor2;
+        --color-surface: #ededed;
+    }
+
+    .sidebar {
+        background: var(--color-app-blue-ocean-80);
     }
 </style>
 @{
@@ -52,7 +69,7 @@
                 </div>
                 <div class="alert alert-danger" style="width: 46%;margin-top: 4%;margin-left: 25%;text-align: center;">
                     <h3>@Exception.Message</h3>
-                    <button class="btn btn-danger" @onclick="BacktoLogin">Back To Login Page</button>
+                    <button class="btn btn-danger" @onclick="BacktoLogin">@StringsResource.Layout_BackToLogin</button>
                 </div>
             </ErrorContent>
         </ErrorBoundary>

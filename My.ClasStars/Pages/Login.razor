@@ -6,162 +6,7 @@
 @inject IInvokeServices InvokeServices;
 
 
-<style>
-
-    .login-page {
-        height: 100vh;
-    }
-
-
-    .login-frm {
-        background: #fdffff;
-        padding: 30px;
-        border: 1px solid #f1f1f1;
-        box-shadow: 0 1rem 1.75rem 0 #2d374b;
-        box-shadow: 0 1rem 1.75rem 0 rgba(45,55,75,0.1);
-        border-radius: 10px;
-    }
-
-        .login-frm .privacyLink {
-            text-align: center;
-            font-size: 14px;
-            color: #2d65c7;
-            font-weight: 400;
-            display: inline-block;
-            margin-top: 20px;
-            align-items: flex-end;
-        }
-
-
-        .login-frm .frm-logo {
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-            .login-frm .frm-logo img {
-                width: 60px;
-            }
-
-            .login-frm .frm-logo span {
-                font-size: 28px;
-                color: #2d65c7;
-                font-weight: 400;
-                display: inline-block;
-                margin-left: 5px;
-            }
-
-        .login-frm form .form-control {
-            /* min-height: 50px; */
-            -webkit-box-shadow: none;
-            box-shadow: none;
-            border: 1px solid #959595;
-            /* padding: 10px 15px; */
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-
-        .login-frm .foget-sec {
-            display: flex;
-            align-items: center;
-            /* justify-content: space-between; */
-            width: 100%;
-            flex-wrap: nowrap;
-            margin: 30px 0 10px;
-        }
-
-    .forget-sec {
-        margin-left: 0;
-    }
-
-        .forget-sec img {
-            width: 100%;
-        }
-
-    .login-frm .foget-sec .form-check-label {
-        color: #a4a4a4;
-        margin-bottom: 0;
-        font-size: 16px;
-        position: relative;
-    }
-
-        .login-frm .foget-sec .form-check-label .form-check-input {
-            font-size: 16px;
-            position: absolute;
-            top: 1px;
-        }
-
-    .login-frm .foget-sec a {
-        border: 1px solid #5a5656;
-        padding: 10px;
-        border-radius: 50%;
-    }
-
-        .login-frm .foget-sec a:hover {
-            color: #37517E;
-        }
-
-    .login-frm .login-btn {
-        background: #fff;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 7px;
-        text-align: left;
-        color: #6c7fae;
-        width: 100%;
-        font-size: 16px;
-        margin: auto;
-        font-weight: 500;
-        margin-top: 8px;
-    }
-
-        .login-frm .login-btn:hover {
-            background: #eef0f5;
-            color: #000;
-            transition: 0.3s;
-        }
-
-    .input-box {
-        position: relative;
-    }
-
-        .input-box i {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            bottom: 0;
-            margin: auto;
-            color: #37517e;
-            font-size: 16px;
-        }
-
-    .img-btn img {
-        width: 6%;
-        border-radius: 50%;
-    }
-
-    .img-flud {
-        max-width: 170%;
-    }
-
-    .circle-icon button {
-        border: 1px solid #424040;
-        padding: 5px;
-        margin-top: 5px;
-        border-radius: 50%;
-    }
-
-    .circle-icon img {
-        height: 30px;
-    }
-
-    .circle-icon {
-        display: inline;
-        position: unset;
-        padding: 5px;
-    }
-
-</style>
+<link rel="stylesheet" href="css/pages/Login.css" />
 
 
 <div class="container h-100  login-page">
@@ -178,19 +23,19 @@
                 <div class="frm-logo ">
                     <span>@LocalizationService.GetString("Resources.StringsResource", "WelcomeClasstar")</span>
                 </div>
-                <div class="frm-logo " style="margin-bottom:0;">
-                    <span style="font-size: 22px;">@LocalizationService.GetString("Resources.StringsResource", "Pleaselogin")</span>
-                    <p class="m-0" style="color:#3265bd;">@LocalizationService.GetString("Resources.StringsResource", "selectionmessage")</p>
+                <div class="frm-logo mb-0">
+                    <span class="fs-5">@LocalizationService.GetString("Resources.StringsResource", "Pleaselogin")</span>
+                    <p class="m-0 selection-note">@LocalizationService.GetString("Resources.StringsResource", "selectionmessage")</p>
                 </div>
 
                 @{
                     if (ProviderList == null)
                     {
-                        <p>Loading...</p>
+                        <p>@StringsResource.Login_LoadingProviders</p>
                     }
                     else if (ProviderList.Count == 0)
                     {
-                        <p>No providers available.</p>
+                        <p>@StringsResource.Login_NoProviders</p>
                     }
                     else
                     {
@@ -205,7 +50,7 @@
                             {
                                 <button @onclick="() => HandleLogin(item.Name)" class="btn login-btn img-btn">
                                     <img style="margin-left:3px;margin-right:8px;" src="@item.ImageUrl" class="img-flud" alt="">
-                                    <span>Sign in with @item.Name</span>
+                                    <span>@string.Format(StringsResource.Login_SignInWith, item.Name)</span>
                                 </button>
                             }
                             else

@@ -529,6 +529,15 @@ namespace My.ClasStars.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to ClasStars logo.
+        /// </summary>
+        public static string Layout_LogoAlt {
+            get {
+                return ResourceManager.GetString("Layout_LogoAlt", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Loading schools....
         /// </summary>
         public static string SelectSchool_Loading {
@@ -597,6 +606,51 @@ namespace My.ClasStars.Resources {
         public static string Common_Ok {
             get {
                 return ResourceManager.GetString("Common_Ok", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ClasStars.
+        /// </summary>
+        public static string App_Title {
+            get {
+                return ResourceManager.GetString("App_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An error has occurred. This application may no longer respond until reloaded..
+        /// </summary>
+        public static string Host_ErrorUnavailable {
+            get {
+                return ResourceManager.GetString("Host_ErrorUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An unhandled exception has occurred. See browser dev tools for details..
+        /// </summary>
+        public static string Host_ErrorDevelopment {
+            get {
+                return ResourceManager.GetString("Host_ErrorDevelopment", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reload.
+        /// </summary>
+        public static string Host_ReloadAction {
+            get {
+                return ResourceManager.GetString("Host_ReloadAction", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string Host_DismissAction {
+            get {
+                return ResourceManager.GetString("Host_DismissAction", resourceCulture);
             }
         }
     }

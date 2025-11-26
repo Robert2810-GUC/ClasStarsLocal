@@ -5,13 +5,13 @@ html, body {
 }
 
 a, .btn-link {
-    color: #0366d6;
+    color: var(--color-app-blue-ocean-80);
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    color: var(--color-surface-contrast);
+    background-color: var(--color-app-deep-blue);
+    border-color: var(--color-app-deep-blue);
 }
 
 app {
@@ -31,8 +31,8 @@ app {
 }
 
 .main .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: var(--color-surface-neutral);
+    border-bottom: 1px solid var(--color-app-light-gray);
     justify-content: flex-end;
 }
 
@@ -48,7 +48,7 @@ app {
 }
 
 .sidebar .top-row {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: var(--color-overlay-strong);
 }
 
 .sidebar .navbar-brand {
@@ -76,7 +76,7 @@ app {
 }
 
 .sidebar .nav-item a {
-    color: #d7d7d7;
+    color: var(--color-app-light-gray);
     border-radius: 4px;
     height: 3rem;
     display: flex;
@@ -85,13 +85,13 @@ app {
 }
 
 .sidebar .nav-item a.active {
-    background-color: rgba(255, 255, 255, 0.25);
-    color: white;
+    background-color: var(--color-overlay-light);
+    color: var(--color-surface-contrast);
 }
 
 .sidebar .nav-item a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    background-color: var(--color-overlay-soft);
+    color: var(--color-surface-contrast);
 }
 
 .content {
@@ -99,25 +99,25 @@ app {
 }
 
 .navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--color-overlay-soft);
 }
 
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+    outline: 1px solid var(--color-app-green);
 }
 
 .invalid {
-    outline: 1px solid red;
+    outline: 1px solid var(--color-app-red);
 }
 
 .validation-message {
-    color: red;
+    color: var(--color-app-red);
 }
 
 #blazor-error-ui {
-    background: lightyellow;
+    background: var(--color-warning-surface);
     bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -1px 2px var(--color-shadow-muted);
     display: none;
     left: 0;
     padding: 0.6rem 1.25rem 0.7rem 1.25rem;
@@ -175,7 +175,7 @@ app {
 }
 
 input[type="checkbox"] {
-    accent-color: var(--app-blue-ocean);
+    accent-color: var(--color-app-blue-ocean-80);
 }
 
 body.modal-open {

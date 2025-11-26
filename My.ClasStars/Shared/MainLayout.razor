@@ -25,7 +25,14 @@
         --color-negative-behavior: @ColorsResource.NegativeBehaviorColor;
         --color-steel-gray: @ColorsResource.SteelGrayColor;
         --color-steel-gray-2: @ColorsResource.SteelGrayColor2;
-        --color-surface: #ededed;
+        --color-surface: @ColorsResource.AppSurfaceColor;
+        --color-surface-contrast: @ColorsResource.SurfaceContrastColor;
+        --color-surface-neutral: @ColorsResource.SurfaceNeutralColor;
+        --color-overlay-strong: @ColorsResource.OverlayStrongColor;
+        --color-overlay-light: @ColorsResource.OverlayLightColor;
+        --color-overlay-soft: @ColorsResource.OverlaySoftColor;
+        --color-warning-surface: @ColorsResource.WarningSurfaceColor;
+        --color-shadow-muted: @ColorsResource.ShadowMutedColor;
     }
 
     .sidebar {
@@ -62,7 +69,7 @@
             <ErrorContent Context="Exception">
                 <div class="col-12 pb-2 border-bottom">
                     <div>
-                        <img style="width: 8%;" src="Images/ClasStars Wide.svg" alt="logo" class="img-fluid">
+                        <img style="width: 8%;" src="Images/ClasStars Wide.svg" alt="@StringsResource.Layout_LogoAlt" class="img-fluid">
                     </div>
                     <div>
                     </div>

@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddAppFramework(this IServiceCollection services)
     {
-        services.AddRazorPages();
+        services.AddRazorPages().AddViewLocalization();
         services.AddServerSideBlazor();
         services.AddLocalization();
         services.AddAuthorizationCore();

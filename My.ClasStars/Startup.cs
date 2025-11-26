@@ -35,8 +35,6 @@ namespace My.ClasStars
                 .AddAppServices()
                 .AddThirdPartyFrameworks();
 
-            services.AddViewLocalization();
-
             TokenValidationParameters = BuildTokenValidationParameters();
         }
 

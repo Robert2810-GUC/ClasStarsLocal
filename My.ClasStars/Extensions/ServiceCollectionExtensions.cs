@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddRazorPages();
         services.AddServerSideBlazor();
         services.AddLocalization();
+        services.AddAuthorizationCore();
         return services;
     }
 

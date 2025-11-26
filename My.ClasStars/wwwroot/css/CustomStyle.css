@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 body {
@@ -10,7 +11,7 @@ body {
 
 .slct-date,
 .slct-dates {
-    background-color: @ColorsResource.AppBlueOcean80Color;
+    background-color: var(--app-blue-ocean);
     border: navajowhite;
     border-radius: 6px;
     color: #fff;
@@ -22,7 +23,7 @@ body {
 }
 
 .closebtn {
-    background-color: @ColorsResource.AppRedColor;
+    background-color: var(--app-red);
     border: navajowhite;
     border-radius: 6px;
     color: #fff;
@@ -78,12 +79,12 @@ body {
 
 
 .e-tab .e-tab-header .e-toolbar-item.e-active {
-    background: @ColorsResource.AppBlueOcean80Color;
+    background: var(--app-blue-ocean);
     display: none;
 }
 
     .e-tab .e-tab-header .e-toolbar-item.e-active:hover {
-        background: @ColorsResource.AppBlueOcean80Color;
+        background: var(--app-blue-ocean);
     }
 
 .e-tab .e-content .e-item {
@@ -105,8 +106,8 @@ body {
 }
 
 .e-btn.e-danger {
-    background: @ColorsResource.AppRedColor;
-    border-color: @ColorsResource.AppRedColor;
+    background: var(--app-red);
+    border-color: var(--app-red);
     margin-left: 4%;
 }
 
@@ -394,3 +395,168 @@ img.forSmall {
         width: 90%;
     }
 }
+
+/* Login page */
+.login-page {
+    height: 100vh;
+}
+
+.login-frm {
+    background: #fdffff;
+    padding: 30px;
+    border: 1px solid #f1f1f1;
+    box-shadow: 0 1rem 1.75rem 0 rgba(45, 55, 75, 0.1);
+    border-radius: 10px;
+}
+
+.login-frm .privacyLink {
+    text-align: center;
+    font-size: 14px;
+    color: #2d65c7;
+    font-weight: 400;
+    display: inline-block;
+    margin-top: 20px;
+    align-items: flex-end;
+}
+
+.login-frm .frm-logo {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.login-frm .frm-logo img {
+    width: 60px;
+}
+
+.login-frm .frm-logo span {
+    font-size: 28px;
+    color: #2d65c7;
+    font-weight: 400;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.login-frm form .form-control {
+    border: 1px solid #959595;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    box-shadow: none;
+}
+
+.login-frm .foget-sec {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-wrap: nowrap;
+    margin: 30px 0 10px;
+}
+
+.forget-sec {
+    margin-left: 0;
+}
+
+.forget-sec img {
+    width: 100%;
+}
+
+.login-frm .foget-sec .form-check-label {
+    color: #a4a4a4;
+    margin-bottom: 0;
+    font-size: 16px;
+    position: relative;
+}
+
+.login-frm .foget-sec .form-check-label .form-check-input {
+    font-size: 16px;
+    position: absolute;
+    top: 1px;
+}
+
+.login-frm .foget-sec a {
+    border: 1px solid #5a5656;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.login-frm .foget-sec a:hover {
+    color: #37517E;
+}
+
+.login-frm .login-btn {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    text-align: left;
+    color: #6c7fae;
+    width: 100%;
+    font-size: 16px;
+    margin: auto;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.login-frm .login-btn:hover {
+    background: #eef0f5;
+    color: #000;
+    transition: 0.3s;
+}
+
+.input-box {
+    position: relative;
+}
+
+.input-box i {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    bottom: 0;
+    margin: auto;
+    color: #37517e;
+    font-size: 16px;
+}
+
+.img-btn img {
+    width: 6%;
+    border-radius: 50%;
+}
+
+.provider-logo {
+    margin-left: 3px;
+    margin-right: 8px;
+    width: 6%;
+    border-radius: 50%;
+}
+
+.provider-logo--small {
+    width: 30px;
+    border-radius: 30%;
+}
+
+.img-flud {
+    max-width: 170%;
+}
+
+.circle-icon button {
+    border: 1px solid #424040;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 50%;
+}
+
+.circle-icon img {
+    height: 30px;
+}
+
+.circle-icon {
+    display: inline;
+    position: unset;
+    padding: 5px;
+}
+
+.login-logo { width: 8%; }
+.login-heading { margin-bottom: 0; }
+.login-subtitle { color: #3265bd; }
+.login-heading-title { font-size: 22px; }
+.login-provider-list { display: flex; flex-direction: column; }

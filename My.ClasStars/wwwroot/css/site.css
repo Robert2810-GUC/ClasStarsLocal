@@ -194,3 +194,11 @@ body.modal-open {
     -moz-user-select: none;   
     -ms-user-select: none;   
 }
+
+.input_selectpicture {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}

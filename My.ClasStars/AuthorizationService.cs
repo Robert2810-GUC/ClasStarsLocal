@@ -34,7 +34,7 @@ public class AuthorizationService : IAuthorizationService
     }
 
     public async Task<LoggedInUserInfo> CheckUserAuthorized(string email, string provider, bool activeUsersOnly,
-        int organizationId = 0, bool autoCreateUser = false, bool isEnterpriseUser = false, bool failOnEnterpriseConflict = false)
+        int organizationId = 0, bool autoCreateUser = false, bool isEnterpriseUser = false, bool failOnEnterpriseConflict = true)
     {
         if (!Guid.TryParse(_authOptions.ClasstarsAuthSecret, out var authorizationSecret))
         {

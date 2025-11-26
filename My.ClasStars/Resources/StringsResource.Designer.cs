@@ -367,6 +367,69 @@ namespace My.ClasStars.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to With image.
+        /// </summary>
+        public static string Students_FilterWithImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Without image.
+        /// </summary>
+        public static string Students_FilterWithoutImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithoutImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string Students_Loading {
+            get {
+                return ResourceManager.GetString("Students_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading images….
+        /// </summary>
+        public static string Students_LoadingImages {
+            get {
+                return ResourceManager.GetString("Students_LoadingImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No images.
+        /// </summary>
+        public static string Students_NoImages {
+            get {
+                return ResourceManager.GetString("Students_NoImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Students_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("Students_SearchPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select Pictures.
+        /// </summary>
+        public static string Students_SelectPictures {
+            get {
+                return ResourceManager.GetString("Students_SelectPictures", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Teacher Name.
         /// </summary>
         public static string HP_TeacherPlaceholder {

@@ -291,6 +291,27 @@
   <data name="HP_SelectPictures" xml:space="preserve">
     <value>Select Pictures</value>
   </data>
+  <data name="Students_FilterWithImage" xml:space="preserve">
+    <value>With image</value>
+  </data>
+  <data name="Students_FilterWithoutImage" xml:space="preserve">
+    <value>Without image</value>
+  </data>
+  <data name="Students_Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Students_LoadingImages" xml:space="preserve">
+    <value>Loading images…</value>
+  </data>
+  <data name="Students_NoImages" xml:space="preserve">
+    <value>No images</value>
+  </data>
+  <data name="Students_SearchPlaceholder" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Students_SelectPictures" xml:space="preserve">
+    <value>Select Pictures</value>
+  </data>
   <data name="PrivacyLink" xml:space="preserve">
     <value>View our Privacy Policy</value>
   </data>

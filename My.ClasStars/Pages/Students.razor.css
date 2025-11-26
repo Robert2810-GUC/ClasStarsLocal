@@ -6,16 +6,20 @@
 .leftPnl {
     width: 25%;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-app-light-gray);
     max-height: 97vh;
     min-height: 94vh;
     overflow-y: scroll;
+    background: var(--color-surface-contrast);
+    border-radius: 6px;
 }
 
 .rightPnl {
     width: 75%;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-app-light-gray);
+    border-radius: 6px;
+    background: var(--color-surface-contrast);
 }
 
 .inputRight {
@@ -23,26 +27,29 @@
     justify-content: end;
     align-items: center;
     margin-bottom: 12px;
-    background: #f2f5ff;
+    background: var(--color-surface-neutral);
     border-radius: 10px;
+    padding: 8px 12px;
+    gap: 12px;
 }
 
 .file-input-zone {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #5667a7;
-    color: white;
+    background-color: var(--color-app-blue-ocean-80);
+    color: var(--color-surface-contrast);
     cursor: pointer;
-    padding: 24px;
+    padding: 10px 18px;
     position: relative;
-    width: 300px;
-    max-height: 30px;
+    min-width: 240px;
     border-radius: 50px;
+    gap: 10px;
+    font-weight: 600;
 }
 
 .file-input-zone:hover {
-    background-color: #0a58cab8;
+    background-color: var(--color-app-deep-blue);
 }
 
 .file-input-zone input[type=file] {
@@ -51,6 +58,7 @@
     height: 100%;
     opacity: 0;
     cursor: pointer;
+    inset: 0;
 }
 
 .table.userList {
@@ -62,7 +70,7 @@
 }
 
 .userList tbody tr {
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-app-light-gray);
 }
 
 .inputImages {
@@ -81,7 +89,7 @@
     position: relative;
     overflow: hidden;
     border-radius: 8px;
-    background: #f5f5f5;
+    background: var(--color-surface-neutral);
     aspect-ratio: 4 / 3;
     transition: transform .12s ease;
     display: block;
@@ -92,12 +100,12 @@
 }
 
 .img-card.imgGreen {
-    border: 3px solid #35c759;
+    border: 3px solid var(--color-app-green);
     box-sizing: border-box;
 }
 
 .img-card.imgRed {
-    border: 3px solid #ff4f4f;
+    border: 3px solid var(--color-app-red);
     box-sizing: border-box;
 }
 
@@ -118,8 +126,8 @@
     right: 0;
     bottom: 0;
     padding: 6px 8px;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--color-surface-contrast);
     font-size: 13px;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -144,7 +152,7 @@
     grid-column: 1 / -1;
     text-align: center;
     padding: 40px 0;
-    color: #666;
+    color: var(--color-app-dark-gray);
 }
 
 @media (max-width: 600px) {
@@ -170,13 +178,14 @@
 
 .editorIcons .e-avatar.e-avatar-circle {
     padding: 10px;
-    border: 1px solid #858585;
+    border: 1px solid var(--color-app-dark-gray);
     margin: 12px 10px 10px;
+    background: var(--color-surface-contrast);
 }
 
 .editorIcons .e-avatar.e-avatar-circle:hover {
-    border: 3px solid #5667a7;
-    background: #b3c2f7;
+    border: 3px solid var(--color-app-blue-ocean-80);
+    background: var(--color-app-light-blue);
     cursor: pointer;
 }
 
@@ -198,8 +207,10 @@
 .cstUserLists .cstEcard {
     height: auto;
     width: auto;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-app-light-gray);
     box-shadow: rgb(50 50 93 / 13%) 0px 30px 60px -12px inset, rgb(0 0 0 / 0%) 0px 18px 36px -18px inset;
+    background: var(--color-surface-contrast);
+    border-radius: 6px;
 }
 
 .cstUserLists .cstEcard #element {
@@ -227,8 +238,9 @@
     justify-content: space-between;
     padding: 4px 8px;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-app-light-gray);
     margin-bottom: 4px;
+    border-radius: 4px;
 }
 
 .cstUserLists ul li img {
@@ -238,11 +250,11 @@
 }
 
 .imgGreen {
-    border: 5px solid green;
+    border: 5px solid var(--color-app-green);
 }
 
 .imgRed {
-    border: 5px solid red;
+    border: 5px solid var(--color-app-red);
 }
 
 .disableImg {
@@ -256,14 +268,14 @@
 }
 
 .Error {
-    color: red;
+    color: var(--color-app-red);
     font-family: monospace;
     font-weight: bold;
     flex: 0 0 65%;
 }
 
 .Success {
-    color: green;
+    color: var(--color-app-green);
     font-family: monospace;
     font-weight: bold;
     flex: 0 0 65%;
@@ -279,4 +291,46 @@
 
 .fit-content {
     max-height: fit-content;
+}
+
+.processing {
+    pointer-events: none;
+    opacity: 0.6;
+    position: relative;
+}
+
+.btn-spinner {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-top-color: rgba(0, 0, 0, 0.6);
+    animation: spin 0.8s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.modal-loader-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 1000;
+}
+
+.modal-loader-overlay .loader {
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: var(--color-surface-contrast);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
 }

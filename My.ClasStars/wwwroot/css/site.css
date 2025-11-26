@@ -324,7 +324,7 @@ table.table.userList {
     overflow: hidden;
     border-radius: 8px;
     background: #f5f5f5;
-    aspect-ratio: 4 / 3;      
+    aspect-ratio: 1/1;      
     transition: transform .12s ease;
     display: block;
 }
@@ -348,7 +348,7 @@ table.table.userList {
         inset: 0;      
         width: 100%;
         height: 100%;
-        object-fit: cover;         
+        object-fit: contain;         
         display: block;
         border-radius: 8px;     
         z-index: 1;
@@ -848,8 +848,16 @@ button.modalKill:hover {
     overflow-y: auto;
     overflow-x: hidden;
 }
+.font-weight-400{
+    font-weight:400;
+}
 
 
 body.modal-open {
     overflow: hidden;
 }
+
+input[type="checkbox"] {
+    accent-color: #5667A7;
+}
+

@@ -20,11 +20,13 @@ public class ContactInfoModel : ExternalProviderIdentifier
         FirstName = contactInfo.FirstName.Trim();
         ContactPicture = contactInfo.ContactImage;
         FileAs = contactInfo.FileAs;
+        PersonID = contactInfo.PersonID;
     }
     public int ContactID { get; set; }
 
 
     public string FileAs { get; set; }
+    public string? PersonID { get; set; }
 
     private string _lastName;
     public string LastName

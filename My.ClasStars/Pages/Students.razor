@@ -51,10 +51,15 @@ else
                          @onmousedown="() => FilterList(student.FirstName + ' ' + student.LastName)">
                         <div class="e-card e-avatar-showcase cstEcard">
                             <div id="element" class="avatar-sub-block">
-                                <span>@student.FileAs</span>
+                                <span>
+                                    <span>@student.FileAs</span>
+                                    <br />
+                                    <b>@StringsResource.StudentList_PersonID:   </b>
+                                    <span class="font-weight-400">@student.PersonID</span>
+                                </span>
                                 @if (student.ContactPicture == null)
                                 {
-                                    <span class="e-avatar e-avatar-xlarge e-avatar-circle blue" @onclick="() => LoadContact(student)">@student.Initials</span>
+                                    <span class="e-avatar e-avatar-xlarge e-avatar-circle blue" @ondblclick="() => LoadContact(student)">@student.Initials</span>
                                 }
                                 else
                                 {
@@ -64,7 +69,7 @@ else
                                         }
                                         <img src="@imgg"
                                              alt="profile_pic"
-                                             @onclick="@(async () => await LoadContact(student))" />
+                                             @ondblclick="@(async () => await LoadContact(student))" />
                                     </div>
                                 }
                             </div>

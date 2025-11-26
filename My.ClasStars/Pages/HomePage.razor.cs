@@ -292,7 +292,7 @@ public partial class HomePage
         if (!showDatePicker)
         {
             await Task.Delay(10);
-            await jsRuntime.InvokeVoidAsync("showCalendar");
+            await JSRuntime.InvokeVoidAsync("showCalendar");
         }
     }
     private void UpdateEndDate(DateTime selecteddate)

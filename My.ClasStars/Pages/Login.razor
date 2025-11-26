@@ -6,9 +6,6 @@
 @inject IInvokeServices InvokeServices;
 
 
-<link rel="stylesheet" href="css/pages/Login.css" />
-
-
 <div class="container h-100  login-page">
     <div class="row align-items-center justify-content-center h-100">
         <div class="col-12 pb-2">
@@ -56,7 +53,7 @@
                             else
                             {
                                 <div class="circle-icon">
-                                    <button @onclick="() => HandleLogin(item.Name)" title="Sign in with @item.Name"><img style="width:30px;border-radius: 30%;" class="img-flud" src="@item.ImageUrl"></button>
+                                    <button @onclick="() => HandleLogin(item.Name)" title="@string.Format(StringsResource.Login_SignInWith, item.Name)"><img style="width:30px;border-radius: 30%;" class="img-flud" src="@item.ImageUrl"></button>
                                 </div>
                             }
                             i++;

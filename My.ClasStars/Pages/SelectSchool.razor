@@ -1,9 +1,9 @@
 ﻿@page "/selectSchool"
 @inject NavigationManager navManager
 @inject SchoolListService SchoolListService
+@inject ILogger<SelectSchool> Logger
 @using My.ClasStars.Resources
-
-<link rel="stylesheet" href="css/pages/SelectSchool.css" />
+@using Microsoft.Extensions.Logging
 
 <div class="col-12 pb-2">
     <div>
@@ -13,7 +13,11 @@
     </div>
 </div>
 
-@if (SchoolListService.SchoolList == null)
+@if (!string.IsNullOrWhiteSpace(initializationError))
+{
+    <div class="alert alert-danger" role="alert">@initializationError</div>
+}
+else if (SchoolListService.SchoolList == null)
 {
     <p>@StringsResource.SelectSchool_Loading</p>
 }
@@ -58,18 +62,21 @@ else
 
 @code {
 
+    private string? initializationError;
+
     protected override void OnInitialized()
     {
         try
         {
             if (SchoolListService.Email == null)
             {
-                throw new ArgumentNullException(StringsResource.UserNotFound);
+                initializationError = StringsResource.UserNotFound;
             }
         }
         catch (Exception ex)
         {
-            throw ex;
+            Logger.LogError(ex, "Failed to initialize select school page.");
+            initializationError = StringsResource.SelectSchool_LoadFailed;
         }
     }
     private void HandleSchoolSelection(SharedTypes.RegisteredOrganizationInfo school)

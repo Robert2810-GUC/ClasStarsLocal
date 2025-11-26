@@ -538,6 +538,15 @@ namespace My.ClasStars.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Unable to load schools right now. Please try again or contact support..
+        /// </summary>
+        public static string SelectSchool_LoadFailed {
+            get {
+                return ResourceManager.GetString("SelectSchool_LoadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No schools available..
         /// </summary>
         public static string SelectSchool_None {

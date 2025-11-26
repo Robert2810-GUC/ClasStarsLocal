@@ -147,6 +147,9 @@
   <data name="SelectSchool_Loading" xml:space="preserve">
     <value>Loading schools...</value>
   </data>
+  <data name="SelectSchool_LoadFailed" xml:space="preserve">
+    <value>Unable to load schools right now. Please try again or contact support.</value>
+  </data>
   <data name="SelectSchool_None" xml:space="preserve">
     <value>No schools available.</value>
   </data>

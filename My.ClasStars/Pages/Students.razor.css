@@ -1,1 +1,336 @@
-﻿
+.pictureManage {
+    display: flex;
+    gap: 10px;
+}
+
+.leftPnl {
+    width: 25%;
+    padding: 8px;
+    border: 1px solid var(--color-app-light-gray);
+    max-height: 97vh;
+    min-height: 94vh;
+    overflow-y: scroll;
+    background: var(--color-surface-contrast);
+    border-radius: 6px;
+}
+
+.rightPnl {
+    width: 75%;
+    padding: 8px;
+    border: 1px solid var(--color-app-light-gray);
+    border-radius: 6px;
+    background: var(--color-surface-contrast);
+}
+
+.inputRight {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-bottom: 12px;
+    background: var(--color-surface-neutral);
+    border-radius: 10px;
+    padding: 8px 12px;
+    gap: 12px;
+}
+
+.file-input-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-app-blue-ocean-80);
+    color: var(--color-surface-contrast);
+    cursor: pointer;
+    padding: 10px 18px;
+    position: relative;
+    min-width: 240px;
+    border-radius: 50px;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.file-input-zone:hover {
+    background-color: var(--color-app-deep-blue);
+}
+
+.file-input-zone input[type=file] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    inset: 0;
+}
+
+.table.userList {
+    margin-top: 10px;
+}
+
+.table.userList tr td {
+    vertical-align: middle;
+}
+
+.userList tbody tr {
+    border: 1px solid var(--color-app-light-gray);
+}
+
+.inputImages {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    align-items: start;
+    min-height: 45vh;
+    padding-top: 10px;
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.img-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--color-surface-neutral);
+    aspect-ratio: 4 / 3;
+    transition: transform .12s ease;
+    display: block;
+}
+
+.img-card:hover {
+    transform: translateY(-3px);
+}
+
+.img-card.imgGreen {
+    border: 3px solid var(--color-app-green);
+    box-sizing: border-box;
+}
+
+.img-card.imgRed {
+    border: 3px solid var(--color-app-red);
+    box-sizing: border-box;
+}
+
+.img-card .img-item {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+.inputImages-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--color-surface-contrast);
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    z-index: 2;
+}
+
+@supports not (aspect-ratio: 1/1) {
+    .img-card {
+        height: 0;
+        padding-top: 75%;
+    }
+
+    .img-card .img-item {
+        position: absolute;
+        inset: 0;
+    }
+}
+
+.empty-state,
+.loader {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 0;
+    color: var(--color-app-dark-gray);
+}
+
+@media (max-width: 600px) {
+    .inputImages {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+
+    .inputImages-label {
+        font-size: 12px;
+    }
+}
+
+.contact-filters {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+}
+
+.contact-filters label {
+    font-size: smaller;
+}
+
+.editorIcons .e-avatar.e-avatar-circle {
+    padding: 10px;
+    border: 1px solid var(--color-app-dark-gray);
+    margin: 12px 10px 10px;
+    background: var(--color-surface-contrast);
+}
+
+.editorIcons .e-avatar.e-avatar-circle:hover {
+    border: 3px solid var(--color-app-blue-ocean-80);
+    background: var(--color-app-light-blue);
+    cursor: pointer;
+}
+
+.iconMain {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+.iconMain span {
+    margin-top: 0;
+    font-size: 13px;
+}
+
+.spaceEven {
+    justify-content: space-evenly;
+}
+
+.cstUserLists .cstEcard {
+    height: auto;
+    width: auto;
+    border: 1px solid var(--color-app-light-gray);
+    box-shadow: rgb(50 50 93 / 13%) 0px 30px 60px -12px inset, rgb(0 0 0 / 0%) 0px 18px 36px -18px inset;
+    background: var(--color-surface-contrast);
+    border-radius: 6px;
+}
+
+.cstUserLists .cstEcard #element {
+    width: auto;
+    margin: 0 0 0 8px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    border-radius: 3px;
+}
+
+.cstUserLists .cstEcard #element span:nth-child(1) {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.cstUserLists ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 8px;
+}
+
+.cstUserLists ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 8px;
+    align-items: center;
+    border: 1px solid var(--color-app-light-gray);
+    margin-bottom: 4px;
+    border-radius: 4px;
+}
+
+.cstUserLists ul li img {
+    width: 58px;
+    border-radius: 50px;
+    height: auto;
+}
+
+.imgGreen {
+    border: 5px solid var(--color-app-green);
+}
+
+.imgRed {
+    border: 5px solid var(--color-app-red);
+}
+
+.disableImg {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.enablerImg {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.Error {
+    color: var(--color-app-red);
+    font-family: monospace;
+    font-weight: bold;
+    flex: 0 0 65%;
+}
+
+.Success {
+    color: var(--color-app-green);
+    font-family: monospace;
+    font-weight: bold;
+    flex: 0 0 65%;
+}
+
+.ShowRightPnl {
+    visibility: visible;
+}
+
+.HideRightPnl {
+    visibility: collapse;
+}
+
+.fit-content {
+    max-height: fit-content;
+}
+
+.processing {
+    pointer-events: none;
+    opacity: 0.6;
+    position: relative;
+}
+
+.btn-spinner {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-top-color: rgba(0, 0, 0, 0.6);
+    animation: spin 0.8s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.modal-loader-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 1000;
+}
+
+.modal-loader-overlay .loader {
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: var(--color-surface-contrast);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+}

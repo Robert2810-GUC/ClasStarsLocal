@@ -1,0 +1,196 @@
+.cst-modal {
+    display: none;
+    opacity: 1;
+    transition: opacity 1s ease;
+    position: fixed;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 50%;
+    font-family: inherit;
+    min-height: -webkit-fill-available;
+}
+
+.cst-modalBody {
+    padding: 10px;
+    font-family: inherit;
+    text-align: center;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.cst-modalBody::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cst-modalBody::-webkit-scrollbar-thumb {
+    background: #5667a7ad;
+}
+
+.cst-modalBody::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.cst-modalBody::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.cst-modalFoter {
+    border-top: 1px solid #dfdfdf;
+    padding: 10px;
+    text-align: end;
+}
+
+.myModalHead {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 14px 10px 24px;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    background: #f7f7f7;
+}
+
+.myModalHead span {
+    margin-top: 8px;
+}
+
+.modalKill {
+    border: none;
+    background: #d34c4c;
+    padding: 3px 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.modalEditor {
+    width: fit-content;
+    height: 400px;
+    margin: auto;
+}
+
+.modalEditor .e-image-editor {
+    width: 500px;
+    height: 500px;
+    margin: auto;
+}
+
+.modalEditor div#SfImageEditor_dropArea {
+    height: calc(100% - 115px);
+}
+
+.editorIcons .e-avatar.e-avatar-circle {
+    padding: 10px;
+    border: 1px solid #858585;
+    margin: 12px 10px 10px;
+}
+
+.editorIcons .e-avatar.e-avatar-circle:hover {
+    border: 3px solid #5667a7;
+    background: #b3c2f7;
+    cursor: pointer;
+}
+
+.iconMain {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+.iconMain span {
+    margin-top: 0px;
+    font-size: 13px;
+}
+
+.spaceEven {
+    justify-content: space-evenly;
+}
+
+.captureBtn {
+    color: #fff;
+    display: inline-flex;
+    border: none;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    margin: 8px 0;
+    background: #3b4773;
+}
+
+.cameraSzeVisible {
+    visibility: visible;
+}
+
+.cameraSzeHidden {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+
+.disableImg {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.enablerImg {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.processing {
+    pointer-events: none;
+    opacity: 0.6;
+    position: relative;
+}
+
+.btn-spinner {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.15);
+    border-top-color: rgba(0,0,0,0.6);
+    animation: spin 0.8s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.modal-loader-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.6);
+    z-index: 1000;
+}
+
+.modal-loader-overlay .loader {
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-weight: 600;
+}
+
+.label {
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .cst-modal {
+        width: calc(100% - 25px);
+    }
+}

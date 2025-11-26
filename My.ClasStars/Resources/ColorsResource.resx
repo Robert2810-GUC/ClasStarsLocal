@@ -171,4 +171,28 @@
   <data name="SteelGrayColor2" xml:space="preserve">
     <value>#3E5067</value>
   </data>
+  <data name="AppSurfaceColor" xml:space="preserve">
+    <value>#EDEDED</value>
+  </data>
+  <data name="SurfaceContrastColor" xml:space="preserve">
+    <value>#FFFFFF</value>
+  </data>
+  <data name="SurfaceNeutralColor" xml:space="preserve">
+    <value>#F7F7F7</value>
+  </data>
+  <data name="OverlayLightColor" xml:space="preserve">
+    <value>rgba(255, 255, 255, 0.25)</value>
+  </data>
+  <data name="OverlaySoftColor" xml:space="preserve">
+    <value>rgba(255, 255, 255, 0.1)</value>
+  </data>
+  <data name="OverlayStrongColor" xml:space="preserve">
+    <value>rgba(0, 0, 0, 0.4)</value>
+  </data>
+  <data name="ShadowMutedColor" xml:space="preserve">
+    <value>rgba(0, 0, 0, 0.2)</value>
+  </data>
+  <data name="WarningSurfaceColor" xml:space="preserve">
+    <value>#FFF9DB</value>
+  </data>
 </root>

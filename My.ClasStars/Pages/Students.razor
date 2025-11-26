@@ -59,7 +59,7 @@ else
                                 </span>
                                 @if (student.ContactPicture == null)
                                 {
-                                    <span class="e-avatar e-avatar-xlarge e-avatar-circle blue" @ondblclick="() => LoadContact(student)">@student.Initials</span>
+                                    <span class="e-avatar e-avatar-xlarge e-avatar-circle blue no-select" @ondblclick="() => LoadContact(student)">@student.Initials</span>
                                 }
                                 else
                                 {

@@ -1,6 +1,5 @@
 .pictureManage {
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
 }
 
@@ -63,7 +62,6 @@
 }
 
 .e-avatar.e-avatar-circle {
-    padding: 10px;
     border: 1px solid var(--color-app-light-gray);
     margin: 12px 10px 10px;
     background: var(--color-white);
@@ -86,6 +84,7 @@
     .cstUserLists .cstEcard #element {
         width: auto;
         margin: 0 0 0 8px;
+        display:flex;
         justify-content: space-between;
         align-items: center;
     }

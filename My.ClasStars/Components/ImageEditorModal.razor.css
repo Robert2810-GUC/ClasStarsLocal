@@ -1,3 +1,7 @@
+.modalEditor{
+    display:flex;
+    justify-content:center;
+}
 .cst-modal {
     position: fixed;
     top: 48%;

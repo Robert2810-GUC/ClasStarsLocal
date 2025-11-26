@@ -1,5 +1,6 @@
 ﻿@page "/"
 @namespace My.ClasStars.Pages
+@using My.ClasStars.Resources
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
@@ -11,19 +12,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>My.ClasStars</title>
+    <title>@StringsResource.App_Title</title>
 
     <base href="~/" />
 
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
+    <link href="css/CustomStyle.css" rel="stylesheet" />
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
           crossorigin="anonymous" />   
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
     <link href="_content/Syncfusion.Blazor/styles/bootstrap5.css" rel="stylesheet" />
 
     <link href="My.ClasStars.styles.css" rel="stylesheet" />
@@ -48,13 +49,13 @@
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
-            An error has occurred. This application may no longer respond until reloaded.
+            @StringsResource.Host_ErrorUnavailable
         </environment>
         <environment include="Development">
-            An unhandled exception has occurred. See browser dev tools for details.
+            @StringsResource.Host_ErrorDevelopment
         </environment>
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
+        <a href="" class="reload">@StringsResource.Host_ReloadAction</a>
+        <a class="dismiss">@StringsResource.Host_DismissAction</a>
     </div>
 
     <script src="_framework/blazor.server.js"></script>

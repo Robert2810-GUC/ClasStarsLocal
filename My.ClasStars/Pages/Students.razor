@@ -9,7 +9,7 @@
 
 @if (_contacts == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>@StringsResource.Students_Loading</em></p>
 }
 else
 {
@@ -17,7 +17,7 @@ else
         <div class="leftPnl @((!HomePage.IsAdmin) ? "w-50 fit-content" : "")">
             <div class="">
                 <div class="input-group cardSearch">
-                    <input type="text" class="form-control" @bind="@value" @oninput="@(ui => { value = (string)ui.Value; })" id="txtsearch" placeholder="Search" aria-label="search" aria-describedby="button-addon2">
+                    <input type="text" class="form-control" @bind="@value" @oninput="@(ui => { value = (string)ui.Value; })" id="txtsearch" placeholder="@StringsResource.Students_SearchPlaceholder" aria-label="@StringsResource.Students_SearchAriaLabel" aria-describedby="button-addon2">
                     <div class="position-relative">
                         <button class="inputSrchBTN p-0" @onclick="GetFilterList"><i class="fa fa-search" aria-hidden="true"></i></button>
                     </div>
@@ -28,7 +28,7 @@ else
                                @bind="filterWithImage"
                                @bind:event="onchange"
                                @bind:after="ApplyFilters" />
-                        With image
+                        @StringsResource.Students_FilterWithImage
                     </label>
 
                     <label>
@@ -36,7 +36,7 @@ else
                                @bind="filterWithoutImage"
                                @bind:event="onchange"
                                @bind:after="ApplyFilters" />
-                        W/O image
+                        @StringsResource.Students_FilterWithoutImage
                     </label>
                 </div>
 
@@ -88,7 +88,7 @@ else
                         }
                     }
                     <div class="file-input-zone">
-                        <InputFile OnChange="LoadFiles" multiple accept=".jpg,.jpeg, .png" /> Select Pictures
+                        <InputFile OnChange="LoadFiles" multiple accept=".jpg,.jpeg, .png" /> @StringsResource.Students_SelectPictures
                         <InputFile OnChange="LoadFiles" accept=".jpg,.jpeg, .png" @ref="fileInputSingle" hidden />
                     </div>
                     <div class="editorIcons upDown-icon spaceEven">
@@ -104,7 +104,7 @@ else
                                     refreshClass = "disableImg";
                                 }
                             }
-                            <img src="@refreshPath" @onclick="All" title="Reload All" />
+                            <img src="@refreshPath" @onclick="All" title="@StringsResource.Students_ReloadAll" />
                         </div>
                     </div>
                 </div>
@@ -136,12 +136,12 @@ else
                         }
                         else
                         {
-                            <div class="empty-state">No images</div>
+                            <div class="empty-state">@StringsResource.Students_NoImages</div>
                         }
                     }
                     else
                     {
-                        <div class="loader">Loading images…</div>
+                        <div class="loader">@StringsResource.Students_LoadingImages</div>
                     }
                 </div>
 

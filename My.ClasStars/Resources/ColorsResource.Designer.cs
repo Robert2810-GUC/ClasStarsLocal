@@ -248,5 +248,95 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("SteelGrayColor2", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #ededed.
+        /// </summary>
+        public static string AppSidebarBackgroundColor {
+            get {
+                return ResourceManager.GetString("AppSidebarBackgroundColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #ffffff.
+        /// </summary>
+        public static string AppWhiteColor {
+            get {
+                return ResourceManager.GetString("AppWhiteColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #999999.
+        /// </summary>
+        public static string AppIconGrayColor {
+            get {
+                return ResourceManager.GetString("AppIconGrayColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #f7f7f7.
+        /// </summary>
+        public static string AppLightSurfaceColor {
+            get {
+                return ResourceManager.GetString("AppLightSurfaceColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #f2f5ff.
+        /// </summary>
+        public static string AppInputBackgroundColor {
+            get {
+                return ResourceManager.GetString("AppInputBackgroundColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #d7d7d7.
+        /// </summary>
+        public static string AppBorderNeutralColor {
+            get {
+                return ResourceManager.GetString("AppBorderNeutralColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #FAF9F8.
+        /// </summary>
+        public static string AppSurfaceAltColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceAltColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #201F1E.
+        /// </summary>
+        public static string AppSurfaceDarkColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceDarkColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #1E90FF.
+        /// </summary>
+        public static string AppHighlightBlueColor {
+            get {
+                return ResourceManager.GetString("AppHighlightBlueColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #ff0000.
+        /// </summary>
+        public static string AppErrorTextColor {
+            get {
+                return ResourceManager.GetString("AppErrorTextColor", resourceCulture);
+            }
+        }
     }
 }

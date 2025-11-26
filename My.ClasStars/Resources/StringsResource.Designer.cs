@@ -500,5 +500,185 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("WelcomeClasstar", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, there's nothing at this address..
+        /// </summary>
+        public static string App_NotFound {
+            get {
+                return ResourceManager.GetString("App_NotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Back To Login Page.
+        /// </summary>
+        public static string App_BackToLogin {
+            get {
+                return ResourceManager.GetString("App_BackToLogin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a range.
+        /// </summary>
+        public static string HP_DateRangePlaceholder {
+            get {
+                return ResourceManager.GetString("HP_DateRangePlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string HP_DialogOk {
+            get {
+                return ResourceManager.GetString("HP_DialogOk", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string HP_SelectAll {
+            get {
+                return ResourceManager.GetString("HP_SelectAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select School.
+        /// </summary>
+        public static string HP_SelectSchool {
+            get {
+                return ResourceManager.GetString("HP_SelectSchool", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select Teacher.
+        /// </summary>
+        public static string HP_SelectTeacher {
+            get {
+                return ResourceManager.GetString("HP_SelectTeacher", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to School Name.
+        /// </summary>
+        public static string HP_SchoolPlaceholder {
+            get {
+                return ResourceManager.GetString("HP_SchoolPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Teacher Name.
+        /// </summary>
+        public static string HP_TeacherPlaceholder {
+            get {
+                return ResourceManager.GetString("HP_TeacherPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unselect All.
+        /// </summary>
+        public static string HP_UnselectAll {
+            get {
+                return ResourceManager.GetString("HP_UnselectAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome back, {0} [{1}].
+        /// </summary>
+        public static string HP_WelcomeBackFormat {
+            get {
+                return ResourceManager.GetString("HP_WelcomeBackFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to With image.
+        /// </summary>
+        public static string Students_FilterWithImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Without image.
+        /// </summary>
+        public static string Students_FilterWithoutImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithoutImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string Students_Loading {
+            get {
+                return ResourceManager.GetString("Students_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading images…. 
+        /// </summary>
+        public static string Students_LoadingImages {
+            get {
+                return ResourceManager.GetString("Students_LoadingImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No images.
+        /// </summary>
+        public static string Students_NoImages {
+            get {
+                return ResourceManager.GetString("Students_NoImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reload All.
+        /// </summary>
+        public static string Students_ReloadAll {
+            get {
+                return ResourceManager.GetString("Students_ReloadAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Students_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("Students_SearchPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to search.
+        /// </summary>
+        public static string Students_SearchAriaLabel {
+            get {
+                return ResourceManager.GetString("Students_SearchAriaLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select Pictures.
+        /// </summary>
+        public static string Students_SelectPictures {
+            get {
+                return ResourceManager.GetString("Students_SelectPictures", resourceCulture);
+            }
+        }
     }
 }

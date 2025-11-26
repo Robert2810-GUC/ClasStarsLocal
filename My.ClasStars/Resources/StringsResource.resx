@@ -264,4 +264,64 @@
   <data name="StudentList_PersonID" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="HP_WelcomeBackFormat" xml:space="preserve">
+    <value>Welcome back, {0} [{1}]</value>
+  </data>
+  <data name="HP_SelectSchool" xml:space="preserve">
+    <value>Select School</value>
+  </data>
+  <data name="HP_SelectTeacher" xml:space="preserve">
+    <value>Select Teacher</value>
+  </data>
+  <data name="HP_SchoolPlaceholder" xml:space="preserve">
+    <value>School Name</value>
+  </data>
+  <data name="HP_TeacherPlaceholder" xml:space="preserve">
+    <value>Teacher Name</value>
+  </data>
+  <data name="HP_SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="HP_UnselectAll" xml:space="preserve">
+    <value>Unselect All</value>
+  </data>
+  <data name="HP_DateRangePlaceholder" xml:space="preserve">
+    <value>Choose a range</value>
+  </data>
+  <data name="HP_DialogOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="App_NotFound" xml:space="preserve">
+    <value>Sorry, there's nothing at this address.</value>
+  </data>
+  <data name="App_BackToLogin" xml:space="preserve">
+    <value>Back To Login Page</value>
+  </data>
+  <data name="Students_Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Students_SearchPlaceholder" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Students_FilterWithImage" xml:space="preserve">
+    <value>With image</value>
+  </data>
+  <data name="Students_FilterWithoutImage" xml:space="preserve">
+    <value>Without image</value>
+  </data>
+  <data name="Students_SelectPictures" xml:space="preserve">
+    <value>Select Pictures</value>
+  </data>
+  <data name="Students_ReloadAll" xml:space="preserve">
+    <value>Reload All</value>
+  </data>
+  <data name="Students_NoImages" xml:space="preserve">
+    <value>No images</value>
+  </data>
+  <data name="Students_LoadingImages" xml:space="preserve">
+    <value>Loading images…</value>
+  </data>
+  <data name="Students_SearchAriaLabel" xml:space="preserve">
+    <value>search</value>
+  </data>
 </root>

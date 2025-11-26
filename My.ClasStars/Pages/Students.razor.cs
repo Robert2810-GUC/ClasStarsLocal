@@ -1,16 +1,40 @@
-﻿
-#pragma warning disable CA1416
+﻿#pragma warning disable CA1416
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.JSInterop;
+using My.ClasStars.Components;
+using My.ClasStars.Models;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace My.ClasStars.Pages
 {
+    public enum FileNamePart
+    {
+        None,
+        PersonId,
+        FirstName,
+        LastName
+    }
+
     public partial class Students : ComponentBase
     {
-
-        InputFile fileInputSingle;
+        // Injected services
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected IWebHostEnvironment WebHostEnvironment { get; set; }
         [Inject] protected IClasStarsServices ClasStarsServices { get; set; }
         [Inject] protected SchoolListService SchoolServices { get; set; }
+
+        // File input for single-load scenario
+        protected InputFile fileInputSingle;
 
         private ImageEditorModal editorModal;
         private bool isEditorVisible = false;
@@ -45,14 +69,26 @@ namespace My.ClasStars.Pages
 
         private readonly object _saveLock = new();
 
-        protected async override Task OnInitializedAsync()
+        // File name format state
+        protected FileNamePart formatPart1 = FileNamePart.PersonId;   // required
+        protected FileNamePart formatPart2 = FileNamePart.FirstName;
+        protected FileNamePart formatPart3 = FileNamePart.LastName;
+
+        protected bool isFormatPopupVisible = false;
+
+        // Assign popup state
+        protected bool isAssignPopupVisible = false;
+        protected ContactInfoModel _selectedContactForAssign;
+        protected ImageDetail _selectedImageForAssign;
+
+        protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
 
             wwwRootPath = WebHostEnvironment.WebRootPath;
             SchoolServices.Initialized = false;
 
-            _contactModels = new();
+            _contactModels = new List<ContactInfoModel>();
             if (AppInfo.UserInfo != null)
             {
                 _contacts = await ClasStarsServices.GetStudentList(AppInfo.UserInfo.Organization.ID);
@@ -87,7 +123,7 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
-        private void ApplyFilters()
+        protected void ApplyFilters()
         {
             var search = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
@@ -106,6 +142,7 @@ namespace My.ClasStars.Pages
                     query = query.Where(c => c.ContactPicture == null || c.ContactPicture.Length == 0);
                 }
             }
+
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(c =>
@@ -124,13 +161,11 @@ namespace My.ClasStars.Pages
             InvokeAsync(StateHasChanged);
         }
 
-
-
-        private async Task LoadFiles(InputFileChangeEventArgs e)
+        protected async Task LoadFiles(InputFileChangeEventArgs e)
         {
             StatusMessage = "";
             isSquareError = string.Empty;
-            isProcessingFiles = true;                 
+            isProcessingFiles = true;
             StateHasChanged();
 
             try
@@ -147,7 +182,7 @@ namespace My.ClasStars.Pages
                 else
                 {
                     files = e.GetMultipleFiles(maxFiles);
-                    if (!isLoadImageButtonClicked)       
+                    if (!isLoadImageButtonClicked)
                     {
                         ImageURI.Clear();
                     }
@@ -159,14 +194,19 @@ namespace My.ClasStars.Pages
                     using MemoryStream ms = new();
                     await stream.CopyToAsync(ms);
 
-                    var format = ImageHelpers.GetImageFormatFromStream(ms);    
+                    var format = ImageHelpers.GetImageFormatFromStream(ms);
                     var isSquare = ImageHelpers.IsSquareImage(ms, out isSquareError);
 
                     var imgUrl = $"data:image/{format.ToString().ToLower()};base64,{Convert.ToBase64String(ms.ToArray())}";
 
                     if (isLoadImageButtonClicked)
                     {
-                        await editorModal.OpenForImage(new ImageDetail { ImgId = Guid.NewGuid(), ImageName = file.Name, ImageUrl = imgUrl });
+                        await editorModal.OpenForImage(new ImageDetail
+                        {
+                            ImgId = Guid.NewGuid(),
+                            ImageName = file.Name,
+                            ImageUrl = imgUrl
+                        });
                     }
                     else
                     {
@@ -187,6 +227,13 @@ namespace My.ClasStars.Pages
                             ImgDetail.IsSqu = null;
                             ImgDetail.IsVis = false;
                         }
+
+                        // Make sure these properties exist in ImageDetail:
+                        // public bool IsMatched { get; set; }
+                        // public int? MatchedContactId { get; set; }
+                        ImgDetail.IsMatched = false;
+                        ImgDetail.MatchedContactId = null;
+
                         ImageURI.Add(ImgDetail);
                     }
 
@@ -200,7 +247,11 @@ namespace My.ClasStars.Pages
             }
             finally
             {
-                isProcessingFiles = false;           
+                isProcessingFiles = false;
+
+                // ✅ Only run matching AFTER files are loaded
+                EvaluateImageMatches();
+
                 StateHasChanged();
             }
         }
@@ -211,7 +262,7 @@ namespace My.ClasStars.Pages
             bool? result;
             try
             {
-                var image = System.Drawing.Image.FromStream(stream);
+                var image = Image.FromStream(stream);
                 result = IsDifferenceUpTo2(image.Width, image.Height);
             }
             catch (Exception eet)
@@ -242,7 +293,7 @@ namespace My.ClasStars.Pages
             return ImageFormat.Jpeg;
         }
 
-        private void DragStart(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ImageDetail iDetail)
+        protected void DragStart(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ImageDetail iDetail)
         {
             try
             {
@@ -254,9 +305,9 @@ namespace My.ClasStars.Pages
             }
         }
 
-        private void DragOver(Microsoft.AspNetCore.Components.Web.DragEventArgs e) { }
+        protected void DragOver(Microsoft.AspNetCore.Components.Web.DragEventArgs e) { }
 
-        private async void DragDrop(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ContactInfoModel contact)
+        protected async void DragDrop(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ContactInfoModel contact)
         {
             try
             {
@@ -301,7 +352,7 @@ namespace My.ClasStars.Pages
             StateHasChanged();
         }
 
-        private async Task LoadImage(ImageDetail imgg)
+        protected async Task LoadImage(ImageDetail imgg)
         {
             if (editorModal == null)
             {
@@ -311,7 +362,7 @@ namespace My.ClasStars.Pages
             await editorModal.OpenForImage(imgg);
         }
 
-        private async Task LoadContact(ContactInfoModel contact)
+        protected async Task LoadContact(ContactInfoModel contact)
         {
             if (editorModal == null)
             {
@@ -321,14 +372,12 @@ namespace My.ClasStars.Pages
             await editorModal.OpenForContact(contact);
         }
 
-        private void GetFilterList()
+        protected void GetFilterList()
         {
             ApplyFilters();
         }
 
-       
-
-        private void FilterList(string studentname)
+        protected void FilterList(string studentname)
         {
             StatusMessage = "";
             int VisibleItemCoucnt = (from c in ImageURI where c.IsVis == true select c).ToList().Count;
@@ -343,14 +392,14 @@ namespace My.ClasStars.Pages
             StateHasChanged();
         }
 
-        private Task OnImageUriChanged(List<ImageDetail> newList)
+        protected Task OnImageUriChanged(List<ImageDetail> newList)
         {
             ImageURI = newList;
             StateHasChanged();
             return Task.CompletedTask;
         }
 
-        private Task OnContactPictureUpdated((int ContactId, byte[] Picture, bool IsDeleted) info)
+        protected Task OnContactPictureUpdated((int ContactId, byte[] Picture, bool IsDeleted) info)
         {
             var (contactId, picture, IsDeleted) = info;
             var item = _contactModels.FirstOrDefault(c => c.ContactID == contactId);
@@ -372,7 +421,7 @@ namespace My.ClasStars.Pages
             return Task.CompletedTask;
         }
 
-        private void All()
+        protected void All()
         {
             StatusMessage = "";
             foreach (ImageDetail detail in ImageURI)
@@ -391,9 +440,235 @@ namespace My.ClasStars.Pages
             StateHasChanged();
         }
 
+        // ===== File Name Format helpers =====
+
+        protected string GetCurrentFormatPreview()
+        {
+            string PartToString(FileNamePart p) => p switch
+            {
+                FileNamePart.PersonId => "PersonID",
+                FileNamePart.FirstName => "FirstName",
+                FileNamePart.LastName => "LastName",
+                _ => "None"
+            };
+
+            var parts = new List<string>();
+            parts.Add(PartToString(formatPart1));
+            if (formatPart2 != FileNamePart.None) parts.Add(PartToString(formatPart2));
+            if (formatPart3 != FileNamePart.None) parts.Add(PartToString(formatPart3));
+
+            return string.Join("-", parts);
+        }
+
+        protected void SaveFileNameFormat()
+        {
+            // First part cannot be None
+            if (formatPart1 == FileNamePart.None)
+            {
+                formatPart1 = FileNamePart.PersonId;
+            }
+
+            isFormatPopupVisible = false;
+
+            // ✅ Only run matching when format is changed (and images exist)
+            if (ImageURI != null && ImageURI.Count > 0)
+            {
+                EvaluateImageMatches();
+            }
+        }
+
+        private void EvaluateImageMatches()
+        {
+            if (ImageURI == null || ImageURI.Count == 0 || _contactModels == null || _contactModels.Count == 0)
+                return;
+
+            // Reset matches
+            foreach (var img in ImageURI)
+            {
+                img.IsMatched = false;
+                img.MatchedContactId = null;
+            }
+
+            // Check only visible images (as per requirement)
+            var visibleImages = ImageURI.Where(i => i.IsVis).ToList();
+
+            foreach (var img in visibleImages)
+            {
+                if (string.IsNullOrWhiteSpace(img.ImageName))
+                    continue;
+
+                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(img.ImageName);
+                var match = FindContactForFileName(fileNameWithoutExt);
+
+                if (match != null)
+                {
+                    img.IsMatched = true;
+                    img.MatchedContactId = match.ContactID;
+                }
+            }
+
+            // Sort: matched visible images should appear first in ImageURI order
+            ImageURI = ImageURI
+                .OrderByDescending(i => i.IsVis && i.IsMatched)
+                .ThenBy(i => i.ImageName)
+                .ToList();
+        }
+
+        private ContactInfoModel FindContactForFileName(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+                return null;
+
+            // Split on any non-alphanumeric chars: handles -, _, space, etc.
+            var tokens = Regex.Split(fileName, "[^A-Za-z0-9]+")
+                              .Where(t => !string.IsNullOrWhiteSpace(t))
+                              .ToList();
+
+            if (tokens.Count == 0)
+                return null;
+
+            string personIdToken = null;
+            string firstNameToken = null;
+            string lastNameToken = null;
+
+            var parts = new[] { formatPart1, formatPart2, formatPart3 };
+            int tokenIndex = 0;
+
+            for (int i = 0; i < parts.Length && tokenIndex < tokens.Count; i++)
+            {
+                var part = parts[i];
+                var token = tokens[tokenIndex];
+
+                if (part == FileNamePart.None)
+                {
+                    tokenIndex++;
+                    continue;
+                }
+
+                switch (part)
+                {
+                    case FileNamePart.PersonId:
+                        personIdToken = token;
+                        break;
+                    case FileNamePart.FirstName:
+                        firstNameToken = token;
+                        break;
+                    case FileNamePart.LastName:
+                        lastNameToken = token;
+                        break;
+                }
+
+                tokenIndex++;
+            }
+
+            foreach (var c in _contactModels)
+            {
+                bool ok = true;
+
+                if (!string.IsNullOrEmpty(personIdToken))
+                {
+                    var personIdStr = c.PersonID?.ToString() ?? string.Empty;
+                    if (!personIdStr.Equals(personIdToken, StringComparison.OrdinalIgnoreCase))
+                        ok = false;
+                }
+
+                if (ok && !string.IsNullOrEmpty(firstNameToken))
+                {
+                    if (!string.Equals(c.FirstName ?? string.Empty, firstNameToken, StringComparison.OrdinalIgnoreCase))
+                        ok = false;
+                }
+
+                if (ok && !string.IsNullOrEmpty(lastNameToken))
+                {
+                    if (!string.Equals(c.LastName ?? string.Empty, lastNameToken, StringComparison.OrdinalIgnoreCase))
+                        ok = false;
+                }
+
+                if (ok)
+                    return c;
+            }
+
+            return null;
+        }
+
+        // ===== Image & Student click handlers =====
+
+        protected void OnImageClicked(ImageDetail img)
+        {
+            StatusMessage = "";
+
+            if (img == null || !img.IsMatched || !img.MatchedContactId.HasValue)
+                return;
+
+            var contact = _contactModels.FirstOrDefault(c => c.ContactID == img.MatchedContactId.Value);
+            if (contact == null)
+                return;
+
+            _selectedContactForAssign = contact;
+            _selectedImageForAssign = img;
+            isAssignPopupVisible = true;
+        }
+
+        protected void OnStudentClicked(ContactInfoModel student)
+        {
+            StatusMessage = "";
+
+            if (student == null)
+                return;
+
+            var img = ImageURI.FirstOrDefault(i => i.IsMatched && i.MatchedContactId == student.ContactID && i.IsVis);
+            if (img == null)
+                return;
+
+            _selectedContactForAssign = student;
+            _selectedImageForAssign = img;
+            isAssignPopupVisible = true;
+        }
+
+        protected void CancelAssign()
+        {
+            isAssignPopupVisible = false;
+            _selectedContactForAssign = null;
+            _selectedImageForAssign = null;
+        }
+
+        protected async Task ConfirmAssign()
+        {
+            if (_selectedContactForAssign == null || _selectedImageForAssign == null)
+                return;
+
+            try
+            {
+                Regex regex = new Regex(@"^[\w/\:.-]+;base64,");
+                var payload = string.IsNullOrEmpty(_selectedImageForAssign.ImageUrl)
+                    ? string.Empty
+                    : regex.Replace(_selectedImageForAssign.ImageUrl, string.Empty);
+
+                if (string.IsNullOrEmpty(payload))
+                {
+                    StatusMessage = StringsResource.Students_Status_NoImageData;
+                    return;
+                }
+
+                byte[] bytesData = Convert.FromBase64String(payload);
+
+                _selectedContactForAssign.ContactPicture = bytesData;
+                await ClasStarsServices.SaveContactPicture(_selectedContactForAssign.ContactID, bytesData);
+                StatusMessage = StringsResource.Common_StatusPictureUpdated;
+
+                ApplyFilters();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = string.Format(StringsResource.Students_Status_SaveError, ex.Message);
+            }
+            finally
+            {
+                isAssignPopupVisible = false;
+                _selectedContactForAssign = null;
+                _selectedImageForAssign = null;
+                StateHasChanged();
+            }
+        }
     }
-
-    
 }
-
-

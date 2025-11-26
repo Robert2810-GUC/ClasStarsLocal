@@ -1,11 +1,9 @@
 ﻿@page "/students"
 
-@using Syncfusion.Blazor.ImageEditor;
-@using My.ClasStars.Models;
-@using System.IO;
+@using Syncfusion.Blazor.ImageEditor
+@using My.ClasStars.Models
+@using System.IO
 @using My.ClasStars.Components
-
-
 
 @if (_contacts == null)
 {
@@ -39,16 +37,17 @@ else
                         @StringsResource.Students_FilterWithoutImage
                     </label>
                 </div>
-
-
-
             </div>
+
             <div class="cstUserLists">
                 @foreach (ContactInfoModel student in _displayContactModels)
                 {
-                    <div id="@student.ContactID" @ondragover="DragOver" @ondragover:preventDefault="true"
+                    <div id="@student.ContactID"
+                         @ondragover="DragOver"
+                         @ondragover:preventDefault="true"
                          @ondrop="@(e => DragDrop(e, student))"
-                         @onmousedown="() => FilterList(student.FirstName + ' ' + student.LastName)">
+                         @onmousedown="() => FilterList(student.FirstName + ' ' + student.LastName)"
+                         @onclick="() => OnStudentClicked(student)">
                         <div class="e-card e-avatar-showcase cstEcard">
                             <div id="element" class="avatar-sub-block">
                                 <span>
@@ -59,12 +58,15 @@ else
                                 </span>
                                 @if (student.ContactPicture == null)
                                 {
-                                    <span class="e-avatar e-avatar-xlarge e-avatar-circle blue no-select" @ondblclick="() => LoadContact(student)">@student.Initials</span>
+                                    <span class="e-avatar e-avatar-xlarge e-avatar-circle blue no-select"
+                                          @ondblclick="() => LoadContact(student)">
+                                        @student.Initials
+                                    </span>
                                 }
                                 else
                                 {
                                     <div class="e-avatar e-avatar-circle e-avatar-xlarge">
-                                        @{ 
+                                        @{
                                             var imgg = $"data:image/png;base64,{Convert.ToBase64String(student.ContactPicture)}";
                                         }
                                         <img src="@imgg"
@@ -78,25 +80,48 @@ else
                 }
             </div>
         </div>
+
+        @* @{
+            if (StatusMessage.Contains("success"))
+            {
+                <span class="Success">@StatusMessage</span>
+            }
+            else
+            {
+                <span class="Error">@StatusMessage</span>
+            }
+        } *@
+
         @if (HomePage.IsAdmin)
         {
             <div class="rightPnl @ShowHide">
                 <div class="inputRight">
-                    @{
-                        if (StatusMessage.Contains("success"))
-                        {
-                            <span class="Success">@StatusMessage</span>
-                        }
-                        else
-                        {
-                            <span class="Error">@StatusMessage</span>
-                        }
-                    }
+
+                    <!-- File Name Format block -->
+                    <div class="file-name-format d-flex align-items-center mb-2">
+                        <div class="me-2">
+                            <strong>File Name Format</strong><br />
+                            <small>@GetCurrentFormatPreview()</small>
+                        </div>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary ms-2"
+                                @onclick="() => isFormatPopupVisible = true">
+                            Edit
+                        </button>
+                    </div>
+
                     <div class="file-input-zone">
-                        <InputFile class="input_selectpicture" OnChange="LoadFiles" multiple accept=".jpg,.jpeg, .png" />
-                        <InputFile OnChange="LoadFiles" accept=".jpg,.jpeg, .png" @ref="fileInputSingle" hidden />
+                        <InputFile class="input_selectpicture"
+                                   OnChange="LoadFiles"
+                                   multiple
+                                   accept=".jpg,.jpeg,.png" />
+                        <InputFile OnChange="LoadFiles"
+                                   accept=".jpg,.jpeg,.png"
+                                   @ref="fileInputSingle"
+                                   hidden />
                         <span>@StringsResource.HP_SelectPictures</span>
                     </div>
+
                     <div class="editorIcons upDown-icon spaceEven">
                         <div class=" e-avatar e-avatar-circle e-avatar-large @refreshClass">
                             @{
@@ -110,7 +135,9 @@ else
                                     refreshClass = "disableImg";
                                 }
                             }
-                            <img src="@refreshPath" @onclick="All" title="@StringsResource.Students_Status_ReloadAll" />
+                            <img src="@refreshPath"
+                                 @onclick="All"
+                                 title="@StringsResource.Students_Status_ReloadAll" />
                         </div>
                     </div>
                 </div>
@@ -125,16 +152,21 @@ else
                             {
                                 if (!string.IsNullOrWhiteSpace(ss.ImageUrl))
                                 {
-                                    <div class="img-card">
-                                        <img class="img-item @(ss.IsSqu.Value ? "imgGreen" : "imgRed")"
+                                    <div class="img-card @(ss.IsMatched ? "img-card-matched" : "")">
+                                        <img class="img-item @(ss.IsSqu.HasValue && ss.IsSqu.Value ? "imgGreen" : "imgRed")"
                                              src="@ss.ImageUrl"
                                              @ondblclick="() => LoadImage(ss)"
+                                             @onclick="() => OnImageClicked(ss)"
                                              draggable="true"
                                              @ondragstart="@(e => DragStart(e, ss))"
                                              loading="lazy" />
 
                                         <div class="inputImages-label">
                                             @Path.GetFileNameWithoutExtension(ss.ImageName)
+                                            @if (ss.IsMatched)
+                                            {
+                                                <span class="badge bg-success ms-1">Matched</span>
+                                            }
                                         </div>
                                     </div>
                                 }
@@ -150,14 +182,97 @@ else
                         <div class="loader">@StringsResource.Students_LoadingImages</div>
                     }
                 </div>
-
             </div>
         }
     </div>
+
     <ImageEditorModal @ref="editorModal"
                       ImageURI="@ImageURI"
                       ImageURIChanged="@OnImageUriChanged"
                       ContactPictureUpdated="@OnContactPictureUpdated"
                       @bind-Visible="isEditorVisible" />
 
+    <!-- File Name Format Popup -->
+    @if (isFormatPopupVisible)
+    {
+        <div class="modal-backdrop-custom">
+            <div class="modal-dialog-custom">
+                <h5>File Name Format</h5>
+
+                <p class="small text-muted">
+                    Choose how to detect student info from image file names.
+                </p>
+
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <label>Part 1 (required)</label>
+                        <InputSelect @bind-Value="formatPart1">
+                            <option value="@FileNamePart.PersonId">PersonID</option>
+                            <option value="@FileNamePart.FirstName">FirstName</option>
+                            <option value="@FileNamePart.LastName">LastName</option>
+                        </InputSelect>
+                    </div>
+                    <div class="col-4">
+                        <label>Part 2</label>
+                        <InputSelect @bind-Value="formatPart2">
+                            <option value="@FileNamePart.None">None</option>
+                            <option value="@FileNamePart.PersonId">PersonID</option>
+                            <option value="@FileNamePart.FirstName">FirstName</option>
+                            <option value="@FileNamePart.LastName">LastName</option>
+                        </InputSelect>
+                    </div>
+                    <div class="col-4">
+                        <label>Part 3</label>
+                        <InputSelect @bind-Value="formatPart3">
+                            <option value="@FileNamePart.None">None</option>
+                            <option value="@FileNamePart.PersonId">PersonID</option>
+                            <option value="@FileNamePart.FirstName">FirstName</option>
+                            <option value="@FileNamePart.LastName">LastName</option>
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-secondary btn-sm me-2"
+                            @onclick="() => isFormatPopupVisible = false">
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary btn-sm"
+                            @onclick="SaveFileNameFormat">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Assign Profile Picture Popup -->
+    @if (isAssignPopupVisible && _selectedContactForAssign != null && _selectedImageForAssign != null)
+    {
+        <div class="modal-backdrop-custom">
+            <div class="modal-dialog-custom">
+                <h5>Assign Profile Picture</h5>
+
+                <p>
+                    This image will be used as the profile picture for:<br />
+                    <strong>@_selectedContactForAssign.PersonID - @_selectedContactForAssign.FileAs</strong>
+                </p>
+
+                <div class="mb-3">
+                    <img src="@_selectedImageForAssign.ImageUrl" class="img-fluid" />
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-secondary btn-sm me-2"
+                            @onclick="CancelAssign">
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary btn-sm"
+                            @onclick="ConfirmAssign">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
 }

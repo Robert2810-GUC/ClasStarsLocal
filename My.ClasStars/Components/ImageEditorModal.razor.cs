@@ -680,5 +680,7 @@ public class ImageDetail
     public string ImageUrl { get; set; }
     public bool? IsSqu { get; set; }
     public bool IsVis { get; set; }
+    public bool IsMatched { get; set; }
+    public int? MatchedContactId { get; set; }
 }
 

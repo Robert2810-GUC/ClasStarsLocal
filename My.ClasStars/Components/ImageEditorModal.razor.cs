@@ -76,9 +76,9 @@ namespace My.ClasStars.Components
                 SetToolbarForSquare(isSquare);
 
                 if (isSquare)
-                    StatusMessage = "Selected image is square.";
+                    StatusMessage = StringsResource.ImageEditor_SelectedImageSquare;
                 else
-                    StatusMessage = "Selected image is NOT square (use Crop).";
+                    StatusMessage = StringsResource.ImageEditor_SelectedImageNotSquare;
 
                 await InvokeAsync(StateHasChanged);
             }
@@ -145,7 +145,7 @@ namespace My.ClasStars.Components
             }
             catch (Exception er)
             {
-                StatusMessage = "Exception! '" + er.Message + "'";
+                StatusMessage = string.Format(StringsResource.Common_ExceptionWithDetail, er.Message);
             }
         }
 
@@ -153,7 +153,7 @@ namespace My.ClasStars.Components
 
         public async Task DragDrop(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ContactInfoModel contact)
         {
-            await JSRuntime.InvokeVoidAsync("alert", "DragDrop inside modal is not supported in this component.");
+            await JSRuntime.InvokeVoidAsync("alert", StringsResource.ImageEditor_DragDropNotSupported);
         }
 
         public async Task CloseModelPopup()
@@ -408,7 +408,7 @@ namespace My.ClasStars.Components
                 {
                     await ClasStarsServices.RemoveContactPicture(selectedContactId);
                     isDeleteClicked = false;
-                    StatusMessage = "Picture successfully deleted";
+                    StatusMessage = StringsResource.ImageEditor_PictureDeleted;
                     if (ContactPictureUpdated.HasDelegate)
                         await ContactPictureUpdated.InvokeAsync((selectedContactId, editedImageData, true));
 
@@ -423,7 +423,7 @@ namespace My.ClasStars.Components
                     if (IsSquare == true)
                     {
                         await ClasStarsServices.SaveContactPicture(selectedContactId, editedImageData);
-                        StatusMessage = "Picture successfully updated.";
+                        StatusMessage = StringsResource.ImageEditor_PictureUpdated;
                         if (ContactPictureUpdated.HasDelegate)
                             await ContactPictureUpdated.InvokeAsync((selectedContactId, editedImageData, false));
 
@@ -431,7 +431,7 @@ namespace My.ClasStars.Components
                     }
                     else
                     {
-                        await JSRuntime.InvokeVoidAsync("alert", "Failed! Picture is not square.");
+                        await JSRuntime.InvokeVoidAsync("alert", StringsResource.ImageEditor_PictureNotSquareAlert);
                     }
                     return;
                 }
@@ -458,23 +458,23 @@ namespace My.ClasStars.Components
                             await ImageURIChanged.InvokeAsync(ImageURI);
                         }
 
-                        StatusMessage = "Image updated.";
+                        StatusMessage = StringsResource.ImageEditor_ImageUpdated;
                         await CloseModalAfterSave();
                         return;
                     }
                     else
                     {
-                        StatusMessage = "Warning: edited image item not found in list.";
+                        StatusMessage = StringsResource.ImageEditor_ImageItemMissing;
                         await CloseModalAfterSave();
                         return;
                     }
                 }
 
-                StatusMessage = "Nothing to save.";
+                StatusMessage = StringsResource.ImageEditor_NothingToSave;
             }
             catch (Exception ex)
             {
-                await JSRuntime.InvokeVoidAsync("alert", "Failed! Something went wrong.\n" + ex.Message);
+                await JSRuntime.InvokeVoidAsync("alert", string.Format(StringsResource.ImageEditor_SaveError, ex.Message));
             }
             finally
             {

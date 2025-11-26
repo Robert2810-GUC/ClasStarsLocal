@@ -297,4 +297,122 @@
   <data name="Common_Ok" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="Common_ExceptionWithDetail" xml:space="preserve">
+    <value>Exception! '{0}'</value>
+  </data>
+  <data name="Common_GenericErrorWithDetail" xml:space="preserve">
+    <value>Something went wrong: {0}</value>
+  </data>
+  <data name="Common_SingleImageLimit" xml:space="preserve">
+    <value>You can only select one image at a time.</value>
+  </data>
+  <data name="Common_StatusPictureUpdated" xml:space="preserve">
+    <value>Picture successfully updated.</value>
+  </data>
+  <data name="ImageEditor_Accept" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="ImageEditor_Capture" xml:space="preserve">
+    <value>Capture</value>
+  </data>
+  <data name="ImageEditor_CloseLabel" xml:space="preserve">
+    <value>×</value>
+  </data>
+  <data name="ImageEditor_Crop" xml:space="preserve">
+    <value>Crop</value>
+  </data>
+  <data name="ImageEditor_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ImageEditor_DragDropNotSupported" xml:space="preserve">
+    <value>DragDrop inside modal is not supported in this component.</value>
+  </data>
+  <data name="ImageEditor_ImageItemMissing" xml:space="preserve">
+    <value>Warning: edited image item not found in list.</value>
+  </data>
+  <data name="ImageEditor_ImageUpdated" xml:space="preserve">
+    <value>Image updated.</value>
+  </data>
+  <data name="ImageEditor_LoadPicture" xml:space="preserve">
+    <value>Load Picture</value>
+  </data>
+  <data name="ImageEditor_NothingToSave" xml:space="preserve">
+    <value>Nothing to save.</value>
+  </data>
+  <data name="ImageEditor_PerformingAction" xml:space="preserve">
+    <value>Processing…</value>
+  </data>
+  <data name="ImageEditor_PictureDeleted" xml:space="preserve">
+    <value>Picture successfully deleted.</value>
+  </data>
+  <data name="ImageEditor_PictureNotSquareAlert" xml:space="preserve">
+    <value>Failed! Picture is not square.</value>
+  </data>
+  <data name="ImageEditor_PictureUpdated" xml:space="preserve">
+    <value>Picture successfully updated.</value>
+  </data>
+  <data name="ImageEditor_ReloadAll" xml:space="preserve">
+    <value>Reload All</value>
+  </data>
+  <data name="ImageEditor_Rotate" xml:space="preserve">
+    <value>Rotate</value>
+  </data>
+  <data name="ImageEditor_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ImageEditor_SaveError" xml:space="preserve">
+    <value>Failed! Something went wrong.
+{0}</value>
+  </data>
+  <data name="ImageEditor_SelectedImageNotSquare" xml:space="preserve">
+    <value>Selected image is NOT square (use Crop).</value>
+  </data>
+  <data name="ImageEditor_SelectedImageSquare" xml:space="preserve">
+    <value>Selected image is square.</value>
+  </data>
+  <data name="ImageEditor_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="ImageEditor_UseCamera" xml:space="preserve">
+    <value>Use Camera</value>
+  </data>
+  <data name="Students_FilterWithImage" xml:space="preserve">
+    <value>With image</value>
+  </data>
+  <data name="Students_FilterWithoutImage" xml:space="preserve">
+    <value>Without image</value>
+  </data>
+  <data name="Students_Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Students_LoadingImages" xml:space="preserve">
+    <value>Loading images…</value>
+  </data>
+  <data name="Students_NoImages" xml:space="preserve">
+    <value>No images</value>
+  </data>
+  <data name="Students_ProfilePictureAlt" xml:space="preserve">
+    <value>Profile picture</value>
+  </data>
+  <data name="Students_SearchPlaceholder" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Students_Status_ContactNotFound" xml:space="preserve">
+    <value>Contact not found.</value>
+  </data>
+  <data name="Students_Status_EditorUnavailable" xml:space="preserve">
+    <value>Editor modal reference not available.</value>
+  </data>
+  <data name="Students_Status_NoImageData" xml:space="preserve">
+    <value>No image data found to drop.</value>
+  </data>
+  <data name="Students_Status_NotSquare" xml:space="preserve">
+    <value>Failed! Picture is not square.</value>
+  </data>
+  <data name="Students_Status_ReloadAll" xml:space="preserve">
+    <value>Reload All</value>
+  </data>
+  <data name="Students_Status_SaveError" xml:space="preserve">
+    <value>Something went wrong. {0}</value>
+  </data>
 </root>

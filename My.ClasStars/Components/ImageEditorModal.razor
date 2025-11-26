@@ -8,45 +8,45 @@
     <div id="custom-modal" class="cst-modal">
         <div class="myModalHead">
             <span>@FName</span>
-            <button class="modalKill" @onclick="CloseModelPopup">X</button>
+            <button class="modalKill" @onclick="CloseModelPopup">@StringsResource.ImageEditor_CloseLabel</button>
         </div>
         <div class="cst-modalBody">
             @if (isProcessing)
             {
                 <div class="modal-loader-overlay">
-                    <div class="loader">Processing…</div>
+                    <div class="loader">@StringsResource.ImageEditor_PerformingAction</div>
                 </div>
             }
             @if (IsContact == true)
             {
                 <div class="editorIcons upDown-icon">
                     <div class="iconMain">
-                        <span class="label">Use Camera</span>
+                        <span class="label">@StringsResource.ImageEditor_UseCamera</span>
                         <div class="e-avatar e-avatar-circle e-avatar-xlarge @camera">
                             @{
                                 string cameraImg = Path.Combine(wwwRootPath, "\\images\\camera.png");
                             }
-                            <img src="@cameraImg" @onclick="PerformCamera" title="Use Camera" />
+                            <img src="@cameraImg" @onclick="PerformCamera" title="@StringsResource.ImageEditor_UseCamera" />
                         </div>
 
                     </div>
                     <div class="iconMain">
 
-                        <span class="label">Load Picture</span>
+                        <span class="label">@StringsResource.ImageEditor_LoadPicture</span>
                         <div class="e-avatar e-avatar-circle e-avatar-xlarge">
                             @{
                                 var loadImg = Path.Combine(wwwRootPath, "\\images\\load.png");
                             }
-                            <img src="@loadImg" @onclick="PerformLoad" title="Load Picture" />
+                            <img src="@loadImg" @onclick="PerformLoad" title="@StringsResource.ImageEditor_LoadPicture" />
                         </div>
                     </div>
                     <div class="iconMain">
-                        <span class="label">Delete</span>
+                        <span class="label">@StringsResource.ImageEditor_Delete</span>
                         <div class="e-avatar e-avatar-circle e-avatar-xlarge">
                             @{
                                 string deleteImg = Path.Combine(wwwRootPath, "\\images\\delete.png");
                             }
-                            <img src="@deleteImg" @onclick="PerformDelete" title="Delete" />
+                            <img src="@deleteImg" @onclick="PerformDelete" title="@StringsResource.ImageEditor_Delete" />
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
 
             <div id="CameraContent" class="@cameraVisiblility">
                 <div id="camera"></div>
-                <button class="captureBtn" @onclick="Capture">Capture</button>
+                <button class="captureBtn" @onclick="Capture">@StringsResource.ImageEditor_Capture</button>
             </div>
 
             <div class="modalEditor" id="modalEditor">
@@ -73,39 +73,39 @@
 
             <div class="editorIcons upDown-icon spaceEven">
                 <div class="iconMain">
-                    <span class="label">Crop</span>
+                    <span class="label">@StringsResource.ImageEditor_Crop</span>
                     <div class="e-avatar e-avatar-circle e-avatar-xlarge @cropClass">
                         @{
                             string cropImg = Path.Combine(wwwRootPath, "\\images\\crop.png");
                         }
-                        <img id="imgCrop" src="@cropImg" @onclick="PerformCrop" onmouseover="" title="Crop" />
+                        <img id="imgCrop" src="@cropImg" @onclick="PerformCrop" onmouseover="" title="@StringsResource.ImageEditor_Crop" />
                     </div>
                 </div>
                 <div class="iconMain">
-                    <span class="label">Accept</span>
+                    <span class="label">@StringsResource.ImageEditor_Accept</span>
                     <div class="e-avatar e-avatar-circle e-avatar-xlarge @acceptClass">
                         @{
                             string acceptImg = Path.Combine(wwwRootPath, "\\images\\accept.png");
                         }
-                        <img id="imgAccept" src="@acceptImg" @onclick="PerformAccept" title="Accept" />
+                        <img id="imgAccept" src="@acceptImg" @onclick="PerformAccept" title="@StringsResource.ImageEditor_Accept" />
                     </div>
                 </div>
                 <div class="iconMain">
-                    <span class="label">Rotate</span>
+                    <span class="label">@StringsResource.ImageEditor_Rotate</span>
                     <div class="e-avatar e-avatar-circle e-avatar-xlarge @rotateClass">
                         @{
                             string rotateImg = Path.Combine(wwwRootPath, "\\images\\rotate.png");
                         }
-                        <img id="imgRotate" src="@rotateImg" @onclick="PerformRotate" title="Rotate" />
+                        <img id="imgRotate" src="@rotateImg" @onclick="PerformRotate" title="@StringsResource.ImageEditor_Rotate" />
                     </div>
                 </div>
                 <div class="iconMain">
-                    <span class="label">Save</span>
+                    <span class="label">@StringsResource.ImageEditor_Save</span>
                     <div class="e-avatar e-avatar-circle e-avatar-xlarge @saveClass @(isProcessing ? "processing" : "")">
                         @{
                             string saveImg = Path.Combine(wwwRootPath, "\\images\\save.png");
                         }
-                        <img id="imgSave" disabled="@isProcessing" title="Save" @onclick="SaveEditedImage" src="@saveImg" />
+                        <img id="imgSave" disabled="@isProcessing" title="@StringsResource.ImageEditor_Save" @onclick="SaveEditedImage" src="@saveImg" />
                             @if (isProcessing)
                             {
                                 <div class="btn-spinner" aria-hidden="true"></div>
@@ -114,12 +114,12 @@
                 </div>
 
                 <div class="iconMain">
-                    <span class="label">Undo</span>
+                    <span class="label">@StringsResource.ImageEditor_Undo</span>
                     <div class="e-avatar e-avatar-circle e-avatar-xlarge @undoClass">
                         @{
                             string undoImg = Path.Combine(wwwRootPath, "\\images\\undo.png");
                         }
-                        <img id="imgUndo" src="@undoImg" @onclick="PerformUndo" title="Undo" />
+                        <img id="imgUndo" src="@undoImg" @onclick="PerformUndo" title="@StringsResource.ImageEditor_Undo" />
                     </div>
                 </div>
 

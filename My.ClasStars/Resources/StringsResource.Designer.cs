@@ -599,5 +599,357 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("Common_Ok", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exception! '{0}'.
+        /// </summary>
+        public static string Common_ExceptionWithDetail {
+            get {
+                return ResourceManager.GetString("Common_ExceptionWithDetail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong: {0}.
+        /// </summary>
+        public static string Common_GenericErrorWithDetail {
+            get {
+                return ResourceManager.GetString("Common_GenericErrorWithDetail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You can only select one image at a time..
+        /// </summary>
+        public static string Common_SingleImageLimit {
+            get {
+                return ResourceManager.GetString("Common_SingleImageLimit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Picture successfully updated..
+        /// </summary>
+        public static string Common_StatusPictureUpdated {
+            get {
+                return ResourceManager.GetString("Common_StatusPictureUpdated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        public static string ImageEditor_Accept {
+            get {
+                return ResourceManager.GetString("ImageEditor_Accept", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Capture.
+        /// </summary>
+        public static string ImageEditor_Capture {
+            get {
+                return ResourceManager.GetString("ImageEditor_Capture", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ×.
+        /// </summary>
+        public static string ImageEditor_CloseLabel {
+            get {
+                return ResourceManager.GetString("ImageEditor_CloseLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Crop.
+        /// </summary>
+        public static string ImageEditor_Crop {
+            get {
+                return ResourceManager.GetString("ImageEditor_Crop", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string ImageEditor_Delete {
+            get {
+                return ResourceManager.GetString("ImageEditor_Delete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to DragDrop inside modal is not supported in this component..
+        /// </summary>
+        public static string ImageEditor_DragDropNotSupported {
+            get {
+                return ResourceManager.GetString("ImageEditor_DragDropNotSupported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: edited image item not found in list..
+        /// </summary>
+        public static string ImageEditor_ImageItemMissing {
+            get {
+                return ResourceManager.GetString("ImageEditor_ImageItemMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image updated..
+        /// </summary>
+        public static string ImageEditor_ImageUpdated {
+            get {
+                return ResourceManager.GetString("ImageEditor_ImageUpdated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Load Picture.
+        /// </summary>
+        public static string ImageEditor_LoadPicture {
+            get {
+                return ResourceManager.GetString("ImageEditor_LoadPicture", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing to save..
+        /// </summary>
+        public static string ImageEditor_NothingToSave {
+            get {
+                return ResourceManager.GetString("ImageEditor_NothingToSave", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Processing…. 
+        /// </summary>
+        public static string ImageEditor_PerformingAction {
+            get {
+                return ResourceManager.GetString("ImageEditor_PerformingAction", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Picture successfully deleted..
+        /// </summary>
+        public static string ImageEditor_PictureDeleted {
+            get {
+                return ResourceManager.GetString("ImageEditor_PictureDeleted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed! Picture is not square..
+        /// </summary>
+        public static string ImageEditor_PictureNotSquareAlert {
+            get {
+                return ResourceManager.GetString("ImageEditor_PictureNotSquareAlert", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Picture successfully updated..
+        /// </summary>
+        public static string ImageEditor_PictureUpdated {
+            get {
+                return ResourceManager.GetString("ImageEditor_PictureUpdated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reload All.
+        /// </summary>
+        public static string ImageEditor_ReloadAll {
+            get {
+                return ResourceManager.GetString("ImageEditor_ReloadAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rotate.
+        /// </summary>
+        public static string ImageEditor_Rotate {
+            get {
+                return ResourceManager.GetString("ImageEditor_Rotate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ImageEditor_Save {
+            get {
+                return ResourceManager.GetString("ImageEditor_Save", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed! Something went wrong.
+        ///{0}.
+        /// </summary>
+        public static string ImageEditor_SaveError {
+            get {
+                return ResourceManager.GetString("ImageEditor_SaveError", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Selected image is NOT square (use Crop)..
+        /// </summary>
+        public static string ImageEditor_SelectedImageNotSquare {
+            get {
+                return ResourceManager.GetString("ImageEditor_SelectedImageNotSquare", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Selected image is square..
+        /// </summary>
+        public static string ImageEditor_SelectedImageSquare {
+            get {
+                return ResourceManager.GetString("ImageEditor_SelectedImageSquare", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string ImageEditor_Undo {
+            get {
+                return ResourceManager.GetString("ImageEditor_Undo", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use Camera.
+        /// </summary>
+        public static string ImageEditor_UseCamera {
+            get {
+                return ResourceManager.GetString("ImageEditor_UseCamera", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to With image.
+        /// </summary>
+        public static string Students_FilterWithImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Without image.
+        /// </summary>
+        public static string Students_FilterWithoutImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithoutImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string Students_Loading {
+            get {
+                return ResourceManager.GetString("Students_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading images…. 
+        /// </summary>
+        public static string Students_LoadingImages {
+            get {
+                return ResourceManager.GetString("Students_LoadingImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No images.
+        /// </summary>
+        public static string Students_NoImages {
+            get {
+                return ResourceManager.GetString("Students_NoImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Profile picture.
+        /// </summary>
+        public static string Students_ProfilePictureAlt {
+            get {
+                return ResourceManager.GetString("Students_ProfilePictureAlt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Students_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("Students_SearchPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Contact not found..
+        /// </summary>
+        public static string Students_Status_ContactNotFound {
+            get {
+                return ResourceManager.GetString("Students_Status_ContactNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Editor modal reference not available..
+        /// </summary>
+        public static string Students_Status_EditorUnavailable {
+            get {
+                return ResourceManager.GetString("Students_Status_EditorUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No image data found to drop..
+        /// </summary>
+        public static string Students_Status_NoImageData {
+            get {
+                return ResourceManager.GetString("Students_Status_NoImageData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed! Picture is not square..
+        /// </summary>
+        public static string Students_Status_NotSquare {
+            get {
+                return ResourceManager.GetString("Students_Status_NotSquare", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reload All.
+        /// </summary>
+        public static string Students_Status_ReloadAll {
+            get {
+                return ResourceManager.GetString("Students_Status_ReloadAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong. {0}.
+        /// </summary>
+        public static string Students_Status_SaveError {
+            get {
+                return ResourceManager.GetString("Students_Status_SaveError", resourceCulture);
+            }
+        }
     }
 }

@@ -171,4 +171,16 @@
   <data name="SteelGrayColor2" xml:space="preserve">
     <value>#3E5067</value>
   </data>
+  <data name="AppBlackColor" xml:space="preserve">
+    <value>#000000</value>
+  </data>
+  <data name="AppOffWhiteColor" xml:space="preserve">
+    <value>#F7F7F7</value>
+  </data>
+  <data name="AppSurfaceColor" xml:space="preserve">
+    <value>#EDEDED</value>
+  </data>
+  <data name="AppWhiteColor" xml:space="preserve">
+    <value>#FFFFFF</value>
+  </data>
 </root>

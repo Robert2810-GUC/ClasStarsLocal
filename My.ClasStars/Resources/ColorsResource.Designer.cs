@@ -221,5 +221,41 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("SteelGrayColor2", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #000000.
+        /// </summary>
+        public static string AppBlackColor {
+            get {
+                return ResourceManager.GetString("AppBlackColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #F7F7F7.
+        /// </summary>
+        public static string AppOffWhiteColor {
+            get {
+                return ResourceManager.GetString("AppOffWhiteColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #EDEDED.
+        /// </summary>
+        public static string AppSurfaceColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #FFFFFF.
+        /// </summary>
+        public static string AppWhiteColor {
+            get {
+                return ResourceManager.GetString("AppWhiteColor", resourceCulture);
+            }
+        }
     }
 }

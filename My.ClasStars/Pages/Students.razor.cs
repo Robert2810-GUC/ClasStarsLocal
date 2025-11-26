@@ -139,7 +139,7 @@ namespace My.ClasStars.Pages
                 IReadOnlyList<IBrowserFile> files;
                 if (maxFiles == 1 && e.FileCount > 1)
                 {
-                    await JSRuntime.InvokeVoidAsync("alert", "You can only select one image at a time.");
+                    await JSRuntime.InvokeVoidAsync("alert", StringsResource.Common_SingleImageLimit);
                     isProcessingFiles = false;
                     StateHasChanged();
                     return;
@@ -196,7 +196,7 @@ namespace My.ClasStars.Pages
             }
             catch (Exception ex)
             {
-                StatusMessage = "Something went wrong: " + ex.Message;
+                StatusMessage = string.Format(StringsResource.Common_GenericErrorWithDetail, ex.Message);
             }
             finally
             {
@@ -250,7 +250,7 @@ namespace My.ClasStars.Pages
             }
             catch (Exception er)
             {
-                StatusMessage = "Exception! '" + er.Message + "'";
+                StatusMessage = string.Format(StringsResource.Common_ExceptionWithDetail, er.Message);
             }
         }
 
@@ -263,7 +263,7 @@ namespace My.ClasStars.Pages
                 ContactInfoModel cim = _contactModels.Find(c => c.ContactID == contact.ContactID);
                 if (cim == null)
                 {
-                    StatusMessage = "Contact not found.";
+                    StatusMessage = StringsResource.Students_Status_ContactNotFound;
                     StateHasChanged();
                     return;
                 }
@@ -273,7 +273,7 @@ namespace My.ClasStars.Pages
 
                 if (string.IsNullOrEmpty(payload))
                 {
-                    StatusMessage = "No image data found to drop.";
+                    StatusMessage = StringsResource.Students_Status_NoImageData;
                     StateHasChanged();
                     return;
                 }
@@ -285,18 +285,18 @@ namespace My.ClasStars.Pages
                 {
                     cim.ContactPicture = bytesData;
                     await ClasStarsServices.SaveContactPicture(contact.ContactID, bytesData);
-                    StatusMessage = "Picture successfully updated.";
+                    StatusMessage = StringsResource.Common_StatusPictureUpdated;
 
                     ApplyFilters();
                 }
                 else
                 {
-                    StatusMessage = "Failed! Picture is not square.";
+                    StatusMessage = StringsResource.Students_Status_NotSquare;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = "Something went wrong. " + ex.Message;
+                StatusMessage = string.Format(StringsResource.Students_Status_SaveError, ex.Message);
             }
             StateHasChanged();
         }
@@ -305,7 +305,7 @@ namespace My.ClasStars.Pages
         {
             if (editorModal == null)
             {
-                StatusMessage = "Editor modal reference not available.";
+                StatusMessage = StringsResource.Students_Status_EditorUnavailable;
                 return;
             }
             await editorModal.OpenForImage(imgg);
@@ -315,7 +315,7 @@ namespace My.ClasStars.Pages
         {
             if (editorModal == null)
             {
-                StatusMessage = "Editor modal reference not available.";
+                StatusMessage = StringsResource.Students_Status_EditorUnavailable;
                 return;
             }
             await editorModal.OpenForContact(contact);
@@ -365,7 +365,7 @@ namespace My.ClasStars.Pages
                     item.ContactPicture = null;
                 }
             }
-            StatusMessage = "Picture successfully updated.";
+            StatusMessage = StringsResource.Common_StatusPictureUpdated;
 
             ApplyFilters();
 

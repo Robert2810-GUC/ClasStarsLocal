@@ -446,6 +446,24 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("SignInWith", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ClasStars logo.
+        /// </summary>
+        public static string BrandLogoAltText {
+            get {
+                return ResourceManager.GetString("BrandLogoAltText", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} logo.
+        /// </summary>
+        public static string ProviderLogoAltTemplate {
+            get {
+                return ResourceManager.GetString("ProviderLogoAltTemplate", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to ID.

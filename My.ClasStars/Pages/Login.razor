@@ -5,7 +5,6 @@
 @inject CommonLocalizationService LocalizationService
 @inject IInvokeServices InvokeServices;
 
-
 <style>
     :root {
         --app-surface: @ColorsResource.AppSurfaceColor;
@@ -15,119 +14,21 @@
         --app-accent-muted: @ColorsResource.AppLightBlueOcean60Color;
         --app-text: @ColorsResource.SteelGrayColor;
     }
-
-    .login-page {
-        height: 100vh;
-    }
-
-    .login-frm {
-        background: var(--app-surface);
-        padding: 30px;
-        border: 1px solid var(--app-surface-border);
-        box-shadow: 0 1rem 1.75rem 0 var(--app-surface-shadow);
-        border-radius: 10px;
-    }
-
-    .login-frm .privacyLink {
-        text-align: center;
-        font-size: 14px;
-        color: var(--app-accent);
-        font-weight: 400;
-        display: inline-block;
-        margin-top: 20px;
-        align-items: flex-end;
-    }
-
-    .login-frm .frm-logo {
-        margin-bottom: 40px;
-        text-align: center;
-        color: var(--app-accent);
-    }
-
-    .login-frm .frm-logo img {
-        width: 60px;
-    }
-
-    .login-frm .frm-logo span {
-        font-size: 28px;
-        color: var(--app-accent);
-        font-weight: 400;
-        display: inline-block;
-        margin-left: 5px;
-    }
-
-    .login-frm .login-btn {
-        background: var(--app-surface);
-        padding: 10px;
-        border: 1px solid var(--app-surface-border);
-        border-radius: 7px;
-        text-align: left;
-        color: var(--app-accent-muted);
-        width: 100%;
-        font-size: 16px;
-        margin: auto;
-        font-weight: 500;
-        margin-top: 8px;
-        transition: 0.3s;
-    }
-
-    .login-frm .login-btn:hover {
-        background: var(--app-accent-muted);
-        color: var(--app-surface);
-    }
-
-    .img-btn img {
-        width: 6%;
-        border-radius: 50%;
-    }
-
-    .img-flud {
-        max-width: 170%;
-    }
-
-    .circle-icon button {
-        border: 1px solid var(--app-surface-border);
-        padding: 5px;
-        margin-top: 5px;
-        border-radius: 50%;
-        background: var(--app-surface);
-        transition: 0.2s;
-    }
-
-    .circle-icon button:hover {
-        border-color: var(--app-accent);
-        box-shadow: 0 0 10px var(--app-surface-shadow);
-    }
-
-    .circle-icon img {
-        height: 30px;
-    }
-
-    .circle-icon {
-        display: inline;
-        position: unset;
-        padding: 5px;
-    }
 </style>
 
-
-<div class="container h-100  login-page">
-    <div class="row align-items-center justify-content-center h-100">
-        <div class="col-12 pb-2">
-            <div>
-                <img style="width: 8%;" src="Images/ClasStars Wide.svg" alt="logo" class="img-fluid">
-            </div>
-            <div>
-            </div>
+<div class="container login-page">
+    <div class="row justify-content-center w-100">
+        <div class="col-12 brand-row">
+            <img src="Images/ClasStars Wide.svg" alt="@LocalizationService.GetString(\"Resources.StringsResource\", \"BrandLogoAltText\")" class="img-fluid brand-image">
         </div>
         <div class="col-xl-5 col-lg-7 col-md-8 col-sm-12 col-12">
             <div class="login-frm mt-2">
-                <div class="frm-logo ">
+                <div class="frm-logo">
                     <span>@LocalizationService.GetString("Resources.StringsResource", "WelcomeClasstar")</span>
                 </div>
-                <div class="frm-logo " style="margin-bottom:0;">
-                    <span style="font-size: 22px;">@LocalizationService.GetString("Resources.StringsResource", "Pleaselogin")</span>
-                    <p class="m-0" style="color:#3265bd;">@LocalizationService.GetString("Resources.StringsResource", "selectionmessage")</p>
+                <div class="frm-logo login-subtitle">
+                    <span>@LocalizationService.GetString("Resources.StringsResource", "Pleaselogin")</span>
+                    <p class="selection-message">@LocalizationService.GetString("Resources.StringsResource", "selectionmessage")</p>
                 </div>
 
                 @{
@@ -146,15 +47,17 @@
                         {
                             if (i <= 2)
                             {
-                                <button @onclick="() => HandleLogin(item.Name)" class="btn login-btn img-btn">
-                                    <img style="margin-left:3px;margin-right:8px;" src="@item.ImageUrl" class="img-flud" alt="">
+                                <button @onclick="() => HandleLogin(item.Name)" class="btn login-btn">
+                                    <img src="@item.ImageUrl" class="provider-avatar" alt="@string.Format(LocalizationService.GetString(\"Resources.StringsResource\", \"ProviderLogoAltTemplate\"), item.Name)">
                                     <span>@LocalizationService.GetString("Resources.StringsResource", "SignInWith") @item.Name</span>
                                 </button>
                             }
                             else
                             {
                                 <div class="circle-icon">
-                                    <button @onclick="() => HandleLogin(item.Name)" title="@LocalizationService.GetString("Resources.StringsResource", "SignInWith") @item.Name"><img style="width:30px;border-radius: 30%;" class="img-flud" src="@item.ImageUrl"></button>
+                                    <button @onclick="() => HandleLogin(item.Name)" title="@LocalizationService.GetString(\"Resources.StringsResource\", \"SignInWith\") @item.Name">
+                                        <img src="@item.ImageUrl" alt="@string.Format(LocalizationService.GetString(\"Resources.StringsResource\", \"ProviderLogoAltTemplate\"), item.Name)">
+                                    </button>
                                 </div>
                             }
                             i++;
@@ -163,8 +66,10 @@
                 }
 
             </div>
-            <div class="privacyLink">
-                <a href="https://www.classtars.com/privacy-policy" target="_blank">@LocalizationService.GetString("Resources.StringsResource", "PrivacyLink")</a>
+            <div class="login-footer">
+                <div class="privacyLink">
+                    <a href="https://www.classtars.com/privacy-policy" target="_blank">@LocalizationService.GetString("Resources.StringsResource", "PrivacyLink")</a>
+                </div>
             </div>
         </div>
     </div>

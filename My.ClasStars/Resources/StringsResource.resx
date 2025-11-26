@@ -141,6 +141,12 @@
   <data name="SignInWith" xml:space="preserve">
     <value>Sign in with</value>
   </data>
+  <data name="BrandLogoAltText" xml:space="preserve">
+    <value>ClasStars logo</value>
+  </data>
+  <data name="ProviderLogoAltTemplate" xml:space="preserve">
+    <value>{0} logo</value>
+  </data>
   <data name="ViewStudents" xml:space="preserve">
     <value>View Students</value>
   </data>

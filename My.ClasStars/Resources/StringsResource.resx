@@ -138,6 +138,36 @@
   <data name="WelcomeClasstar" xml:space="preserve">
     <value>Welcome to ClasStars</value>
   </data>
+  <data name="Home_WelcomeBack" xml:space="preserve">
+    <value>Welcome back, {0} [{1}]</value>
+  </data>
+  <data name="Layout_BackToLogin" xml:space="preserve">
+    <value>Back to login</value>
+  </data>
+  <data name="Layout_LogoAlt" xml:space="preserve">
+    <value>ClasStars logo</value>
+  </data>
+  <data name="SelectSchool_Loading" xml:space="preserve">
+    <value>Loading schools...</value>
+  </data>
+  <data name="SelectSchool_LoadFailed" xml:space="preserve">
+    <value>Unable to load schools right now. Please try again or contact support.</value>
+  </data>
+  <data name="SelectSchool_None" xml:space="preserve">
+    <value>No schools available.</value>
+  </data>
+  <data name="SelectSchool_SelectPrompt" xml:space="preserve">
+    <value>Please select a school</value>
+  </data>
+  <data name="Login_LoadingProviders" xml:space="preserve">
+    <value>Loading providers...</value>
+  </data>
+  <data name="Login_NoProviders" xml:space="preserve">
+    <value>No providers available.</value>
+  </data>
+  <data name="Login_SignInWith" xml:space="preserve">
+    <value>Sign in with {0}</value>
+  </data>
   <data name="HP_Absent" xml:space="preserve">
     <value>Absent</value>
   </data>
@@ -149,6 +179,9 @@
   </data>
   <data name="HP_ClosePicker" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="HP_DateRangePlaceholder" xml:space="preserve">
+    <value>Choose a range</value>
   </data>
   <data name="HP_Demographics" xml:space="preserve">
     <value>Demographics</value>
@@ -191,6 +224,21 @@
   </data>
   <data name="HP_SelectDates" xml:space="preserve">
     <value>Select Dates</value>
+  </data>
+  <data name="HP_SelectSchoolLabel" xml:space="preserve">
+    <value>Select School</value>
+  </data>
+  <data name="HP_SelectTeacherLabel" xml:space="preserve">
+    <value>Select Teacher</value>
+  </data>
+  <data name="HP_SchoolPlaceholder" xml:space="preserve">
+    <value>School Name</value>
+  </data>
+  <data name="HP_SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="HP_TeacherPlaceholder" xml:space="preserve">
+    <value>Teacher Name</value>
   </data>
   <data name="HP_Session" xml:space="preserve">
     <value>Session</value>
@@ -243,10 +291,49 @@
   <data name="HP_SelectPictures" xml:space="preserve">
     <value>Select Pictures</value>
   </data>
+  <data name="Students_FilterWithImage" xml:space="preserve">
+    <value>With image</value>
+  </data>
+  <data name="Students_FilterWithoutImage" xml:space="preserve">
+    <value>Without image</value>
+  </data>
+  <data name="Students_Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Students_LoadingImages" xml:space="preserve">
+    <value>Loading images…</value>
+  </data>
+  <data name="Students_NoImages" xml:space="preserve">
+    <value>No images</value>
+  </data>
+  <data name="Students_SearchPlaceholder" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Students_SelectPictures" xml:space="preserve">
+    <value>Select Pictures</value>
+  </data>
   <data name="PrivacyLink" xml:space="preserve">
     <value>View our Privacy Policy</value>
   </data>
   <data name="StudentList_PersonID" xml:space="preserve">
     <value>ID</value>
+  </data>
+  <data name="Common_Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="App_Title" xml:space="preserve">
+    <value>ClasStars</value>
+  </data>
+  <data name="Host_ErrorUnavailable" xml:space="preserve">
+    <value>An error has occurred. This application may no longer respond until reloaded.</value>
+  </data>
+  <data name="Host_ErrorDevelopment" xml:space="preserve">
+    <value>An unhandled exception has occurred. See browser dev tools for details.</value>
+  </data>
+  <data name="Host_ReloadAction" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="Host_DismissAction" xml:space="preserve">
+    <value>Dismiss</value>
   </data>
 </root>

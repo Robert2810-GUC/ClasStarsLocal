@@ -1,0 +1,12 @@
+.slct-date,
+.slct-dates {
+    background-color: var(--color-app-blue-ocean-80);
+    border: navajowhite;
+    border-radius: 6px;
+    color: #fff;
+    padding: 5px 14px;
+}
+
+.cst-date .e-date-range-wrapper {
+    width: 73%;
+}

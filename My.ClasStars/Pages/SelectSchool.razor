@@ -1,49 +1,9 @@
 ﻿@page "/selectSchool"
 @inject NavigationManager navManager
 @inject SchoolListService SchoolListService
+@inject ILogger<SelectSchool> Logger
 @using My.ClasStars.Resources
-
-<style>
-    .frm-logo {
-        text-align: center;
-        font-size: 28px;
-        color: #2d65c7;
-        font-weight: 400;
-        display: inline-block;
-        margin-left: 5px;
-    }
-
-    .borderdiv {
-        border: 1px solid;
-        border-color: #2d65c7;
-        border-radius: 15px;
-        padding-bottom: 10px;
-        margin-top: 4%;
-    }
-
-  
-    .button {
-        background: #fff;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 7px;
-        text-align: left;
-        width: 51%;
-        height: 56px;
-        font-size: 16px;
-        margin: auto;
-        font-weight: 500;
-        margin-top: 8px;
-    }
-
-    .image-container {
-        flex: 1;
-        text-align: right;
-    }
-
-        .image-container img {
-        }
-</style>
+@using Microsoft.Extensions.Logging
 
 <div class="col-12 pb-2">
     <div>
@@ -53,25 +13,29 @@
     </div>
 </div>
 
-@if (SchoolListService.SchoolList == null)
+@if (!string.IsNullOrWhiteSpace(initializationError))
 {
-    <p>Loading...</p>
+    <div class="alert alert-danger" role="alert">@initializationError</div>
+}
+else if (SchoolListService.SchoolList == null)
+{
+    <p>@StringsResource.SelectSchool_Loading</p>
 }
 else if (SchoolListService.SchoolList.Count == 0)
 {
-    <p>No schools available.</p>
+    <p>@StringsResource.SelectSchool_None</p>
 }
 else
 {
 
     <div class="text-center">
         <div class="frm-logo ">
-            <span>Welcome to ClasStars</span>
+            <span>@StringsResource.WelcomeClasstar</span>
         </div>
         <div class="container borderdiv">
 
-            <p class="button text-center" style="background-color:#d1d3d4;width:100%;">@SchoolListService.Email</p>
-            <p style="padding-top:17px;">Please select a school</p>
+            <p class="button text-center neutral-pill">@SchoolListService.Email</p>
+            <p class="pt-3">@StringsResource.SelectSchool_SelectPrompt</p>
             @foreach (var school in SchoolListService.SchoolList)
             {
                 if (school.Logo != null)
@@ -98,18 +62,21 @@ else
 
 @code {
 
+    private string? initializationError;
+
     protected override void OnInitialized()
     {
         try
         {
             if (SchoolListService.Email == null)
             {
-                throw new ArgumentNullException(StringsResource.UserNotFound);
+                initializationError = StringsResource.UserNotFound;
             }
         }
         catch (Exception ex)
         {
-            throw ex;
+            Logger.LogError(ex, "Failed to initialize select school page.");
+            initializationError = StringsResource.SelectSchool_LoadFailed;
         }
     }
     private void HandleSchoolSelection(SharedTypes.RegisteredOrganizationInfo school)

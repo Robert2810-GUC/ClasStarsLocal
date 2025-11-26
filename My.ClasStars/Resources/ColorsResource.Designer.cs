@@ -221,5 +221,77 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("SteelGrayColor2", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #EDEDED.
+        /// </summary>
+        public static string AppSurfaceColor {
+            get {
+                return ResourceManager.GetString("AppSurfaceColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #FFFFFF.
+        /// </summary>
+        public static string SurfaceContrastColor {
+            get {
+                return ResourceManager.GetString("SurfaceContrastColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #F7F7F7.
+        /// </summary>
+        public static string SurfaceNeutralColor {
+            get {
+                return ResourceManager.GetString("SurfaceNeutralColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to rgba(255, 255, 255, 0.25).
+        /// </summary>
+        public static string OverlayLightColor {
+            get {
+                return ResourceManager.GetString("OverlayLightColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to rgba(255, 255, 255, 0.1).
+        /// </summary>
+        public static string OverlaySoftColor {
+            get {
+                return ResourceManager.GetString("OverlaySoftColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to rgba(0, 0, 0, 0.4).
+        /// </summary>
+        public static string OverlayStrongColor {
+            get {
+                return ResourceManager.GetString("OverlayStrongColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to rgba(0, 0, 0, 0.2).
+        /// </summary>
+        public static string ShadowMutedColor {
+            get {
+                return ResourceManager.GetString("ShadowMutedColor", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to #FFF9DB.
+        /// </summary>
+        public static string WarningSurfaceColor {
+            get {
+                return ResourceManager.GetString("WarningSurfaceColor", resourceCulture);
+            }
+        }
     }
 }

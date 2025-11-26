@@ -122,7 +122,16 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("HP_ClosePicker", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a range.
+        /// </summary>
+        public static string HP_DateRangePlaceholder {
+            get {
+                return ResourceManager.GetString("HP_DateRangePlaceholder", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Demographics.
         /// </summary>
@@ -311,7 +320,43 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("HP_SelectDates", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select All.
+        /// </summary>
+        public static string HP_SelectAll {
+            get {
+                return ResourceManager.GetString("HP_SelectAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select School.
+        /// </summary>
+        public static string HP_SelectSchoolLabel {
+            get {
+                return ResourceManager.GetString("HP_SelectSchoolLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select Teacher.
+        /// </summary>
+        public static string HP_SelectTeacherLabel {
+            get {
+                return ResourceManager.GetString("HP_SelectTeacherLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to School Name.
+        /// </summary>
+        public static string HP_SchoolPlaceholder {
+            get {
+                return ResourceManager.GetString("HP_SchoolPlaceholder", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Select Pictures.
         /// </summary>
@@ -320,7 +365,79 @@ namespace My.ClasStars.Resources {
                 return ResourceManager.GetString("HP_SelectPictures", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to With image.
+        /// </summary>
+        public static string Students_FilterWithImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Without image.
+        /// </summary>
+        public static string Students_FilterWithoutImage {
+            get {
+                return ResourceManager.GetString("Students_FilterWithoutImage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string Students_Loading {
+            get {
+                return ResourceManager.GetString("Students_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading images….
+        /// </summary>
+        public static string Students_LoadingImages {
+            get {
+                return ResourceManager.GetString("Students_LoadingImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No images.
+        /// </summary>
+        public static string Students_NoImages {
+            get {
+                return ResourceManager.GetString("Students_NoImages", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Students_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("Students_SearchPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select Pictures.
+        /// </summary>
+        public static string Students_SelectPictures {
+            get {
+                return ResourceManager.GetString("Students_SelectPictures", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Teacher Name.
+        /// </summary>
+        public static string HP_TeacherPlaceholder {
+            get {
+                return ResourceManager.GetString("HP_TeacherPlaceholder", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Session.
         /// </summary>
@@ -453,6 +570,150 @@ namespace My.ClasStars.Resources {
         public static string WelcomeClasstar {
             get {
                 return ResourceManager.GetString("WelcomeClasstar", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome back, {0} [{1}].
+        /// </summary>
+        public static string Home_WelcomeBack {
+            get {
+                return ResourceManager.GetString("Home_WelcomeBack", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Back to login.
+        /// </summary>
+        public static string Layout_BackToLogin {
+            get {
+                return ResourceManager.GetString("Layout_BackToLogin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ClasStars logo.
+        /// </summary>
+        public static string Layout_LogoAlt {
+            get {
+                return ResourceManager.GetString("Layout_LogoAlt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading schools....
+        /// </summary>
+        public static string SelectSchool_Loading {
+            get {
+                return ResourceManager.GetString("SelectSchool_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to load schools right now. Please try again or contact support..
+        /// </summary>
+        public static string SelectSchool_LoadFailed {
+            get {
+                return ResourceManager.GetString("SelectSchool_LoadFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No schools available..
+        /// </summary>
+        public static string SelectSchool_None {
+            get {
+                return ResourceManager.GetString("SelectSchool_None", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a school.
+        /// </summary>
+        public static string SelectSchool_SelectPrompt {
+            get {
+                return ResourceManager.GetString("SelectSchool_SelectPrompt", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading providers....
+        /// </summary>
+        public static string Login_LoadingProviders {
+            get {
+                return ResourceManager.GetString("Login_LoadingProviders", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No providers available..
+        /// </summary>
+        public static string Login_NoProviders {
+            get {
+                return ResourceManager.GetString("Login_NoProviders", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in with {0}.
+        /// </summary>
+        public static string Login_SignInWith {
+            get {
+                return ResourceManager.GetString("Login_SignInWith", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string Common_Ok {
+            get {
+                return ResourceManager.GetString("Common_Ok", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ClasStars.
+        /// </summary>
+        public static string App_Title {
+            get {
+                return ResourceManager.GetString("App_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An error has occurred. This application may no longer respond until reloaded..
+        /// </summary>
+        public static string Host_ErrorUnavailable {
+            get {
+                return ResourceManager.GetString("Host_ErrorUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An unhandled exception has occurred. See browser dev tools for details..
+        /// </summary>
+        public static string Host_ErrorDevelopment {
+            get {
+                return ResourceManager.GetString("Host_ErrorDevelopment", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reload.
+        /// </summary>
+        public static string Host_ReloadAction {
+            get {
+                return ResourceManager.GetString("Host_ReloadAction", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dismiss.
+        /// </summary>
+        public static string Host_DismissAction {
+            get {
+                return ResourceManager.GetString("Host_DismissAction", resourceCulture);
             }
         }
     }

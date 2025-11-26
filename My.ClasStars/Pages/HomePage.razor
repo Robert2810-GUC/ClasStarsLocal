@@ -3,39 +3,11 @@
 @using Syncfusion.Blazor.Inputs
 @using Blazored.LocalStorage
 @using System.Globalization
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavManager
 @inject ILocalStorageService LocalStorage
 @inject SchoolListService SchoolServices
 @inject IInvokeServices InvokeServices
 @inject IClasStarsServices ClasStarsServices;
-@inject IJSRuntime jsRuntime
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
-
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="../wwwroot/css/CustomStyle.css"/>
-<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/24.1.45/material.css" />
-@* <link rel="stylesheet" href="https://cdn.syncfusion.com/js/web/flat-azure/ej.web.all.min.css" /> *@
-<script src="https://cdn.syncfusion.com/js/assets/external/jquery-3.5.1.min.js"></script>
-@* <script src="https://cdn.syncfusion.com/js/web/ej.web.all.min.js"></script> *@
-<script src="https://cdn.syncfusion.com/ej2/24.1.45/dist/ej2.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-<style>
-    .slct-date,
-    .slct-dates {
-        background-color: @ColorsResource.AppBlueOcean80Color;
-        border: navajowhite;
-        border-radius: 6px;
-        color: #fff;
-        padding: 5px 14px;
-    }
-</style>
 <div>
     @if (isdisplay)
     {
@@ -51,9 +23,9 @@
                                          alt="logo" />
                                 </div>
                                 <div class="col-lg-8">
-                                    <p style="margin-bottom:0px;color:#5667A7;"><b>Welcome back, @TeacherName [@userType]</b></p>
-                                    <p style="margin-bottom:0px;">@userid</p>
-                                    <p style="margin-bottom:0px;">@School</p>
+                                    <p class="welcome-title"><b>@string.Format(StringsResource.Home_WelcomeBack, TeacherName, userType)</b></p>
+                                    <p class="mb-0">@userid</p>
+                                    <p class="mb-0">@School</p>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +45,7 @@
                                     else
                                     { 
                                         <div class="cstDateRange mt-2">
-                                            <SfDateRangePicker TValue="DateTime" ID="dpDAtes" @onclick="ToggleDateRangePicker" @bind-StartDate="@StartDate" @bind-EndDate="@EndDate" Placeholder="Choose a range" Min="@validatestartDate" Max="@validateendDate" ShowClearButton="false" StrictMode=true>
+                                            <SfDateRangePicker TValue="DateTime" ID="dpDAtes" @onclick="ToggleDateRangePicker" @bind-StartDate="@StartDate" @bind-EndDate="@EndDate" Placeholder="@StringsResource.HP_DateRangePlaceholder" Min="@validatestartDate" Max="@validateendDate" ShowClearButton="false" StrictMode=true>
                                                 <DateRangePickerEvents TValue="DateTime" ValueChange="DateValueChangeHandler"></DateRangePickerEvents>
                                             </SfDateRangePicker>
                                             <SfButton CssClass="e-danger" @onclick="ToggleDateRangePicker">@StringsResource.HP_ClosePicker</SfButton>
@@ -83,10 +55,10 @@
                                 <div class="col-lg-12">
                                     <div class="row ">
                                         <div class="form-group col-lg-6 mb-1 schoolTeacher">
-                                            <label for="slctSchool" class="fw-5">Select School</label>
+                                            <label for="slctSchool" class="fw-5">@StringsResource.HP_SelectSchoolLabel</label>
                                             @if (!IsAdmin)
                                             {
-                                                <SfTextBox Readonly="true" Value="@DefaultSchool" Placeholder="School Name"></SfTextBox>
+                                                <SfTextBox Readonly="true" Value="@DefaultSchool" Placeholder="@StringsResource.HP_SchoolPlaceholder"></SfTextBox>
                                             }
                                             else
                                             {
@@ -98,7 +70,7 @@
                                                     }
                                                     else
                                                     { *@
-                                                        <SfMultiSelect TItem="RegisteredOrganizationInfo" TValue="int[]" Placeholder="Select School" ShowSelectAll=true SelectAllText="Select All" UnSelectAllText="Select All" Mode="VisualMode.CheckBox"  ValueChanged="OnSchoolChanged" DataSource="@SchoolList" Value="@selectedschool" EnableSelectionOrder=true>
+                                                        <SfMultiSelect TItem="RegisteredOrganizationInfo" TValue="int[]" Placeholder="@StringsResource.HP_SelectSchoolLabel" ShowSelectAll=true SelectAllText="@StringsResource.HP_SelectAll" UnSelectAllText="@StringsResource.HP_SelectAll" Mode="VisualMode.CheckBox"  ValueChanged="OnSchoolChanged" DataSource="@SchoolList" Value="@selectedschool" EnableSelectionOrder=true>
                                                             <MultiSelectFieldSettings Text="Name" Value="ID"></MultiSelectFieldSettings>
                                                         </SfMultiSelect>
                                                         @* <SfDropDownList TValue="string" TItem="string" DataSource="@selectedschool" Value="@DefaultSchool" ValueChanged="OnSchoolChanged" Mode="DropDownMode.Default" TValueField="ID"></SfDropDownList> *@
@@ -110,10 +82,10 @@
                                             {             
 
                                         <div class="form-group col-lg-6 mb-1 srchDropWidth schoolTeacher">
-                                            <label for="slctTeacher" class="fw-5">Select Teacher</label>
+                                            <label for="slctTeacher" class="fw-5">@StringsResource.HP_SelectTeacherLabel</label>
                                             @if (!IsAdmin)
-                                            {             
-                                                <SfTextBox Readonly="true" Value="@TeacherName" Placeholder="Teacher Name"></SfTextBox>
+                                            {
+                                                <SfTextBox Readonly="true" Value="@TeacherName" Placeholder="@StringsResource.HP_TeacherPlaceholder"></SfTextBox>
                                             }
                                             else
                                             {
@@ -123,7 +95,7 @@
                                                 }
                                                 else
                                                 { *@
-                                                    <SfMultiSelect TItem="EmployeeInfoDetailed" TValue="int[]" Placeholder="Select Teacher" ShowSelectAll=true SelectAllText="Select All" UnSelectAllText="Select All" Mode="VisualMode.CheckBox" DataSource="@TeachersList" Value="@selectedteacher" ValueChanged="OnTeacherChanged" EnableSelectionOrder=true>
+                                                    <SfMultiSelect TItem="EmployeeInfoDetailed" TValue="int[]" Placeholder="@StringsResource.HP_SelectTeacherLabel" ShowSelectAll=true SelectAllText="@StringsResource.HP_SelectAll" UnSelectAllText="@StringsResource.HP_SelectAll" Mode="VisualMode.CheckBox" DataSource="@TeachersList" Value="@selectedteacher" ValueChanged="OnTeacherChanged" EnableSelectionOrder=true>
                                                         <MultiSelectFieldSettings Text="EmployeeName" Value="EmployeeID"></MultiSelectFieldSettings>
                                                     </SfMultiSelect>
                                                 @* } *@
@@ -154,7 +126,7 @@
                                             <Content><p style="color: @ColorsResource.AppDeepBlueOcean100Color;margin: 0;">@OutOfRangeMessage</p>  </Content>
                                         </DialogTemplates>
                                         <DialogButtons>
-                                            <DialogButton Content="OK" IsPrimary="true" OnClick="@OkClick" />
+                                            <DialogButton Content="@StringsResource.Common_Ok" IsPrimary="true" OnClick="@OkClick" />
                                         </DialogButtons>
                                     </SfDialog>
                                 }                              
@@ -433,7 +405,7 @@
                     else
                     {
                         <div class="col-md-12 text-center " style="padding: 4% 4% 4% 21%;">
-                            <p class="text-danger" style="border: 1px solid #d7d7d7; width: 75%;">@StringsResource.HP_NOChartDetailsfound</p>
+                            <p class="text-danger no-chart-message">@StringsResource.HP_NOChartDetailsfound</p>
                         </div>
                     }
                 </div>
@@ -449,9 +421,3 @@
     }
 </div> 
 
-<script>
-     function toggleDateRangePicker() {
-        // Trigger click event on the date range picker element
-        document.getElementById('dpDAtes').click();
-    }
-</script>

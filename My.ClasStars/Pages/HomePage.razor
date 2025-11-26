@@ -29,10 +29,10 @@
 <style>
     .slct-date,
     .slct-dates {
-        background-color: @ColorsResource.AppBlueOcean80Color;
+        background-color: var(--app-blue-ocean-80);
         border: navajowhite;
         border-radius: 6px;
-        color: #fff;
+        color: var(--app-white);
         padding: 5px 14px;
     }
 </style>
@@ -48,10 +48,10 @@
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <img class="img-fluid"
                                          src="Images/ClasStars Wide.svg"
-                                         alt="logo" />
+                                         alt="@StringsResource.BrandLogoAltText" />
                                 </div>
                                 <div class="col-lg-8">
-                                    <p style="margin-bottom:0px;color:#5667A7;"><b>Welcome back, @TeacherName [@userType]</b></p>
+                                    <p style="margin-bottom:0px;color:var(--app-blue-ocean-80);"><b>@string.Format(StringsResource.HP_WelcomeBackFormat, TeacherName, userType)</b></p>
                                     <p style="margin-bottom:0px;">@userid</p>
                                     <p style="margin-bottom:0px;">@School</p>
                                 </div>
@@ -73,7 +73,7 @@
                                     else
                                     { 
                                         <div class="cstDateRange mt-2">
-                                            <SfDateRangePicker TValue="DateTime" ID="dpDAtes" @onclick="ToggleDateRangePicker" @bind-StartDate="@StartDate" @bind-EndDate="@EndDate" Placeholder="Choose a range" Min="@validatestartDate" Max="@validateendDate" ShowClearButton="false" StrictMode=true>
+                                            <SfDateRangePicker TValue="DateTime" ID="dpDAtes" @onclick="ToggleDateRangePicker" @bind-StartDate="@StartDate" @bind-EndDate="@EndDate" Placeholder="@StringsResource.HP_DateRangePlaceholder" Min="@validatestartDate" Max="@validateendDate" ShowClearButton="false" StrictMode=true>
                                                 <DateRangePickerEvents TValue="DateTime" ValueChange="DateValueChangeHandler"></DateRangePickerEvents>
                                             </SfDateRangePicker>
                                             <SfButton CssClass="e-danger" @onclick="ToggleDateRangePicker">@StringsResource.HP_ClosePicker</SfButton>
@@ -83,10 +83,10 @@
                                 <div class="col-lg-12">
                                     <div class="row ">
                                         <div class="form-group col-lg-6 mb-1 schoolTeacher">
-                                            <label for="slctSchool" class="fw-5">Select School</label>
+                                            <label for="slctSchool" class="fw-5">@StringsResource.HP_SelectSchool</label>
                                             @if (!IsAdmin)
                                             {
-                                                <SfTextBox Readonly="true" Value="@DefaultSchool" Placeholder="School Name"></SfTextBox>
+                                                <SfTextBox Readonly="true" Value="@DefaultSchool" Placeholder="@StringsResource.HP_SchoolPlaceholder"></SfTextBox>
                                             }
                                             else
                                             {
@@ -98,7 +98,7 @@
                                                     }
                                                     else
                                                     { *@
-                                                        <SfMultiSelect TItem="RegisteredOrganizationInfo" TValue="int[]" Placeholder="Select School" ShowSelectAll=true SelectAllText="Select All" UnSelectAllText="Select All" Mode="VisualMode.CheckBox"  ValueChanged="OnSchoolChanged" DataSource="@SchoolList" Value="@selectedschool" EnableSelectionOrder=true>
+                                                        <SfMultiSelect TItem="RegisteredOrganizationInfo" TValue="int[]" Placeholder="@StringsResource.HP_SelectSchool" ShowSelectAll=true SelectAllText="@StringsResource.HP_SelectAll" UnSelectAllText="@StringsResource.HP_UnselectAll" Mode="VisualMode.CheckBox"  ValueChanged="OnSchoolChanged" DataSource="@SchoolList" Value="@selectedschool" EnableSelectionOrder=true>
                                                             <MultiSelectFieldSettings Text="Name" Value="ID"></MultiSelectFieldSettings>
                                                         </SfMultiSelect>
                                                         @* <SfDropDownList TValue="string" TItem="string" DataSource="@selectedschool" Value="@DefaultSchool" ValueChanged="OnSchoolChanged" Mode="DropDownMode.Default" TValueField="ID"></SfDropDownList> *@
@@ -110,10 +110,10 @@
                                             {             
 
                                         <div class="form-group col-lg-6 mb-1 srchDropWidth schoolTeacher">
-                                            <label for="slctTeacher" class="fw-5">Select Teacher</label>
+                                            <label for="slctTeacher" class="fw-5">@StringsResource.HP_SelectTeacher</label>
                                             @if (!IsAdmin)
-                                            {             
-                                                <SfTextBox Readonly="true" Value="@TeacherName" Placeholder="Teacher Name"></SfTextBox>
+                                            {
+                                                <SfTextBox Readonly="true" Value="@TeacherName" Placeholder="@StringsResource.HP_TeacherPlaceholder"></SfTextBox>
                                             }
                                             else
                                             {
@@ -123,7 +123,7 @@
                                                 }
                                                 else
                                                 { *@
-                                                    <SfMultiSelect TItem="EmployeeInfoDetailed" TValue="int[]" Placeholder="Select Teacher" ShowSelectAll=true SelectAllText="Select All" UnSelectAllText="Select All" Mode="VisualMode.CheckBox" DataSource="@TeachersList" Value="@selectedteacher" ValueChanged="OnTeacherChanged" EnableSelectionOrder=true>
+                                                    <SfMultiSelect TItem="EmployeeInfoDetailed" TValue="int[]" Placeholder="@StringsResource.HP_SelectTeacher" ShowSelectAll=true SelectAllText="@StringsResource.HP_SelectAll" UnSelectAllText="@StringsResource.HP_UnselectAll" Mode="VisualMode.CheckBox" DataSource="@TeachersList" Value="@selectedteacher" ValueChanged="OnTeacherChanged" EnableSelectionOrder=true>
                                                         <MultiSelectFieldSettings Text="EmployeeName" Value="EmployeeID"></MultiSelectFieldSettings>
                                                     </SfMultiSelect>
                                                 @* } *@
@@ -154,7 +154,7 @@
                                             <Content><p style="color: @ColorsResource.AppDeepBlueOcean100Color;margin: 0;">@OutOfRangeMessage</p>  </Content>
                                         </DialogTemplates>
                                         <DialogButtons>
-                                            <DialogButton Content="OK" IsPrimary="true" OnClick="@OkClick" />
+                                            <DialogButton Content="@StringsResource.HP_DialogOk" IsPrimary="true" OnClick="@OkClick" />
                                         </DialogButtons>
                                     </SfDialog>
                                 }                              
@@ -191,13 +191,13 @@
                                                                     </ChartPrimaryYAxis>
 
                                                                     <ChartSeriesCollection>
-                                                                        <ChartSeries DataSource=@positiveEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="#218A1F" Visible="@isCheckedPositive">
+                                                                        <ChartSeries DataSource=@positiveEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="@ColorsResource.AppGreenColor" Visible="@isCheckedPositive">
                                                                         </ChartSeries>
-                                                                        <ChartSeries DataSource=@negativeEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="#D32629" Visible="@isCheckedNegative">
+                                                                        <ChartSeries DataSource=@negativeEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="@ColorsResource.AppRedColor" Visible="@isCheckedNegative">
                                                                         </ChartSeries>
-                                                                        <ChartSeries DataSource=@academicEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="#FDCD21" Visible="@isCheckedAcademic">
+                                                                        <ChartSeries DataSource=@academicEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="@ColorsResource.AppYellowColor" Visible="@isCheckedAcademic">
                                                                         </ChartSeries>
-                                                                        <ChartSeries DataSource=@academicNegativeEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="#FF8C2B" Visible="isCheckedNegativeAcademic">
+                                                                        <ChartSeries DataSource=@academicNegativeEvents XName="ActivityDate" YName="ActivityCount" Type="ChartSeriesType.Spline" Width=3 Fill="@ColorsResource.AcademicNegativeColor" Visible="isCheckedNegativeAcademic">
                                                                         </ChartSeries>
                                                                     </ChartSeriesCollection>
                                                                 </SfChart>

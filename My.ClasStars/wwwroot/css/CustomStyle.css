@@ -10,10 +10,10 @@ body {
 
 .slct-date,
 .slct-dates {
-    background-color: @ColorsResource.AppBlueOcean80Color;
+    background-color: var(--app-blue-ocean-80);
     border: navajowhite;
     border-radius: 6px;
-    color: #fff;
+    color: var(--app-white);
     padding: 5px 14px;
 }
 
@@ -22,16 +22,16 @@ body {
 }
 
 .closebtn {
-    background-color: @ColorsResource.AppRedColor;
+    background-color: var(--app-red);
     border: navajowhite;
     border-radius: 6px;
-    color: #fff;
+    color: var(--app-white);
     height: 35px;
     margin-left: 10px;
 }
 
 .fa-search {
-    color: #999999;
+    color: var(--app-icon-gray);
     font-size: 25px;
     padding: 5px;
 }
@@ -56,11 +56,11 @@ body {
 }
 
 .bootstrap5 .default-tab .e-content > .e-item.e-active {
-    background: #FAF9F8;
+    background: var(--app-surface-alt);
 }
 
 .bootstrap5-dark .default-tab .e-content > .e-item.e-active {
-    background: #201F1E;
+    background: var(--app-surface-dark);
 }
 
 .e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-text {
@@ -78,26 +78,26 @@ body {
 
 
 .e-tab .e-tab-header .e-toolbar-item.e-active {
-    background: @ColorsResource.AppBlueOcean80Color;
+    background: var(--app-blue-ocean-80);
     display: none;
 }
 
     .e-tab .e-tab-header .e-toolbar-item.e-active:hover {
-        background: @ColorsResource.AppBlueOcean80Color;
+        background: var(--app-blue-ocean-80);
     }
 
 .e-tab .e-content .e-item {
-    border: 1px solid #d7d7d7;
+    border: 1px solid var(--app-border-neutral);
     font-size: 1rem;
 }
 
 .selected-option {
-    background-color: deepskyblue;
-    color: white;
+    background-color: var(--app-highlight-blue);
+    color: var(--app-white);
 }
 
 .e-dialog .e-dlg-content {
-    color: red;
+    color: var(--app-error-text);
 }
 
 .cst-date .e-date-range-wrapper {
@@ -105,8 +105,8 @@ body {
 }
 
 .e-btn.e-danger {
-    background: @ColorsResource.AppRedColor;
-    border-color: @ColorsResource.AppRedColor;
+    background: var(--app-red);
+    border-color: var(--app-red);
     margin-left: 4%;
 }
 
@@ -120,7 +120,7 @@ body {
 }
 
 .boxCard {
-    background: #ededed;
+    background: var(--app-sidebar-background);
     border: none;
     border-radius: 15px;
 }
@@ -140,14 +140,14 @@ body {
 .cardSearch input {
     border-radius: 50px !important;
     padding: 20px 14px;
-    border: 1px solid #5667a7;
-    background: #f2f5ff;
+    border: 1px solid var(--app-blue-ocean-80);
+    background: var(--app-input-background);
 }
 
 .inputSrchBTN .fa-search {
-    color: #f7f7f7;
+    color: var(--app-light-surface);
     font-size: 16px;
-    background: #5667a7;
+    background: var(--app-blue-ocean-80);
     padding: 0;
     border-radius: 50px;
     z-index: 9;
@@ -172,7 +172,7 @@ body {
 }
 
 .srchDropWidth .fa-search {
-    color: #999999;
+    color: var(--app-icon-gray);
     font-size: 20px;
     padding: 2px;
 }

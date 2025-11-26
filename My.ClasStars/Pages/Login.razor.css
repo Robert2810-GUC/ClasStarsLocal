@@ -1,0 +1,120 @@
+.login-page {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 30px 0;
+}
+
+.login-frm {
+    background: var(--app-surface);
+    padding: 30px;
+    border: 1px solid var(--app-surface-border);
+    box-shadow: 0 1rem 1.75rem 0 var(--app-surface-shadow);
+    border-radius: 10px;
+}
+
+.login-frm .privacyLink {
+    text-align: center;
+    font-size: 14px;
+    color: var(--app-accent);
+    font-weight: 400;
+    display: inline-block;
+    margin-top: 20px;
+    align-items: flex-end;
+}
+
+.login-frm .frm-logo {
+    margin-bottom: 40px;
+    text-align: center;
+    color: var(--app-accent);
+}
+
+.login-frm .frm-logo span {
+    font-size: 28px;
+    color: var(--app-accent);
+    font-weight: 400;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.login-subtitle {
+    margin-bottom: 0;
+    font-size: 22px;
+}
+
+.login-subtitle .selection-message {
+    margin: 0;
+    color: var(--app-accent);
+}
+
+.login-btn {
+    background: var(--app-surface);
+    padding: 10px;
+    border: 1px solid var(--app-surface-border);
+    border-radius: 7px;
+    text-align: left;
+    color: var(--app-accent-muted);
+    width: 100%;
+    font-size: 16px;
+    margin: auto;
+    font-weight: 500;
+    margin-top: 8px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-btn:hover {
+    background: var(--app-accent-muted);
+    color: var(--app-surface);
+}
+
+.provider-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.brand-image {
+    width: 72px;
+}
+
+.brand-row {
+    margin-bottom: 16px;
+}
+
+.circle-icon {
+    display: inline-block;
+    position: unset;
+    padding: 5px;
+}
+
+.circle-icon button {
+    border: 1px solid var(--app-surface-border);
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: var(--app-surface);
+    transition: 0.2s;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+}
+
+.circle-icon button:hover {
+    border-color: var(--app-accent);
+    box-shadow: 0 0 10px var(--app-surface-shadow);
+}
+
+.circle-icon img {
+    height: 30px;
+    width: 30px;
+    border-radius: 30%;
+}
+
+.login-footer {
+    text-align: center;
+}

@@ -1,98 +1,54 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using My.ClasStars.Areas.Identity;
-using Blazored.LocalStorage;
 using Microsoft.IdentityModel.Tokens;
-using Syncfusion.Blazor;
-using System.Text;
+using My.ClasStars.Areas.Identity;
+using My.ClasStars.Configuration;
+using My.ClasStars.Extensions;
 using System;
+using System.Text;
 
 namespace My.ClasStars
 {
-    public class Startup 
+    public class Startup
     {
-
-        public static string SigningKey;
-        private static SymmetricSecurityKey _secureSigningKey;
-        public static string Issuer;
-
-        public static TokenValidationParameters TokenValidationParameters { get; private set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            SigningKey = Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY") ?? "";
-            _secureSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SigningKey));
-            Issuer = Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME");
         }
 
         public static IConfiguration Configuration { get; private set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public static TokenValidationParameters TokenValidationParameters { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureAuthentication();
 
+            services
+                .AddAppConfiguration(Configuration)
+                .AddAppFramework()
+                .AddAppServices()
+                .AddThirdPartyFrameworks();
 
-            TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = Issuer,
-                ValidAudience = Issuer,
-                IssuerSigningKey = _secureSigningKey
-            };
-
-         
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<SchoolListService>();
-            services.AddScoped<ExternalProviders>();
-
-            //Resource File Service
-            services.AddRazorPages().AddViewLocalization();
-            services.AddSingleton<CommonLocalizationService>();
-
-            //Syncfusion Pie Chart Service
-            services.AddSyncfusionBlazor();
-            services.AddSignalR(o => { o.MaximumReceiveMessageSize = 102400000; });
-            //Local Storage Service
-            services.AddBlazoredLocalStorage();  
-            services.AddBlazoredLocalStorage(config =>
-                config.JsonSerializerOptions.WriteIndented = true);  
-
-            services.AddSingleton<IInvokeServices, InvokeServices>();
-            services.AddSingleton<IClasStarsServices, ClasStarsServices>();
-
-            services.AddAuthentication()
-                .AddJwtBearer();
-
+            TokenValidationParameters = BuildTokenValidationParameters();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NGaF5cXmdCeUx0Q3xbf1xzZFNMYVpbQHJPMyBoS35RdUVkWHZednVTQmRVU0Rw");
-            var syncfusionLicense = Configuration.GetValue<string>("SyncfusionLicense");
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncfusionLicense);
+            RegisterSyncfusionLicense();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -108,11 +64,45 @@ namespace My.ClasStars
             {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
-
                 endpoints.MapFallbackToPage("/_Host");
-                
-
             });
+        }
+
+        private void ConfigureAuthentication()
+        {
+            var signingKey = Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY") ?? string.Empty;
+            var issuer = Configuration["Authentication:Issuer"] ?? Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME");
+
+            TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = issuer,
+                ValidAudience = issuer,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey))
+            };
+        }
+
+        private TokenValidationParameters BuildTokenValidationParameters()
+        {
+            return new TokenValidationParameters
+            {
+                ValidateIssuer = TokenValidationParameters.ValidateIssuer,
+                ValidateAudience = TokenValidationParameters.ValidateAudience,
+                ValidateLifetime = TokenValidationParameters.ValidateLifetime,
+                ValidateIssuerSigningKey = TokenValidationParameters.ValidateIssuerSigningKey,
+                ValidIssuer = TokenValidationParameters.ValidIssuer,
+                ValidAudience = TokenValidationParameters.ValidAudience,
+                IssuerSigningKey = TokenValidationParameters.IssuerSigningKey
+            };
+        }
+
+        private void RegisterSyncfusionLicense()
+        {
+            var syncfusionLicense = Configuration.GetValue<string>("SyncfusionLicense");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(syncfusionLicense);
         }
     }
 }

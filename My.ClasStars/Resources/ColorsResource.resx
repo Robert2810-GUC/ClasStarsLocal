@@ -150,6 +150,15 @@
   <data name="AppRedColor" xml:space="preserve">
     <value>#D32629</value>
   </data>
+  <data name="AppSurfaceBorderColor" xml:space="preserve">
+    <value>#f1f1f1</value>
+  </data>
+  <data name="AppSurfaceColor" xml:space="preserve">
+    <value>#fdffff</value>
+  </data>
+  <data name="AppSurfaceShadowColor" xml:space="preserve">
+    <value>#2d374b29</value>
+  </data>
   <data name="AppSkyBlueColor" xml:space="preserve">
     <value>#61BAFD</value>
   </data>
@@ -170,5 +179,35 @@
   </data>
   <data name="SteelGrayColor2" xml:space="preserve">
     <value>#3E5067</value>
+  </data>
+  <data name="AppSidebarBackgroundColor" xml:space="preserve">
+    <value>#ededed</value>
+  </data>
+  <data name="AppWhiteColor" xml:space="preserve">
+    <value>#ffffff</value>
+  </data>
+  <data name="AppIconGrayColor" xml:space="preserve">
+    <value>#999999</value>
+  </data>
+  <data name="AppLightSurfaceColor" xml:space="preserve">
+    <value>#f7f7f7</value>
+  </data>
+  <data name="AppInputBackgroundColor" xml:space="preserve">
+    <value>#f2f5ff</value>
+  </data>
+  <data name="AppBorderNeutralColor" xml:space="preserve">
+    <value>#d7d7d7</value>
+  </data>
+  <data name="AppSurfaceAltColor" xml:space="preserve">
+    <value>#FAF9F8</value>
+  </data>
+  <data name="AppSurfaceDarkColor" xml:space="preserve">
+    <value>#201F1E</value>
+  </data>
+  <data name="AppHighlightBlueColor" xml:space="preserve">
+    <value>#1E90FF</value>
+  </data>
+  <data name="AppErrorTextColor" xml:space="preserve">
+    <value>#ff0000</value>
   </data>
 </root>

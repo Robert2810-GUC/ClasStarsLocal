@@ -125,25 +125,39 @@ else
             <div class="rightPnl @ShowHide">
                 <div class="inputRight">
                     <!-- File Name Format block -->
-                    <div class="file-name-format d-flex align-items-center flex-wrap mb-2">
-                        <div class="me-3">
-                            <strong>Picture Name Format</strong><br />
-                            <small class="text-muted">@GetCurrentFormatPreview()</small>
+                    <div class="file-name-format shadow-sm">
+                        <div class="file-name-format__header">
+                            <div class="file-name-format__title">
+                                <div class="file-name-format__icon">
+                                    <i class="fa fa-tag" aria-hidden="true"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">Picture Name Format</div>
+                                    <div class="text-muted small">@GetCurrentFormatPreview()</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="form-check form-switch m-0">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="looseMatch"
+                                           @bind="enableLooseMatching"
+                                           @bind:event="onchange"
+                                           @bind:after="(() => EvaluateImageMatches())" />
+                                    <label class="form-check-label" for="looseMatch">Loose name matching</label>
+                                </div>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        @onclick="() => isFormatPopupVisible = true">
+                                    <i class="fa fa-pencil me-1" aria-hidden="true"></i>
+                                    Edit format
+                                </button>
+                            </div>
                         </div>
-                        <button type="button"
-                                class="btn btn-sm btn-outline-secondary ms-2"
-                                @onclick="() => isFormatPopupVisible = true">
-                            Edit
-                        </button>
-                        <div class="form-check ms-3">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   id="looseMatch"
-                                   @bind="enableLooseMatching"
-                                   @bind:event="onchange"
-                                   @bind:after="(() => EvaluateImageMatches())" />
-                            <label class="form-check-label" for="looseMatch">Loose name matching</label>
-                        </div>
+                        <p class="mb-0 text-muted small">
+                            Control how image file names are interpreted when finding student matches.
+                        </p>
                     </div>
 
                     <div class="file-input-zone">
@@ -190,6 +204,17 @@ else
                                 {
                                     <div class="img-card @(ss.IsMatched ? "img-card-matched" : "")"
                                          @onclick="() => OnImageClicked(ss)">
+                                        @if (ss.IsMatched)
+                                        {
+                                            <button type="button"
+                                                    class="match-indicator"
+                                                    title="View matched student"
+                                                    @onclick="(e => OnMatchIconClicked(ss))"
+                                                    @onclick:stopPropagation>
+                                                <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                            </button>
+                                        }
+
                                         <img class="img-item @(ss.IsSqu.HasValue && ss.IsSqu.Value ? "imgGreen" : "imgRed")"
                                              src="@ss.ImageUrl"
                                              @ondblclick="() => LoadImage(ss)"
@@ -200,10 +225,6 @@ else
 
                                         <div class="inputImages-label">
                                             @Path.GetFileNameWithoutExtension(ss.ImageName)
-                                            @if (ss.IsMatched)
-                                            {
-                                                <span class="badge bg-success ms-1">Matched</span>
-                                            }
                                         </div>
                                     </div>
                                 }
@@ -233,51 +254,55 @@ else
     @if (isFormatPopupVisible)
     {
         <div class="modal-backdrop-custom">
-            <div class="modal-dialog-custom">
-                <h5>File Name Format</h5>
+            <div class="modal-dialog-custom format-modal">
+                <div class="format-modal__header">
+                    <div>
+                        <h5 class="mb-1">File Name Format</h5>
+                        <p class="text-muted mb-0">Tell ClasStars how to read names from your picture files.</p>
+                    </div>
+                    <span class="badge bg-light text-primary">Example: @GetCurrentFormatExample()</span>
+                </div>
 
-                <p class="small text-muted mb-1">
-                    Choose how to detect student info from image file names.
-                </p>
-                <p class="small fw-bold">Current example: <span class="text-primary">@GetCurrentFormatExample()</span></p>
-
-                <div class="row mb-2">
-                    <div class="col-4">
-                        <label>Part 1 (required)</label>
+                <div class="format-modal__grid">
+                    <div class="format-modal__card">
+                        <div class="small text-muted mb-1">First piece (required)</div>
                         <InputSelect @bind-Value="formatPart1">
                             <option value="@FileNamePart.PersonId">PersonID</option>
                             <option value="@FileNamePart.FirstName">FirstName</option>
                             <option value="@FileNamePart.LastName">LastName</option>
                         </InputSelect>
+                        <p class="hint">This is the strongest identifier and should appear first.</p>
                     </div>
-                    <div class="col-4">
-                        <label>Part 2</label>
+                    <div class="format-modal__card">
+                        <div class="small text-muted mb-1">Second piece</div>
                         <InputSelect @bind-Value="formatPart2">
                             <option value="@FileNamePart.None">None</option>
                             <option value="@FileNamePart.PersonId">PersonID</option>
                             <option value="@FileNamePart.FirstName">FirstName</option>
                             <option value="@FileNamePart.LastName">LastName</option>
                         </InputSelect>
+                        <p class="hint">Optional — helps when multiple students share an ID or name.</p>
                     </div>
-                    <div class="col-4">
-                        <label>Part 3</label>
+                    <div class="format-modal__card">
+                        <div class="small text-muted mb-1">Everything else</div>
                         <InputSelect @bind-Value="formatPart3">
                             <option value="@FileNamePart.None">None</option>
                             <option value="@FileNamePart.PersonId">PersonID</option>
                             <option value="@FileNamePart.FirstName">FirstName</option>
                             <option value="@FileNamePart.LastName">LastName</option>
                         </InputSelect>
+                        <p class="hint">Use this when filenames contain a suffix such as a homeroom.</p>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-secondary btn-sm me-2"
+                <div class="d-flex justify-content-end mt-3 gap-2">
+                    <button class="btn btn-outline-secondary btn-sm"
                             @onclick="() => isFormatPopupVisible = false">
                         Cancel
                     </button>
                     <button class="btn btn-primary btn-sm"
                             @onclick="SaveFileNameFormat">
-                        Save
+                        Save format
                     </button>
                 </div>
             </div>
@@ -288,26 +313,51 @@ else
     @if (isAssignPopupVisible && _selectedContactForAssign != null && _selectedImageForAssign != null)
     {
         <div class="modal-backdrop-custom">
-            <div class="modal-dialog-custom">
-                <h5>Assign Profile Picture</h5>
-
-                <p>
-                    This image will be used as the profile picture for:<br />
-                    <strong>@_selectedContactForAssign.PersonID - @_selectedContactForAssign.FileAs</strong>
-                </p>
-
-                <div class="mb-3">
-                    <img src="@_selectedImageForAssign.ImageUrl" class="img-fluid" />
+            <div class="modal-dialog-custom assign-modal">
+                <div class="assign-modal__header">
+                    <div>
+                        <p class="text-muted small mb-1">Update profile picture</p>
+                        <h5 class="mb-0">@_selectedContactForAssign.PersonID - @_selectedContactForAssign.FileAs</h5>
+                    </div>
+                    <span class="badge bg-success">Matches found: @_matchedImagesForAssign.Count</span>
                 </div>
 
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-secondary btn-sm me-2"
+                @if (_matchedImagesForAssign.Count > 1)
+                {
+                    <div class="alert alert-info py-2 px-3 small">
+                        Multiple photos match this student. Pick the one you want to save.
+                    </div>
+                }
+
+                <div class="assign-options">
+                    @foreach (var option in _matchedImagesForAssign)
+                    {
+                        <label class="assign-option">
+                            <input type="radio"
+                                   name="assignChoice"
+                                   value="@option.ImgId"
+                                   checked="@(_selectedMatchOptionId == option.ImgId)"
+                                   @onchange="() => OnMatchOptionSelected(option.ImgId)" />
+                            <div class="assign-option__preview">
+                                <img src="@option.ImageUrl" alt="Matched photo preview" loading="lazy" />
+                            </div>
+                            <div class="assign-option__meta">
+                                <div class="fw-semibold text-truncate">@Path.GetFileName(option.ImageName)</div>
+                                <small class="text-muted">Square crop required: @(option.IsSqu == true ? "Ready" : "Crop needed")</small>
+                            </div>
+                        </label>
+                    }
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button class="btn btn-outline-secondary btn-sm"
                             @onclick="CancelAssign">
                         Cancel
                     </button>
                     <button class="btn btn-primary btn-sm"
-                            @onclick="ConfirmAssign">
-                        Save
+                            @onclick="ConfirmAssign"
+                            disabled="@(_selectedImageForAssign == null)">
+                        Save selection
                     </button>
                 </div>
             </div>

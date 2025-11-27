@@ -11,7 +11,6 @@
 }
 else
 {
-    <button @onclick="testToast">test toast</button>
     @if (ShowPageOverlay)
     {
         <div class="page-overlay">
@@ -156,7 +155,7 @@ else
                                            @bind="enableLooseMatching"
                                            @bind:event="onchange"
                                            @bind:after="(() => EvaluateImageMatches())" />
-                                    <label class="form-check-label" for="looseMatch">Loose name matching</label>
+                                    <label class="form-check-label" for="looseMatch">Auto Match Name</label>
                                 </div>
 
                                 <button type="button"
@@ -167,9 +166,6 @@ else
                                 </button>
                             </div>
                         </div>
-                        <p class="mb-0 text-muted small">
-                            Control how image file names are interpreted when finding student matches.
-                        </p>
                     </div>
 
                     <div class="file-input-zone">

@@ -431,10 +431,6 @@ namespace My.ClasStars.Pages
         }
 
 
-        protected void testToast()
-        {
-            ToastService?.ShowToast("message testing", ToastLevel.Success);
-        }
         protected void FilterList(string studentname)
         {
             StatusMessage = "";
@@ -485,7 +481,7 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
-        private void FilterImagesForStudent(ContactInfoModel student)
+        private void FilterImagesForStudent(ContactInfoModel student, bool showPopup = true)
         {
             if (student == null || ImageURI == null)
                 return;
@@ -508,7 +504,8 @@ namespace My.ClasStars.Pages
             }
 
             refreshClass = ImageURI.Count > matchedImages.Count ? "enablerImg" : "disableImg";
-            OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
+            if (showPopup)
+                OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
         }
 
         protected Task OnImageUriChanged(List<ImageDetail> newList)
@@ -869,7 +866,7 @@ namespace My.ClasStars.Pages
             if (student == null)
                 return;
 
-            FilterImagesForStudent(student);
+            FilterImagesForStudent(student,false);
         }
 
         protected bool StudentHasMatchedImages(ContactInfoModel student)

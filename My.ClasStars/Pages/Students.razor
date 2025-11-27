@@ -15,11 +15,21 @@ else
         <div class="leftPnl @((!HomePage.IsAdmin) ? "w-50 fit-content" : "")">
             <div class="">
                 <div class="input-group cardSearch">
-                    <input type="text" class="form-control" @bind="@value" @oninput="@(ui => { value = (string)ui.Value; })" id="txtsearch" placeholder="@StringsResource.Students_SearchPlaceholder" aria-label="@StringsResource.Students_SearchPlaceholder" aria-describedby="button-addon2">
+                    <input type="text"
+                           class="form-control"
+                           @bind="@value"
+                           @oninput="@(ui => { value = (string)ui.Value; })"
+                           id="txtsearch"
+                           placeholder="@StringsResource.Students_SearchPlaceholder"
+                           aria-label="@StringsResource.Students_SearchPlaceholder"
+                           aria-describedby="button-addon2">
                     <div class="position-relative">
-                        <button class="inputSrchBTN p-0" @onclick="GetFilterList"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        <button class="inputSrchBTN p-0" @onclick="GetFilterList">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
+
                 <div class="contact-filters mt-2">
                     <label class="me-3">
                         <input type="checkbox"
@@ -45,7 +55,7 @@ else
                     <div id="@student.ContactID"
                          @ondragover="DragOver"
                          @ondragover:preventDefault="true"
-                         @ondrop="@(e => DragDrop(e, student))"
+                         @ondrop="@(async e => await DragDrop(e, student))"
                          @onmousedown="() => FilterList(student.FirstName + ' ' + student.LastName)"
                          @onclick="() => OnStudentClicked(student)">
                         <div class="e-card e-avatar-showcase cstEcard">
@@ -56,16 +66,19 @@ else
                                     <b>@StringsResource.StudentList_PersonID:   </b>
                                     <span class="font-weight-400">@student.PersonID</span>
                                 </span>
+
                                 @if (student.ContactPicture == null)
                                 {
                                     <span class="e-avatar e-avatar-xlarge e-avatar-circle blue no-select"
-                                          @ondblclick="() => LoadContact(student)">
+                                          @ondblclick="() => LoadContact(student)"
+                                          @onclick:stopPropagation>
                                         @student.Initials
                                     </span>
                                 }
                                 else
                                 {
-                                    <div class="e-avatar e-avatar-circle e-avatar-xlarge">
+                                    <div class="e-avatar e-avatar-circle e-avatar-xlarge"
+                                         @onclick:stopPropagation>
                                         @{
                                             var imgg = $"data:image/png;base64,{Convert.ToBase64String(student.ContactPicture)}";
                                         }
@@ -81,21 +94,23 @@ else
             </div>
         </div>
 
-        @* @{
-            if (StatusMessage.Contains("success"))
-            {
-                <span class="Success">@StatusMessage</span>
-            }
-            else
-            {
-                <span class="Error">@StatusMessage</span>
-            }
-        } *@
-
         @if (HomePage.IsAdmin)
         {
             <div class="rightPnl @ShowHide">
                 <div class="inputRight">
+
+                    @* Optional status message (you can style Success/Error classes) *@
+                    @if (!string.IsNullOrWhiteSpace(StatusMessage))
+                    {
+                        if (StatusMessage.Contains("success", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span class="Success">@StatusMessage</span>
+                        }
+                        else
+                        {
+                            <span class="Error">@StatusMessage</span>
+                        }
+                    }
 
                     <!-- File Name Format block -->
                     <div class="file-name-format d-flex align-items-center mb-2">
@@ -142,6 +157,14 @@ else
                     </div>
                 </div>
 
+                @* Saving overlay *@
+                @if (isSavingPicture)
+                {
+                    <div class="saving-overlay">
+                        <div class="loader">Saving...</div>
+                    </div>
+                }
+
                 <div class="inputImages" id="imageContainer" @onmousedown="All">
                     @if (!isProcessingFiles)
                     {
@@ -152,11 +175,12 @@ else
                             {
                                 if (!string.IsNullOrWhiteSpace(ss.ImageUrl))
                                 {
-                                    <div class="img-card @(ss.IsMatched ? "img-card-matched" : "")">
+                                    <div class="img-card @(ss.IsMatched ? "img-card-matched" : "")"
+                                         @onclick="() => OnImageClicked(ss)">
                                         <img class="img-item @(ss.IsSqu.HasValue && ss.IsSqu.Value ? "imgGreen" : "imgRed")"
                                              src="@ss.ImageUrl"
                                              @ondblclick="() => LoadImage(ss)"
-                                             @onclick="() => OnImageClicked(ss)"
+                                             @onclick:stopPropagation
                                              draggable="true"
                                              @ondragstart="@(e => DragStart(e, ss))"
                                              loading="lazy" />

@@ -46,8 +46,9 @@ namespace My.ClasStars.Pages
 
         private string DraggedImageSrc { get; set; }
         string wwwRootPath = "";
-        string StatusMessage = "";
+        protected string StatusMessage = "";
         private bool isProcessingFiles = false;
+        private bool isSavingPicture = false;
 
         private List<ContactInfoShort> _contacts;
         public List<ContactInfoModel> _contactModels;
@@ -249,7 +250,7 @@ namespace My.ClasStars.Pages
             {
                 isProcessingFiles = false;
 
-                // ✅ Only run matching AFTER files are loaded
+                // Run matching AFTER files are loaded
                 EvaluateImageMatches();
 
                 StateHasChanged();
@@ -307,15 +308,17 @@ namespace My.ClasStars.Pages
 
         protected void DragOver(Microsoft.AspNetCore.Components.Web.DragEventArgs e) { }
 
-        protected async void DragDrop(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ContactInfoModel contact)
+        protected async Task DragDrop(Microsoft.AspNetCore.Components.Web.DragEventArgs _, ContactInfoModel contact)
         {
             try
             {
+                isSavingPicture = true;
+                StateHasChanged();
+
                 ContactInfoModel cim = _contactModels.Find(c => c.ContactID == contact.ContactID);
                 if (cim == null)
                 {
                     StatusMessage = StringsResource.Students_Status_ContactNotFound;
-                    StateHasChanged();
                     return;
                 }
 
@@ -325,12 +328,11 @@ namespace My.ClasStars.Pages
                 if (string.IsNullOrEmpty(payload))
                 {
                     StatusMessage = StringsResource.Students_Status_NoImageData;
-                    StateHasChanged();
                     return;
                 }
 
                 byte[] bytesData = Convert.FromBase64String(payload);
-                using MemoryStream memoryStream = new MemoryStream(bytesData);
+                using MemoryStream memoryStream = new(bytesData);
                 bool? IsSquare = IsSquareImage(memoryStream, out isSquareError);
                 if (IsSquare == true)
                 {
@@ -349,7 +351,11 @@ namespace My.ClasStars.Pages
             {
                 StatusMessage = string.Format(StringsResource.Students_Status_SaveError, ex.Message);
             }
-            StateHasChanged();
+            finally
+            {
+                isSavingPicture = false;
+                StateHasChanged();
+            }
         }
 
         protected async Task LoadImage(ImageDetail imgg)
@@ -470,7 +476,7 @@ namespace My.ClasStars.Pages
 
             isFormatPopupVisible = false;
 
-            // ✅ Only run matching when format is changed (and images exist)
+            // Only run matching when format is changed (and images exist)
             if (ImageURI != null && ImageURI.Count > 0)
             {
                 EvaluateImageMatches();
@@ -639,6 +645,26 @@ namespace My.ClasStars.Pages
 
             try
             {
+                // Enforce square image before saving
+                if (!_selectedImageForAssign.IsSqu.HasValue || !_selectedImageForAssign.IsSqu.Value)
+                {
+                    StatusMessage = StringsResource.Students_Status_NotSquare;
+
+                    // Close popup and open editor so user can crop
+                    isAssignPopupVisible = false;
+                    StateHasChanged();
+
+                    if (editorModal != null)
+                    {
+                        await editorModal.OpenForImage(_selectedImageForAssign);
+                    }
+
+                    return;
+                }
+
+                isSavingPicture = true;
+                StateHasChanged();
+
                 Regex regex = new Regex(@"^[\w/\:.-]+;base64,");
                 var payload = string.IsNullOrEmpty(_selectedImageForAssign.ImageUrl)
                     ? string.Empty
@@ -664,6 +690,7 @@ namespace My.ClasStars.Pages
             }
             finally
             {
+                isSavingPicture = false;
                 isAssignPopupVisible = false;
                 _selectedContactForAssign = null;
                 _selectedImageForAssign = null;

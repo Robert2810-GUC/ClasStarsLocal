@@ -1,19 +1,21 @@
 ﻿#pragma warning disable CA1416
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.JSInterop;
 using My.ClasStars.Components;
 using My.ClasStars.Models;
+using Syncfusion.Blazor.Notifications;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace My.ClasStars.Pages
 {
@@ -426,6 +428,11 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
+
+        protected void testToast()
+        {
+            ToastService?.ShowToast("message testing", ToastLevel.Success);
+        }
         protected void FilterList(string studentname)
         {
             StatusMessage = "";

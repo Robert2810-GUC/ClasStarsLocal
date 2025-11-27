@@ -52,7 +52,8 @@ namespace My.ClasStars.Pages
         protected string StatusMessage = "";
         private bool isProcessingFiles = false;
         private bool isSavingPicture = false;
-        private bool ShowPageOverlay => isSavingPicture || isProcessingFiles;
+        private bool isMatchingImages = false;
+        private bool ShowPageOverlay => isSavingPicture || isProcessingFiles || isMatchingImages;
         private bool _isStudentListFiltered = false;
         private string _activeFilterLabel = string.Empty;
         private HashSet<int> _filteredContactIds = new();
@@ -298,7 +299,7 @@ namespace My.ClasStars.Pages
                 isProcessingFiles = false;
 
                 // Run matching AFTER files are loaded
-                EvaluateImageMatches();
+                await EvaluateImageMatchesAsync();
 
                 StateHasChanged();
             }
@@ -481,12 +482,12 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
-        private void FilterImagesForStudent(ContactInfoModel student, bool showPopup = true)
+        private async Task FilterImagesForStudent(ContactInfoModel student, bool showPopup = true)
         {
             if (student == null || ImageURI == null)
                 return;
 
-            EvaluateImageMatches();
+            await EvaluateImageMatchesAsync();
 
             var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == student.ContactID).ToList();
 
@@ -594,7 +595,7 @@ namespace My.ClasStars.Pages
             return string.Join("-", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
         }
 
-        protected void SaveFileNameFormat()
+        protected async Task SaveFileNameFormat()
         {
             // First part cannot be None
             if (formatPart1 == FileNamePart.None)
@@ -607,11 +608,34 @@ namespace My.ClasStars.Pages
             // Only run matching when format is changed (and images exist)
             if (ImageURI != null && ImageURI.Count > 0)
             {
-                EvaluateImageMatches();
+                await EvaluateImageMatchesAsync();
             }
         }
 
-        private void EvaluateImageMatches()
+        private async Task EvaluateImageMatchesAsync()
+        {
+            if (ImageURI == null || ImageURI.Count == 0 || _contactModels == null || _contactModels.Count == 0)
+                return;
+
+            isMatchingImages = true;
+            StateHasChanged();
+
+            try
+            {
+                EvaluateImageMatchesCore();
+            }
+            catch (Exception ex)
+            {
+                NotifyStatus(string.Format(StringsResource.Common_GenericErrorWithDetail, ex.Message), ToastLevel.Error);
+            }
+            finally
+            {
+                isMatchingImages = false;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
+        private void EvaluateImageMatchesCore()
         {
             if (ImageURI == null || ImageURI.Count == 0 || _contactModels == null || _contactModels.Count == 0)
                 return;
@@ -859,14 +883,14 @@ namespace My.ClasStars.Pages
             FilterStudentsForImage(img);
         }
 
-        protected void OnStudentClicked(ContactInfoModel student)
+        protected async Task OnStudentClicked(ContactInfoModel student)
         {
             StatusMessage = "";
 
             if (student == null)
                 return;
 
-            FilterImagesForStudent(student,false);
+            await FilterImagesForStudent(student,false);
         }
 
         protected bool StudentHasMatchedImages(ContactInfoModel student)
@@ -877,19 +901,19 @@ namespace My.ClasStars.Pages
             return ImageURI.Any(i => i.IsMatched && i.MatchedContactId == student.ContactID);
         }
 
-        protected void OnStudentMatchIconClicked(ContactInfoModel student)
+        protected async Task OnStudentMatchIconClicked(ContactInfoModel student)
         {
             StatusMessage = "";
 
             if (student == null)
                 return;
 
-            EvaluateImageMatches();
+            await EvaluateImageMatchesAsync();
             var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == student.ContactID).ToList();
             OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
         }
 
-        protected void OnMatchIconClicked(ImageDetail img)
+        protected async Task OnMatchIconClicked(ImageDetail img)
         {
             StatusMessage = "";
 
@@ -899,7 +923,7 @@ namespace My.ClasStars.Pages
             if (!_contactLookup.TryGetValue(img.MatchedContactId.Value, out var contact))
                 return;
 
-            EvaluateImageMatches();
+            await EvaluateImageMatchesAsync();
             var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == contact.ContactID).ToList();
             OpenAssignPopup(contact, matchedImages, adjustVisibleImages: false);
         }

@@ -79,7 +79,7 @@ else
                          @ondragover:preventDefault="true"
                          @ondrop="@(async e => await DragDrop(e, student))"
                          @onmousedown="() => FilterList(student.FirstName + ' ' + student.LastName)"
-                         @onclick="() => OnStudentClicked(student)">
+                         @onclick="(async () => await OnStudentClicked(student))">
                         <div class="e-card e-avatar-showcase cstEcard">
                             <div id="element" class="avatar-sub-block">
                                 <span>
@@ -90,7 +90,7 @@ else
                                             <button type="button"
                                                     class="student-match-indicator"
                                                     title="View matched photos"
-                                                    @onclick="(e => OnStudentMatchIconClicked(student))"
+                                                    @onclick="(async e => await OnStudentMatchIconClicked(student))"
                                                     @onclick:stopPropagation>
                                                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                                             </button>
@@ -154,7 +154,7 @@ else
                                            id="looseMatch"
                                            @bind="enableLooseMatching"
                                            @bind:event="onchange"
-                                           @bind:after="(() => EvaluateImageMatches())" />
+                                           @bind:after="(async () => await EvaluateImageMatchesAsync())" />
                                     <label class="form-check-label" for="looseMatch">Auto Match Name</label>
                                 </div>
 
@@ -201,7 +201,7 @@ else
                 </div>
 
                 <div class="inputImages" id="imageContainer" @onmousedown="All">
-                    @if (!isProcessingFiles)
+                    @if (!isProcessingFiles && !isMatchingImages)
                     {
                         var visibleList = ImageURI.Where(c => c.IsVis).ToList();
                         if (visibleList.Count > 0)
@@ -217,7 +217,7 @@ else
                                             <button type="button"
                                                     class="match-indicator"
                                                     title="View matched student"
-                                                    @onclick="(e => OnMatchIconClicked(ss))"
+                                                    @onclick="(async e => await OnMatchIconClicked(ss))"
                                                     @onclick:stopPropagation>
                                                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                                             </button>

@@ -94,6 +94,7 @@ namespace My.ClasStars.Pages
         protected ImageDetail _selectedImageForAssign;
         protected List<ImageDetail> _matchedImagesForAssign = new();
         private Guid? _selectedMatchOptionId;
+        private (int ContactId, Guid ImageId)? _pendingAssignAfterCrop;
 
         protected override async Task OnInitializedAsync()
         {
@@ -516,6 +517,19 @@ namespace My.ClasStars.Pages
             return Task.CompletedTask;
         }
 
+        protected async Task OnImageEdited(ImageDetail updatedImage)
+        {
+            if (updatedImage == null)
+                return;
+
+            await EvaluateImageMatchesAsync();
+
+            if (_pendingAssignAfterCrop.HasValue && _pendingAssignAfterCrop.Value.ImageId == updatedImage.ImgId)
+            {
+                await ResumeAssignAfterCropAsync(updatedImage);
+            }
+        }
+
         protected Task OnContactPictureUpdated((int ContactId, byte[] Picture, bool IsDeleted) info)
         {
             var (contactId, picture, IsDeleted) = info;
@@ -536,6 +550,35 @@ namespace My.ClasStars.Pages
             ApplyFilters();
 
             return Task.CompletedTask;
+        }
+
+        private async Task ResumeAssignAfterCropAsync(ImageDetail updatedImage)
+        {
+            var pending = _pendingAssignAfterCrop;
+            _pendingAssignAfterCrop = null;
+
+            if (!pending.HasValue)
+            {
+                return;
+            }
+
+            var contact = _contactModels.FirstOrDefault(c => c.ContactID == pending.Value.ContactId);
+            if (contact == null)
+            {
+                ResetAssignState();
+                return;
+            }
+
+            if (updatedImage.IsSqu == true)
+            {
+                await SaveContactPictureAsync(contact, updatedImage);
+                ResetAssignState();
+                return;
+            }
+
+            NotifyStatus(StringsResource.Students_Status_NotSquare, ToastLevel.Error);
+            var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == contact.ContactID).ToList();
+            OpenAssignPopup(contact, matchedImages, adjustVisibleImages: false);
         }
 
         protected void All()
@@ -998,6 +1041,7 @@ namespace My.ClasStars.Pages
                 // Enforce square image before saving
                 if (!_selectedImageForAssign.IsSqu.HasValue || !_selectedImageForAssign.IsSqu.Value)
                 {
+                    _pendingAssignAfterCrop = (_selectedContactForAssign.ContactID, _selectedImageForAssign.ImgId);
                     NotifyStatus(StringsResource.Students_Status_NotSquare, ToastLevel.Error);
 
                     // Close popup and open editor so user can crop
@@ -1012,42 +1056,78 @@ namespace My.ClasStars.Pages
                     return;
                 }
 
+                await SaveContactPictureAsync(_selectedContactForAssign, _selectedImageForAssign);
+            }
+            finally
+            {
+                if (_pendingAssignAfterCrop == null)
+                {
+                    ResetAssignState();
+                }
+                else
+                {
+                    isSavingPicture = false;
+                }
+            }
+        }
+
+        private async Task<bool> SaveContactPictureAsync(ContactInfoModel contact, ImageDetail image)
+        {
+            if (contact == null || image == null)
+                return false;
+
+            try
+            {
                 isSavingPicture = true;
                 StateHasChanged();
 
                 Regex regex = new Regex(@"^[\w/\:.-]+;base64,");
-                var payload = string.IsNullOrEmpty(_selectedImageForAssign.ImageUrl)
+                var payload = string.IsNullOrEmpty(image.ImageUrl)
                     ? string.Empty
-                    : regex.Replace(_selectedImageForAssign.ImageUrl, string.Empty);
+                    : regex.Replace(image.ImageUrl, string.Empty);
 
                 if (string.IsNullOrEmpty(payload))
                 {
                     NotifyStatus(StringsResource.Students_Status_NoImageData, ToastLevel.Error);
-                    return;
+                    return false;
                 }
 
                 byte[] bytesData = Convert.FromBase64String(payload);
 
-                _selectedContactForAssign.ContactPicture = bytesData;
-                await ClasStarsServices.SaveContactPicture(_selectedContactForAssign.ContactID, bytesData);
+                contact.ContactPicture = bytesData;
+                await ClasStarsServices.SaveContactPicture(contact.ContactID, bytesData);
                 NotifyStatus(StringsResource.Common_StatusPictureUpdated, ToastLevel.Success);
 
                 ApplyFilters();
+                return true;
             }
             catch (Exception ex)
             {
                 NotifyStatus(string.Format(StringsResource.Students_Status_SaveError, ex.Message), ToastLevel.Error);
+                return false;
             }
             finally
             {
                 isSavingPicture = false;
-                isAssignPopupVisible = false;
-                _selectedContactForAssign = null;
-                _selectedImageForAssign = null;
-                _matchedImagesForAssign = new();
-                _selectedMatchOptionId = null;
                 StateHasChanged();
             }
+        }
+
+        private void ResetAssignState(bool resetPending = true)
+        {
+            isSavingPicture = false;
+            isAssignPopupVisible = false;
+            _selectedContactForAssign = null;
+            _selectedImageForAssign = null;
+            _matchedImagesForAssign = new();
+            _selectedMatchOptionId = null;
+
+            if (resetPending)
+            {
+                _pendingAssignAfterCrop = null;
+            }
+
+            StateHasChanged();
         }
     }
 }

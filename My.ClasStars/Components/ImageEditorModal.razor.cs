@@ -12,6 +12,7 @@ namespace My.ClasStars.Components
         [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
         [Parameter] public List<ImageDetail> ImageURI { get; set; } = new();
         [Parameter] public EventCallback<List<ImageDetail>> ImageURIChanged { get; set; }
+        [Parameter] public EventCallback<ImageDetail> ImageEdited { get; set; }
         [Parameter] public EventCallback<(int ContactId, byte[] Picture,bool IsDeleted)> ContactPictureUpdated { get; set; }
 
         public SfImageEditor ImageEditorRef;
@@ -456,6 +457,11 @@ namespace My.ClasStars.Components
                         if (ImageURIChanged.HasDelegate)
                         {
                             await ImageURIChanged.InvokeAsync(ImageURI);
+                        }
+
+                        if (ImageEdited.HasDelegate)
+                        {
+                            await ImageEdited.InvokeAsync(item);
                         }
 
                         StatusMessage = StringsResource.ImageEditor_ImageUpdated;

@@ -1,0 +1,57 @@
+@using System.Linq
+@implements IDisposable
+@inject ToastService ToastService
+
+<div class="toast-container">
+    @foreach (var toast in _toasts)
+    {
+        <div class="toast-item @GetCssClass(toast.Level)" @onclick="() => Dismiss(toast.Id)">
+            <div class="toast-message">@toast.Message</div>
+        </div>
+    }
+</div>
+
+@code {
+    private readonly List<ToastMessage> _toasts = new();
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnShow += AddToast;
+    }
+
+    private void AddToast(ToastMessage toast)
+    {
+        _toasts.Add(toast);
+        InvokeAsync(StateHasChanged);
+        _ = AutoDismissAsync(toast);
+    }
+
+    private async Task AutoDismissAsync(ToastMessage toast)
+    {
+        await Task.Delay(toast.Duration);
+        Dismiss(toast.Id);
+    }
+
+    private void Dismiss(Guid toastId)
+    {
+        var toast = _toasts.FirstOrDefault(t => t.Id == toastId);
+        if (toast != null)
+        {
+            _toasts.Remove(toast);
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private static string GetCssClass(ToastLevel level) => level switch
+    {
+        ToastLevel.Success => "toast-success",
+        ToastLevel.Warning => "toast-warning",
+        ToastLevel.Error => "toast-error",
+        _ => "toast-info"
+    };
+
+    public void Dispose()
+    {
+        ToastService.OnShow -= AddToast;
+    }
+}

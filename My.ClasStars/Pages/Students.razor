@@ -11,6 +11,15 @@
 }
 else
 {
+    <button @onclick="testToast">test toast</button>
+    @if (ShowPageOverlay)
+    {
+        <div class="page-overlay">
+            <div class="page-overlay__spinner spinner-border text-primary" role="status"></div>
+            <div class="page-overlay__text">Working on it...</div>
+        </div>
+    }
+
     <div class="pictureManage">
         <div class="leftPnl @((!HomePage.IsAdmin) ? "w-50 fit-content" : "")">
             <div class="">
@@ -49,6 +58,20 @@ else
                 </div>
             </div>
 
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                <div class="student-filter-status text-muted small">
+                    @if (_isStudentListFiltered)
+                    {
+                        <span>Showing matches for <strong>@_activeFilterLabel</strong></span>
+                    }
+                    else
+                    {
+                        <span>Showing all students</span>
+                    }
+                </div>
+                <button class="btn btn-link btn-sm p-0" @onclick="ClearStudentFilter">Clear filter</button>
+            </div>
+
             <div class="cstUserLists">
                 @foreach (ContactInfoModel student in _displayContactModels)
                 {
@@ -62,9 +85,12 @@ else
                             <div id="element" class="avatar-sub-block">
                                 <span>
                                     <span>@student.FileAs</span>
-                                    <br />
-                                    <b>@StringsResource.StudentList_PersonID:   </b>
-                                    <span class="font-weight-400">@student.PersonID</span>
+                                    @if (!string.IsNullOrWhiteSpace(student.PersonID))
+                                    {
+                                        <br />
+                                        <b>@StringsResource.StudentList_PersonID:</b>
+                                        <span class="font-weight-400">@student.PersonID</span>
+                                    }
                                 </span>
 
                                 @if (student.ContactPicture == null)
@@ -98,31 +124,26 @@ else
         {
             <div class="rightPnl @ShowHide">
                 <div class="inputRight">
-
-                    @* Optional status message (you can style Success/Error classes) *@
-                    @if (!string.IsNullOrWhiteSpace(StatusMessage))
-                    {
-                        if (StatusMessage.Contains("success", StringComparison.OrdinalIgnoreCase))
-                        {
-                            <span class="Success">@StatusMessage</span>
-                        }
-                        else
-                        {
-                            <span class="Error">@StatusMessage</span>
-                        }
-                    }
-
                     <!-- File Name Format block -->
-                    <div class="file-name-format d-flex align-items-center mb-2">
-                        <div class="me-2">
-                            <strong>File Name Format</strong><br />
-                            <small>@GetCurrentFormatPreview()</small>
+                    <div class="file-name-format d-flex align-items-center flex-wrap mb-2">
+                        <div class="me-3">
+                            <strong>Picture Name Format</strong><br />
+                            <small class="text-muted">@GetCurrentFormatPreview()</small>
                         </div>
                         <button type="button"
                                 class="btn btn-sm btn-outline-secondary ms-2"
                                 @onclick="() => isFormatPopupVisible = true">
                             Edit
                         </button>
+                        <div class="form-check ms-3">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="looseMatch"
+                                   @bind="enableLooseMatching"
+                                   @bind:event="onchange"
+                                   @bind:after="(() => EvaluateImageMatches())" />
+                            <label class="form-check-label" for="looseMatch">Loose name matching</label>
+                        </div>
                     </div>
 
                     <div class="file-input-zone">
@@ -156,14 +177,6 @@ else
                         </div>
                     </div>
                 </div>
-
-                @* Saving overlay *@
-                @if (isSavingPicture)
-                {
-                    <div class="saving-overlay">
-                        <div class="loader">Saving...</div>
-                    </div>
-                }
 
                 <div class="inputImages" id="imageContainer" @onmousedown="All">
                     @if (!isProcessingFiles)
@@ -223,9 +236,10 @@ else
             <div class="modal-dialog-custom">
                 <h5>File Name Format</h5>
 
-                <p class="small text-muted">
+                <p class="small text-muted mb-1">
                     Choose how to detect student info from image file names.
                 </p>
+                <p class="small fw-bold">Current example: <span class="text-primary">@GetCurrentFormatExample()</span></p>
 
                 <div class="row mb-2">
                     <div class="col-4">

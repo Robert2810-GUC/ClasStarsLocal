@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LogonServiceRequestTypes.Enums;
 using LogonServiceRequestTypes.Exceptions;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharedTypes;
@@ -13,10 +14,12 @@ namespace My.ClasStars;
 public class AuthorizationService : IAuthorizationService
 {
     private readonly IInvokeServices _svc;
+    private readonly ILogger<AuthorizationService> _logger;
 
-    public AuthorizationService(IInvokeServices invokeServices)
+    public AuthorizationService(IInvokeServices invokeServices, ILogger<AuthorizationService> logger)
     {
-        _svc = invokeServices;
+        _svc = invokeServices ?? throw new ArgumentNullException(nameof(invokeServices));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<string> GetToken()
@@ -50,11 +53,14 @@ public class AuthorizationService : IAuthorizationService
     public async Task<LoginResultUser> LoginAsync(UserAuth user)
     {
         LoginResultUser loggedInUser;
+        if (user == null)
+        {
+            throw new ArgumentNullException(nameof(user));
+        }
+
         try
         {
-
-            var retUser =
-                await _svc.InvokePostAsync<UserAuth, JObject>("/.auth/login/custom", user);
+            var retUser = await _svc.InvokePostAsync<UserAuth, JObject>("/.auth/login/custom", user);
 
             var authToken = retUser.Value<string>("authenticationToken");
             loggedInUser = JsonConvert.DeserializeObject<LoginResultUser>(retUser["user"]?.ToString() ?? string.Empty);
@@ -63,14 +69,18 @@ public class AuthorizationService : IAuthorizationService
             var customEventInfo = JsonConvert.DeserializeObject<CustomEventInfo>(retUser["customEventInfo"]?.ToString() ?? string.Empty);
 
             if (loggedInUser == null || !loggedInUser.IsValid())
+            {
+                _logger.LogWarning("Login failed for {Email}: invalid user information returned.", user.Email);
                 return new LoginResultUser(user, loggedInUser?.IsNewUser ?? false) { LoginResult = "Login Failed" };
+            }
 
             loggedInUser.StaticTableVersions = staticTableVersions;
             loggedInUser.CustomEventInfo = customEventInfo;
 
             if (string.IsNullOrEmpty(loggedInUser.SchoolTimeZone))
+            {
                 loggedInUser.SchoolTimeZone = TimeZoneInfo.Local.StandardName;
-
+            }
 
             if (loggedInUser.LoggedInEmployee == null)
             {
@@ -80,20 +90,17 @@ public class AuthorizationService : IAuthorizationService
 
             _svc.RegisterLoggedInUser(loggedInUser, authToken);
             AppInfo.UserInfo = loggedInUser;
-
         }
         catch (Exception ex)
         {
-
+            _logger.LogError(ex, "Login failed for {Email}", user.Email);
             loggedInUser = new LoginResultUser(user, false) { LoginResult = ex.Message };
-            if (ex is RemoteRequestException)
+            if (ex is RemoteRequestException && string.IsNullOrWhiteSpace(loggedInUser.LoginResult))
             {
-                if (string.IsNullOrWhiteSpace(loggedInUser.LoginResult))
-                    loggedInUser.LoginResult = "Login Failed";
+                loggedInUser.LoginResult = "Login Failed";
             }
         }
 
         return loggedInUser;
-
     }
 }

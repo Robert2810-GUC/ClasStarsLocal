@@ -1,47 +1,63 @@
-﻿using LogonServiceRequestTypes;
+using LogonServiceRequestTypes;
 using LogonServiceRequestTypes.Exceptions;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http.Headers;
-using System.Globalization;
-using SharedTypes.Helpers;
-using SharedTypes;
 using LogonServiceRequestTypes.Enums;
-using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Serilog;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using SharedTypes;
+using SharedTypes.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace My.ClasStars;
 
 public class InvokeServices : IInvokeServices
 {
+    private const int MaxRetryCount = 2;
+    private const string MobileAuthClientName = "MobileAuthHttpClient";
+
     public event EventHandler<EventArgs> ReloginRequested;
 
-    private TaskCompletionSource<object> _reLoginTaskCompletionSource;
-    private HttpClient _client;
+    private readonly HttpClient _httpClient;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<InvokeServices> _logger;
+    private readonly object _headerLock = new();
     private readonly Dictionary<string, string> _defaultHeaders = new();
     private string _mobileServiceUserToken = string.Empty;
-
-    private readonly JsonSerializerSettings _jsonSerializerSettings = new() { DateTimeZoneHandling = DateTimeZoneHandling.Unspecified };
-
     private string _mobileServiceUserId = string.Empty;
     private string _platform = string.Empty;
     private string _idiom = string.Empty;
-    private string _applicationName;
-
+    private string _applicationName = string.Empty;
     private Version _version;
+
+    private readonly JsonSerializerSettings _jsonSerializerSettings = new()
+    {
+        DateTimeZoneHandling = DateTimeZoneHandling.Unspecified
+    };
+
     //Class
     public string MobileAuthServiceAddress { get; }
     public string ServiceAddress { get; }
 
-    public InvokeServices(IConfiguration configuration)
+    public InvokeServices(
+        HttpClient httpClient,
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration,
+        ILogger<InvokeServices> logger)
     {
-        ServiceAddress = configuration["ServiceAddress"];
-        MobileAuthServiceAddress = configuration["ServiceAddress"];
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+        ServiceAddress = configuration["ServiceAddress"] ?? throw new ArgumentNullException("ServiceAddress");
+        MobileAuthServiceAddress = configuration["MobileAuthServiceAddress"] ?? ServiceAddress;
+        _httpClient.BaseAddress = BuildServiceUri(ServiceAddress);
     }
 
     public void SetApplicationInfo(Version version, string applicationName, string platform = "", string idiom = "")
@@ -50,35 +66,17 @@ public class InvokeServices : IInvokeServices
         _platform = platform;
         _idiom = idiom;
         _applicationName = applicationName;
-        _client = null;
+        UpdateClientContextHeaders();
     }
 
-    private HttpClient GetClientForToken(string token)
+    private Uri BuildServiceUri(string address)
     {
-        var client = new HttpClient()
+        if (string.IsNullOrWhiteSpace(address))
         {
-            BaseAddress = new Uri(ServiceAddress)
-        };
-        client.DefaultRequestHeaders.Add(ServiceHeaderKeys.AuthSecretKey, token);
-        return client;
-    }
-
-    private void CreateNewClient()
-    {
-        var serviceAddress = ServiceAddress;
-        if (!serviceAddress.EndsWith(@"/"))
-            serviceAddress += @"/";
-        _client = new HttpClient()
-        {
-            BaseAddress = new Uri(serviceAddress)
-        };
-        SetClientUserInfo();
-        foreach (var keyValuePair in _defaultHeaders)
-        {
-            _client.DefaultRequestHeaders.Add(keyValuePair.Key, keyValuePair.Value);
+            throw new ArgumentException("Service address cannot be empty", nameof(address));
         }
-        if (!string.IsNullOrEmpty(_mobileServiceUserToken))
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _mobileServiceUserToken);
+
+        return address.EndsWith("/") ? new Uri(address) : new Uri(address + "/");
     }
 
     public async Task<TO> InvokePostAsync<TI, TO>(ServiceEndpoint endpoint, ServiceAction action, TI body)
@@ -88,6 +86,11 @@ public class InvokeServices : IInvokeServices
 
     public async Task<TO> InvokePostAsync<TI, TO>(string endpoint, TI body)
     {
+        if (body == null)
+        {
+            throw new ArgumentNullException(nameof(body));
+        }
+
         var json = JsonConvert.SerializeObject(body);
         var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
         return await InvokeApiAsync<TO>(endpoint, HttpMethod.Post, httpContent: httpContent);
@@ -95,51 +98,76 @@ public class InvokeServices : IInvokeServices
 
     private async Task<T> InvokeApiAsync<T>(string endpoint, HttpMethod method, IDictionary<string, string> parameters = null, HttpContent httpContent = null)
     {
-        if (_client == null)
-            CreateNewClient();
-        if (_client == null)
-            throw new ArgumentNullException(nameof(_client));
+        if (string.IsNullOrWhiteSpace(endpoint))
+        {
+            throw new ArgumentException("Endpoint cannot be null or empty", nameof(endpoint));
+        }
+
+        if (method == null)
+        {
+            throw new ArgumentNullException(nameof(method));
+        }
 
         var retryCount = 0;
+
         while (true)
         {
             try
             {
-                var httpRequest = new HttpRequestMessage();
-                SetHeaderPerCallData(httpRequest); retryCount++;
-                Log.Error($"Endpoint: {endpoint}"); //for logging
-                var result = await _client.InvokeApiAsync(endpoint, method, httpRequest, parameters, httpContent);
-                Log.Error($"result statuscode: {result.StatusCode}"); //for logging
+                using var httpRequest = new HttpRequestMessage();
+                ApplyHeaders(httpRequest);
+                SetHeaderPerCallData(httpRequest);
+                retryCount++;
+
+                _logger.LogInformation("Calling {Endpoint} with method {Method}", endpoint, method);
+                using var result = await _httpClient.InvokeApiAsync(endpoint, method, httpRequest, parameters, httpContent);
+                _logger.LogDebug("Received {StatusCode} from {Endpoint}", result.StatusCode, endpoint);
+
                 if (result.IsSuccessStatusCode)
                 {
                     var content = await result.Content.ReadAsStringAsync();
                     var retData = JsonConvert.DeserializeObject<T>(content, _jsonSerializerSettings);
-                    if (retData != null) return retData;
+                    if (retData != null)
+                    {
+                        return retData;
+                    }
+
+                    _logger.LogWarning("Response content for {Endpoint} could not be deserialized to {Type}", endpoint, typeof(T));
+                    throw new RemoteRequestException(new InvalidOperationException("Unable to deserialize response"));
                 }
-                else
-                {
-                    var msg = await result.Content.ReadAsStringAsync();
-                    var ex = new HttpResponseException(result.StatusCode, result.ReasonPhrase, msg);
-                    throw ex;
-                }
+
+                var msg = await result.Content.ReadAsStringAsync();
+                throw new HttpResponseException(result.StatusCode, result.ReasonPhrase, msg);
             }
             catch (Exception ex)
             {
                 var remoteEx = new RemoteRequestException(ex);
-                if (remoteEx.ShouldRetry && retryCount < 2)
+                if (remoteEx.ShouldRetry && retryCount < MaxRetryCount)
                 {
+                    _logger.LogWarning(remoteEx, "Retrying {Endpoint} after transient error", endpoint);
                     if (remoteEx.Unauthorized)
                     {
-                        _reLoginTaskCompletionSource = new TaskCompletionSource<object>();
-                        ReloginRequested?.Invoke(this, EventArgs.Empty);
-                        _reLoginTaskCompletionSource.Task.Wait(TimeSpan.FromSeconds(5));
+                        await TriggerReloginAsync();
                     }
-                    CreateNewClient();
+
                     continue;
                 }
-                throw remoteEx;
+
+                _logger.LogError(remoteEx, "Failed to execute request for {Endpoint}", endpoint);
+                throw;
             }
         }
+    }
+
+    private async Task TriggerReloginAsync()
+    {
+        if (ReloginRequested == null)
+        {
+            return;
+        }
+
+        ReloginRequested.Invoke(this, EventArgs.Empty);
+        await Task.Delay(TimeSpan.FromSeconds(5));
     }
 
     public async Task<T> InvokeGetAsync<T>(ServiceEndpoint endpoint, IDictionary<string, string> parameters = null, HttpContent httpContent = null)
@@ -149,25 +177,32 @@ public class InvokeServices : IInvokeServices
 
     public async Task<string> GetToken(string secret)
     {
-        Log.Error($"Secret:{secret}"); // for logging
-        var client = GetClientForToken(secret);
-        var httpRequest = new HttpRequestMessage();
-        //SetHeaderPerCallData(httpRequest);
-        Log.Error($"Endpoint: api/MobileAuth/token"); //for logging
-        var response = await client.InvokeApiAsync("api/MobileAuth/token", HttpMethod.Get, httpRequest);
+        var client = CreateClientForToken(secret);
+        using var httpRequest = new HttpRequestMessage();
+
+        _logger.LogInformation("Requesting token from {Endpoint}", "api/MobileAuth/token");
+        using var response = await client.InvokeApiAsync("api/MobileAuth/token", HttpMethod.Get, httpRequest);
         if (response.IsSuccessStatusCode == false)
-            throw (new Exception("Failed to start"));
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            throw new RemoteRequestException(new Exception($"Failed to start token flow: {content}"));
+        }
 
-        Log.Error($"Response code:{response.StatusCode}"); // for logging
         var json = await response.Content.ReadAsStringAsync();
-        JsonDocument jsonDocument = JsonDocument.Parse(json);
+        using var jsonDocument = JsonDocument.Parse(json);
+        if (!jsonDocument.RootElement.TryGetProperty("access_token", out var accessTokenElement))
+        {
+            throw new RemoteRequestException(new InvalidOperationException("Token response did not include an access token"));
+        }
 
-        // get the value of the "name" property
-        string access_token = jsonDocument.RootElement.GetProperty("access_token").GetString();
-        Log.Error($"access_token:{access_token}"); // for logging
-        _mobileServiceUserToken = access_token;
-        Log.Error($"_mobileServiceUserToken:{_mobileServiceUserToken}"); // for logging
-        return access_token;
+        var accessToken = accessTokenElement.GetString();
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            throw new RemoteRequestException(new InvalidOperationException("Access token is empty"));
+        }
+
+        _mobileServiceUserToken = accessToken;
+        return accessToken;
     }
 
     public async Task<T> InvokeGetAsync<T>(ServiceEndpoint endpoint, ServiceAction action, IDictionary<string, string> parameters = null, HttpContent httpContent = null)
@@ -177,32 +212,41 @@ public class InvokeServices : IInvokeServices
 
     public void RegisterLoggedInUser(LoginResultUser loggedInUser, string authToken = null)
     {
-        if (loggedInUser != null)
+        if (loggedInUser == null)
         {
-            _defaultHeaders[ServiceHeaderKeys.DBNameKey] = loggedInUser.DBName;
-            _defaultHeaders[ServiceHeaderKeys.DBServerKey] = loggedInUser.DBServer;
-            _defaultHeaders[ServiceHeaderKeys.TimeZoneKey] = loggedInUser.SchoolTimeZone;
-            _defaultHeaders[ServiceHeaderKeys.CultureKey] = CultureInfo.CurrentCulture.Name;
-            _defaultHeaders[ServiceHeaderKeys.UserIdKey] = loggedInUser.UserId;
-            _defaultHeaders[ServiceHeaderKeys.EmpIDKey] = loggedInUser.LoggedInEmployee?.EmployeeID.ToString() ?? string.Empty;
-
-            SetOrganizationInfo(loggedInUser.Organization);
-
-            if (!string.IsNullOrEmpty(authToken))
-                SetMobileServiceUserInfo(loggedInUser.UserId, authToken);
+            return;
         }
+
+        SetDefaultHeader(ServiceHeaderKeys.DBNameKey, loggedInUser.DBName);
+        SetDefaultHeader(ServiceHeaderKeys.DBServerKey, loggedInUser.DBServer);
+        SetDefaultHeader(ServiceHeaderKeys.TimeZoneKey, loggedInUser.SchoolTimeZone);
+        SetDefaultHeader(ServiceHeaderKeys.CultureKey, CultureInfo.CurrentCulture.Name);
+        SetDefaultHeader(ServiceHeaderKeys.UserIdKey, loggedInUser.UserId);
+        SetDefaultHeader(ServiceHeaderKeys.EmpIDKey, loggedInUser.LoggedInEmployee?.EmployeeID.ToString() ?? string.Empty);
+
+        SetOrganizationInfo(loggedInUser.Organization);
+
+        if (!string.IsNullOrEmpty(authToken))
+        {
+            SetMobileServiceUserInfo(loggedInUser.UserId, authToken);
+        }
+
+        UpdateClientContextHeaders();
     }
 
     private void SetOrganizationInfo(RegisteredOrganizationInfo organization)
     {
-        if (organization == null) return;
+        if (organization == null)
+        {
+            return;
+        }
 
-        _defaultHeaders[ServiceHeaderKeys.OrganizationCodeKey] = organization.OrganizationCode;
-        _defaultHeaders[ServiceHeaderKeys.OrganizationIDKey] = (organization.ID).ToString();
+        SetDefaultHeader(ServiceHeaderKeys.OrganizationCodeKey, organization.OrganizationCode);
+        SetDefaultHeader(ServiceHeaderKeys.OrganizationIDKey, organization.ID.ToString());
         if (!string.IsNullOrEmpty(organization.DBName) && !string.IsNullOrEmpty(organization.DBServer))
         {
-            _defaultHeaders[ServiceHeaderKeys.DBNameKey] = organization.DBName;
-            _defaultHeaders[ServiceHeaderKeys.DBServerKey] = organization.DBServer;
+            SetDefaultHeader(ServiceHeaderKeys.DBNameKey, organization.DBName);
+            SetDefaultHeader(ServiceHeaderKeys.DBServerKey, organization.DBServer);
         }
 
         if (organization.IsSchool)
@@ -213,15 +257,14 @@ public class InvokeServices : IInvokeServices
 
     public void SetSchoolHeaderInfo(RegisteredOrganizationInfo organization)
     {
-        _defaultHeaders[ServiceHeaderKeys.SchoolCodeKey] = organization?.OrganizationCode;
-        _defaultHeaders[ServiceHeaderKeys.SchoolIDKey] = organization == null ? "0" : (organization.ID).ToString();
+        SetDefaultHeader(ServiceHeaderKeys.SchoolCodeKey, organization?.OrganizationCode);
+        SetDefaultHeader(ServiceHeaderKeys.SchoolIDKey, organization == null ? "0" : organization.ID.ToString());
     }
 
     private void SetMobileServiceUserInfo(string userID, string token)
     {
         _mobileServiceUserId = userID;
         _mobileServiceUserToken = token;
-        _client = null;
     }
 
     private void SetHeaderPerCallData(HttpRequestMessage httpRequestMessage)
@@ -230,33 +273,69 @@ public class InvokeServices : IInvokeServices
         httpRequestMessage.Headers.AddOrReplace(ServiceHeaderKeys.TimeZoneKey, TimeZoneInfo.Local.Id);
     }
 
-    private void SetClientUserInfo()
+    private void UpdateClientContextHeaders()
     {
-        if (_client == null) return;
-        _defaultHeaders[ServiceHeaderKeys.TimeZoneKey] = TimeZoneInfo.Local.Id;
-        _defaultHeaders[ServiceHeaderKeys.AcceptLanguage] = CultureInfo.CurrentCulture.Name;
-
+        SetDefaultHeader(ServiceHeaderKeys.TimeZoneKey, TimeZoneInfo.Local.Id);
+        SetDefaultHeader(ServiceHeaderKeys.AcceptLanguage, CultureInfo.CurrentCulture.Name);
 
         if (!string.IsNullOrEmpty(_mobileServiceUserToken) && !string.IsNullOrEmpty(_mobileServiceUserId))
         {
-            _defaultHeaders[ServiceHeaderKeys.UserIdKey] = _mobileServiceUserId;
+            SetDefaultHeader(ServiceHeaderKeys.UserIdKey, _mobileServiceUserId);
         }
-
 
         if (_version != null)
         {
             var buildInfo = $"{_version.Major:D2}.{_version.Minor:D2}.{_version.Build:D2}";
-            _defaultHeaders[ServiceHeaderKeys.CallerVersion] = buildInfo;
+            SetDefaultHeader(ServiceHeaderKeys.CallerVersion, buildInfo);
         }
 
         if (!string.IsNullOrEmpty(_platform))
-            _defaultHeaders[ServiceHeaderKeys.CallerPlatform] = _platform;
+        {
+            SetDefaultHeader(ServiceHeaderKeys.CallerPlatform, _platform);
+        }
 
         if (!string.IsNullOrEmpty(_idiom))
-            _defaultHeaders[ServiceHeaderKeys.CallerIdiom] = _idiom;
+        {
+            SetDefaultHeader(ServiceHeaderKeys.CallerIdiom, _idiom);
+        }
 
         if (!string.IsNullOrEmpty(_applicationName))
-            _defaultHeaders[ServiceHeaderKeys.AppNameKey] = _applicationName;
+        {
+            SetDefaultHeader(ServiceHeaderKeys.AppNameKey, _applicationName);
+        }
+    }
+
+    private void ApplyHeaders(HttpRequestMessage request)
+    {
+        lock (_headerLock)
+        {
+            foreach (var keyValuePair in _defaultHeaders)
+            {
+                request.Headers.AddOrReplace(keyValuePair.Key, keyValuePair.Value);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(_mobileServiceUserToken))
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _mobileServiceUserToken);
+        }
+    }
+
+    private void SetDefaultHeader(string key, string value)
+    {
+        lock (_headerLock)
+        {
+            _defaultHeaders[key] = value ?? string.Empty;
+        }
+    }
+
+    private HttpClient CreateClientForToken(string token)
+    {
+        var client = _httpClientFactory.CreateClient(MobileAuthClientName);
+        client.BaseAddress = BuildServiceUri(MobileAuthServiceAddress);
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(ServiceHeaderKeys.AuthSecretKey, token);
+        return client;
     }
 
     private string ConvertToEndpoint(ServiceEndpoint endpoint, ServiceAction action)
@@ -268,6 +347,5 @@ public class InvokeServices : IInvokeServices
     {
         _mobileServiceUserId = string.Empty;
         _mobileServiceUserToken = string.Empty;
-        _client = null;
     }
 }

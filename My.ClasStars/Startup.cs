@@ -57,6 +57,7 @@ namespace My.ClasStars
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<SchoolListService>();
             services.AddScoped<ExternalProviders>();
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
 
             //Resource File Service
             services.AddRazorPages().AddViewLocalization();
@@ -70,7 +71,22 @@ namespace My.ClasStars
             services.AddBlazoredLocalStorage(config =>
                 config.JsonSerializerOptions.WriteIndented = true);  
 
-            services.AddSingleton<IInvokeServices, InvokeServices>();
+            services.AddHttpClient<IInvokeServices, InvokeServices>((provider, client) =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var serviceAddress = configuration["ServiceAddress"];
+                if (!string.IsNullOrWhiteSpace(serviceAddress))
+                {
+                    if (!serviceAddress.EndsWith(@"/"))
+                    {
+                        serviceAddress += @"/";
+                    }
+
+                    client.BaseAddress = new Uri(serviceAddress);
+                }
+            });
+            services.AddHttpClient("MobileAuthHttpClient");
+
             services.AddSingleton<IClasStarsServices, ClasStarsServices>();
 
             services.AddAuthentication()

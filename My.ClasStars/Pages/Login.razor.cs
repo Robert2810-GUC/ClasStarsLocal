@@ -9,12 +9,15 @@ using System.Linq;
 using System.Web;
 #if !AUTOLOGIN
 using System.Web;
-#endif  
+#endif
+using Microsoft.AspNetCore.Components;
 
 namespace My.ClasStars.Pages;
 
 public partial class Login
 {
+    [Inject] private IAuthorizationService AuthorizationService { get; set; }
+
     public List<ExternalDataProvider> ProviderList; // API
 
     private readonly List<ExternalProviders> OrderButton = new List<ExternalProviders>(); // Display
@@ -24,8 +27,7 @@ public partial class Login
     protected override async Task OnInitializedAsync()
     {
         Logout();
-        var authorizationSecret = Startup.Configuration["ClasstarsAuthSecret"];
-        await InvokeServices.GetToken(authorizationSecret);
+        await AuthorizationService.GetToken();
         SchoolServices.NavDisplay = false;
         // Get API data
         var secInfo = new AnonymousRequestSecureInfo();
@@ -182,7 +184,7 @@ public partial class Login
 
         var providerJson = JsonConvert.SerializeObject(CookieProvidersList);
         await localStorage.SetItemAsync("ProvidersList", providerJson);
-        var token = await new AuthorizationService(InvokeServices).GetToken();
+        var token = await AuthorizationService.GetToken();
 
         var callback = HttpUtility.UrlEncode($"{NavigationManager.Uri}homePage");
         var uriPath = $"{InvokeServices.ServiceAddress}api/Mobileauth/Authenticate/{item}/{false}/encoded?encodedCallback={callback}";

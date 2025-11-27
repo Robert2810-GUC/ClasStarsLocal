@@ -12,10 +12,22 @@ internal static class HttpHelpers
 {
     public static void AddOrReplace(this HttpRequestHeaders headers, string key, string value)
     {
-        if (headers.Contains(key))
-            headers.Remove(key);
+        if (headers == null)
+        {
+            throw new ArgumentNullException(nameof(headers));
+        }
 
-        headers.Add(key, value);
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Header key cannot be null or empty", nameof(key));
+        }
+
+        if (headers.Contains(key))
+        {
+            headers.Remove(key);
+        }
+
+        headers.Add(key, value ?? string.Empty);
     }
 
     public static async Task<HttpResponseMessage> InvokeApiAsync(this HttpClient client,

@@ -81,10 +81,21 @@ else
                          @ondrop="@(async e => await DragDrop(e, student))"
                          @onmousedown="() => FilterList(student.FirstName + ' ' + student.LastName)"
                          @onclick="() => OnStudentClicked(student)">
-                        <div class="e-card e-avatar-showcase cstEcard">
+                        <div class="e-card e-avatar-showcase cstEcard student-card">
+                            @if (GetMatchedImagesForContact(student.ContactID).Any())
+                            {
+                                <button type="button"
+                                        class="student-match-indicator"
+                                        title="View matched photos"
+                                        @onclick="(e => OnStudentMatchIconClicked(student))"
+                                        @onclick:stopPropagation>
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                </button>
+                            }
+
                             <div id="element" class="avatar-sub-block">
                                 <span>
-                                    <span>@student.FileAs</span>
+                                    <span class="student-name">@student.FileAs</span>
                                     @if (!string.IsNullOrWhiteSpace(student.PersonID))
                                     {
                                         <br />

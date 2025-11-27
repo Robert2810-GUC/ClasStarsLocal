@@ -21,12 +21,13 @@
 .inputRight {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     margin-bottom: 12px;
     background: color-mix(in srgb, var(--color-app-light-blue) 30%, var(--color-white) 70%);
     border-radius: 10px;
     padding: 8px 12px;
+    flex-wrap: wrap;
 }
 
 .student-filter-status {
@@ -45,7 +46,7 @@
 
 .file-name-format__header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
@@ -115,13 +116,48 @@
     background: var(--color-white);
 }
 
-    .cstUserLists .cstEcard #element {
-        width: auto;
-        margin: 0 0 0 8px;
-        display:flex;
-        justify-content: space-between;
-        align-items: center;
+.student-card {
+    position: relative;
+    padding: 10px 12px;
+}
+
+.student-name {
+    display: inline-block;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.student-match-indicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--color-white);
+    background: color-mix(in srgb, var(--color-app-green) 92%, var(--color-white) 8%);
+    color: var(--color-white);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--color-black) 25%, transparent);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+    .student-match-indicator:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px color-mix(in srgb, var(--color-black) 35%, transparent);
     }
+
+        .cstUserLists .cstEcard #element {
+            width: auto;
+            margin: 0 0 0 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
 
         .cstUserLists .cstEcard #element span:nth-child(1) {
             font-size: 16px;

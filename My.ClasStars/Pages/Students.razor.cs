@@ -485,7 +485,7 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
-        private void FilterImagesForStudent(ContactInfoModel student)
+        private void FilterImagesForStudent(ContactInfoModel student, bool openAssignPopup)
         {
             if (student == null || ImageURI == null)
                 return;
@@ -508,7 +508,11 @@ namespace My.ClasStars.Pages
             }
 
             refreshClass = ImageURI.Count > matchedImages.Count ? "enablerImg" : "disableImg";
-            OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
+
+            if (openAssignPopup)
+            {
+                OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
+            }
         }
 
         protected Task OnImageUriChanged(List<ImageDetail> newList)
@@ -852,6 +856,16 @@ namespace My.ClasStars.Pages
 
         // ===== Image & Student click handlers =====
 
+        protected IEnumerable<ImageDetail> GetMatchedImagesForContact(int contactId)
+        {
+            if (ImageURI == null || ImageURI.Count == 0)
+            {
+                return Enumerable.Empty<ImageDetail>();
+            }
+
+            return ImageURI.Where(i => i.IsMatched && i.MatchedContactId == contactId);
+        }
+
         protected void OnImageClicked(ImageDetail img)
         {
             StatusMessage = "";
@@ -869,7 +883,17 @@ namespace My.ClasStars.Pages
             if (student == null)
                 return;
 
-            FilterImagesForStudent(student);
+            FilterImagesForStudent(student, openAssignPopup: false);
+        }
+
+        protected void OnStudentMatchIconClicked(ContactInfoModel student)
+        {
+            StatusMessage = "";
+
+            if (student == null)
+                return;
+
+            FilterImagesForStudent(student, openAssignPopup: true);
         }
 
         protected void OnMatchIconClicked(ImageDetail img)

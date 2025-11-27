@@ -853,7 +853,7 @@ namespace My.ClasStars.Pages
             }
 
             double normalized = score / checks;
-            double threshold = enableLooseMatching ? 0.55 : 0.9;
+            double threshold = enableLooseMatching ? 0.45 : 0.9;
             bool isMatch = personMatch || normalized >= threshold;
 
             return new MatchScore(normalized, isMatch);

@@ -91,6 +91,8 @@ namespace My.ClasStars.Pages
         protected bool isAssignPopupVisible = false;
         protected ContactInfoModel _selectedContactForAssign;
         protected ImageDetail _selectedImageForAssign;
+        protected List<ImageDetail> _matchedImagesForAssign = new();
+        private Guid? _selectedMatchOptionId;
 
         protected override async Task OnInitializedAsync()
         {
@@ -483,7 +485,7 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
-        private void FilterImagesForStudent(ContactInfoModel student)
+        private void FilterImagesForStudent(ContactInfoModel student, bool openAssignPopup)
         {
             if (student == null || ImageURI == null)
                 return;
@@ -496,6 +498,7 @@ namespace My.ClasStars.Pages
             {
                 _selectedContactForAssign = null;
                 _selectedImageForAssign = null;
+                _matchedImagesForAssign = new();
                 return;
             }
 
@@ -505,10 +508,11 @@ namespace My.ClasStars.Pages
             }
 
             refreshClass = ImageURI.Count > matchedImages.Count ? "enablerImg" : "disableImg";
-            _selectedContactForAssign = student;
-            _selectedImageForAssign = matchedImages.FirstOrDefault();
-            isAssignPopupVisible = true;
-            StateHasChanged();
+
+            if (openAssignPopup)
+            {
+                OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
+            }
         }
 
         protected Task OnImageUriChanged(List<ImageDetail> newList)
@@ -852,6 +856,16 @@ namespace My.ClasStars.Pages
 
         // ===== Image & Student click handlers =====
 
+        protected IEnumerable<ImageDetail> GetMatchedImagesForContact(int contactId)
+        {
+            if (ImageURI == null || ImageURI.Count == 0)
+            {
+                return Enumerable.Empty<ImageDetail>();
+            }
+
+            return ImageURI.Where(i => i.IsMatched && i.MatchedContactId == contactId);
+        }
+
         protected void OnImageClicked(ImageDetail img)
         {
             StatusMessage = "";
@@ -860,17 +874,6 @@ namespace My.ClasStars.Pages
                 return;
 
             FilterStudentsForImage(img);
-
-            if (!img.IsMatched || !img.MatchedContactId.HasValue)
-                return;
-
-            var contact = _contactModels.FirstOrDefault(c => c.ContactID == img.MatchedContactId.Value);
-            if (contact == null)
-                return;
-
-            _selectedContactForAssign = contact;
-            _selectedImageForAssign = img;
-            isAssignPopupVisible = true;
         }
 
         protected void OnStudentClicked(ContactInfoModel student)
@@ -880,7 +883,72 @@ namespace My.ClasStars.Pages
             if (student == null)
                 return;
 
-            FilterImagesForStudent(student);
+            FilterImagesForStudent(student, openAssignPopup: false);
+        }
+
+        protected void OnStudentMatchIconClicked(ContactInfoModel student)
+        {
+            StatusMessage = "";
+
+            if (student == null)
+                return;
+
+            FilterImagesForStudent(student, openAssignPopup: true);
+        }
+
+        protected void OnMatchIconClicked(ImageDetail img)
+        {
+            StatusMessage = "";
+
+            if (img == null || !img.IsMatched || !img.MatchedContactId.HasValue)
+                return;
+
+            if (!_contactLookup.TryGetValue(img.MatchedContactId.Value, out var contact))
+                return;
+
+            EvaluateImageMatches();
+            var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == contact.ContactID).ToList();
+            OpenAssignPopup(contact, matchedImages, adjustVisibleImages: false);
+        }
+
+        private void OpenAssignPopup(ContactInfoModel student, List<ImageDetail> matchedImages, bool adjustVisibleImages)
+        {
+            if (student == null || matchedImages == null)
+                return;
+
+            if (matchedImages.Count == 0)
+            {
+                _selectedContactForAssign = null;
+                _selectedImageForAssign = null;
+                _matchedImagesForAssign = new();
+                _selectedMatchOptionId = null;
+                isAssignPopupVisible = false;
+                return;
+            }
+
+            if (adjustVisibleImages)
+            {
+                foreach (var img in ImageURI)
+                {
+                    img.IsVis = matchedImages.Contains(img);
+                }
+
+                refreshClass = ImageURI.Count > matchedImages.Count ? "enablerImg" : "disableImg";
+            }
+
+            _selectedContactForAssign = student;
+            _matchedImagesForAssign = matchedImages;
+            _selectedMatchOptionId = matchedImages.First().ImgId;
+            _selectedImageForAssign = matchedImages.First();
+            isAssignPopupVisible = true;
+            StateHasChanged();
+        }
+
+        protected void OnMatchOptionSelected(Guid optionId)
+        {
+            _selectedMatchOptionId = optionId;
+            _selectedImageForAssign = _matchedImagesForAssign.FirstOrDefault(m => m.ImgId == optionId);
+            StateHasChanged();
         }
 
         protected void CancelAssign()
@@ -888,6 +956,8 @@ namespace My.ClasStars.Pages
             isAssignPopupVisible = false;
             _selectedContactForAssign = null;
             _selectedImageForAssign = null;
+            _matchedImagesForAssign = new();
+            _selectedMatchOptionId = null;
         }
 
         protected async Task ConfirmAssign()
@@ -897,6 +967,17 @@ namespace My.ClasStars.Pages
 
             try
             {
+                if (_selectedMatchOptionId.HasValue)
+                {
+                    _selectedImageForAssign = _matchedImagesForAssign.FirstOrDefault(m => m.ImgId == _selectedMatchOptionId.Value);
+                }
+
+                if (_selectedImageForAssign == null)
+                {
+                    NotifyStatus(StringsResource.Students_Status_NoImageData, ToastLevel.Error);
+                    return;
+                }
+
                 // Enforce square image before saving
                 if (!_selectedImageForAssign.IsSqu.HasValue || !_selectedImageForAssign.IsSqu.Value)
                 {
@@ -946,6 +1027,8 @@ namespace My.ClasStars.Pages
                 isAssignPopupVisible = false;
                 _selectedContactForAssign = null;
                 _selectedImageForAssign = null;
+                _matchedImagesForAssign = new();
+                _selectedMatchOptionId = null;
                 StateHasChanged();
             }
         }

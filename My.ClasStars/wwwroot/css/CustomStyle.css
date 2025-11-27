@@ -387,6 +387,27 @@ img.forSmall {
     transition: width 0.5s ease-in-out;
 }
 
+.modal-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.modal-dialog-custom {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    max-width: 500px;
+    width: 100%;
+    padding: 20px;
+}
+
 .img-fluid.forLarge {
     width: 75%;
     transition: width 0.1s ease-in-out;

@@ -872,6 +872,26 @@ namespace My.ClasStars.Pages
             FilterImagesForStudent(student);
         }
 
+        protected bool StudentHasMatchedImages(ContactInfoModel student)
+        {
+            if (student == null || ImageURI == null)
+                return false;
+
+            return ImageURI.Any(i => i.IsMatched && i.MatchedContactId == student.ContactID);
+        }
+
+        protected void OnStudentMatchIconClicked(ContactInfoModel student)
+        {
+            StatusMessage = "";
+
+            if (student == null)
+                return;
+
+            EvaluateImageMatches();
+            var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == student.ContactID).ToList();
+            OpenAssignPopup(student, matchedImages, adjustVisibleImages: false);
+        }
+
         protected void OnMatchIconClicked(ImageDetail img)
         {
             StatusMessage = "";

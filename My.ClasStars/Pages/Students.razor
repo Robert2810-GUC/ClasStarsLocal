@@ -84,7 +84,19 @@ else
                         <div class="e-card e-avatar-showcase cstEcard">
                             <div id="element" class="avatar-sub-block">
                                 <span>
-                                    <span>@student.FileAs</span>
+                                    <span class="student-name-row">
+                                        <span>@student.FileAs</span>
+                                        @if (StudentHasMatchedImages(student))
+                                        {
+                                            <button type="button"
+                                                    class="student-match-indicator"
+                                                    title="View matched photos"
+                                                    @onclick="(e => OnStudentMatchIconClicked(student))"
+                                                    @onclick:stopPropagation>
+                                                <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                            </button>
+                                        }
+                                    </span>
                                     @if (!string.IsNullOrWhiteSpace(student.PersonID))
                                     {
                                         <br />

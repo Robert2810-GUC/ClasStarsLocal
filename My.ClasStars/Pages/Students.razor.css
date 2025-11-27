@@ -128,6 +128,32 @@
             font-weight: 500;
         }
 
+.student-name-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.student-match-indicator {
+    border: none;
+    background: color-mix(in srgb, var(--color-app-green) 12%, transparent);
+    color: var(--color-app-green);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color .12s ease, transform .12s ease;
+    padding: 0;
+}
+
+    .student-match-indicator:hover {
+        background: color-mix(in srgb, var(--color-app-green) 18%, transparent);
+        transform: translateY(-1px);
+    }
+
 .cstUserLists ul {
     list-style: none;
     padding-left: 0;

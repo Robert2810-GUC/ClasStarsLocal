@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Syncfusion.Blazor;
 using System.Text;
 using System;
+using My.ClasStars.Components;
 
 namespace My.ClasStars
 {
@@ -66,12 +67,13 @@ namespace My.ClasStars
             services.AddSyncfusionBlazor();
             services.AddSignalR(o => { o.MaximumReceiveMessageSize = 102400000; });
             //Local Storage Service
-            services.AddBlazoredLocalStorage();  
+            services.AddBlazoredLocalStorage();
             services.AddBlazoredLocalStorage(config =>
-                config.JsonSerializerOptions.WriteIndented = true);  
+                config.JsonSerializerOptions.WriteIndented = true);
 
             services.AddSingleton<IInvokeServices, InvokeServices>();
             services.AddSingleton<IClasStarsServices, ClasStarsServices>();
+            services.AddScoped<ToastService>();
 
             services.AddAuthentication()
                 .AddJwtBearer();

@@ -32,6 +32,7 @@ namespace My.ClasStars.Pages
         [Inject] protected IWebHostEnvironment WebHostEnvironment { get; set; }
         [Inject] protected IClasStarsServices ClasStarsServices { get; set; }
         [Inject] protected SchoolListService SchoolServices { get; set; }
+        [Inject] protected ToastService ToastService { get; set; }
 
         // File input for single-load scenario
         protected InputFile fileInputSingle;
@@ -49,6 +50,11 @@ namespace My.ClasStars.Pages
         protected string StatusMessage = "";
         private bool isProcessingFiles = false;
         private bool isSavingPicture = false;
+        private bool ShowPageOverlay => isSavingPicture || isProcessingFiles;
+        private bool _isStudentListFiltered = false;
+        private string _activeFilterLabel = string.Empty;
+        private HashSet<int> _filteredContactIds = new();
+        private bool enableLooseMatching = true;
 
         private List<ContactInfoShort> _contacts;
         public List<ContactInfoModel> _contactModels;
@@ -58,6 +64,8 @@ namespace My.ClasStars.Pages
         public List<ImageDetail> ImageURI { get; set; } = new();
 
         private List<ContactInfoModel> _displayContactModels = new();
+        private List<ContactTokens> _contactTokens = new();
+        private Dictionary<int, ContactInfoModel> _contactLookup = new();
 
         string value = "";
 
@@ -98,6 +106,8 @@ namespace My.ClasStars.Pages
                     _contactModels.Add(new ContactInfoModel(contactInfoShort, ClasStarsServices));
                 }
 
+                BuildContactTokens();
+
                 InitializeDisplayList();
 
                 if (HomePage.IsAdmin)
@@ -124,6 +134,34 @@ namespace My.ClasStars.Pages
             ApplyFilters();
         }
 
+        private void BuildContactTokens()
+        {
+            if (_contactModels == null)
+            {
+                _contactTokens = new List<ContactTokens>();
+                _contactLookup = new Dictionary<int, ContactInfoModel>();
+                return;
+            }
+
+            _contactLookup = _contactModels.ToDictionary(c => c.ContactID);
+
+            _contactTokens = _contactModels
+                .Select(c => new ContactTokens
+                {
+                    ID = c.ContactID,
+                    FirstName = c.FirstName?.Trim() ?? string.Empty,
+                    LastName = c.LastName?.Trim() ?? string.Empty,
+                    PersonID = c.PersonID?.Trim() ?? string.Empty
+                })
+                .ToList();
+        }
+
+        private void NotifyStatus(string message, ToastLevel level = ToastLevel.Info, int duration = 4000)
+        {
+            StatusMessage = message;
+            ToastService?.ShowToast(message, level, duration);
+        }
+
         protected void ApplyFilters()
         {
             var search = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -131,6 +169,11 @@ namespace My.ClasStars.Pages
             bool bothSame = (filterWithImage && filterWithoutImage) || (!filterWithImage && !filterWithoutImage);
 
             IEnumerable<ContactInfoModel> query = _contactModels;
+
+            if (_isStudentListFiltered && _filteredContactIds.Count > 0)
+            {
+                query = query.Where(c => _filteredContactIds.Contains(c.ContactID));
+            }
 
             if (!bothSame)
             {
@@ -244,7 +287,7 @@ namespace My.ClasStars.Pages
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(StringsResource.Common_GenericErrorWithDetail, ex.Message);
+                NotifyStatus(string.Format(StringsResource.Common_GenericErrorWithDetail, ex.Message), ToastLevel.Error);
             }
             finally
             {
@@ -318,7 +361,7 @@ namespace My.ClasStars.Pages
                 ContactInfoModel cim = _contactModels.Find(c => c.ContactID == contact.ContactID);
                 if (cim == null)
                 {
-                    StatusMessage = StringsResource.Students_Status_ContactNotFound;
+                    NotifyStatus(StringsResource.Students_Status_ContactNotFound, ToastLevel.Error);
                     return;
                 }
 
@@ -327,7 +370,7 @@ namespace My.ClasStars.Pages
 
                 if (string.IsNullOrEmpty(payload))
                 {
-                    StatusMessage = StringsResource.Students_Status_NoImageData;
+                    NotifyStatus(StringsResource.Students_Status_NoImageData, ToastLevel.Error);
                     return;
                 }
 
@@ -338,18 +381,18 @@ namespace My.ClasStars.Pages
                 {
                     cim.ContactPicture = bytesData;
                     await ClasStarsServices.SaveContactPicture(contact.ContactID, bytesData);
-                    StatusMessage = StringsResource.Common_StatusPictureUpdated;
+                    NotifyStatus(StringsResource.Common_StatusPictureUpdated, ToastLevel.Success);
 
                     ApplyFilters();
                 }
                 else
                 {
-                    StatusMessage = StringsResource.Students_Status_NotSquare;
+                    NotifyStatus(StringsResource.Students_Status_NotSquare, ToastLevel.Error);
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(StringsResource.Students_Status_SaveError, ex.Message);
+                NotifyStatus(string.Format(StringsResource.Students_Status_SaveError, ex.Message), ToastLevel.Error);
             }
             finally
             {
@@ -362,7 +405,7 @@ namespace My.ClasStars.Pages
         {
             if (editorModal == null)
             {
-                StatusMessage = StringsResource.Students_Status_EditorUnavailable;
+                NotifyStatus(StringsResource.Students_Status_EditorUnavailable, ToastLevel.Error);
                 return;
             }
             await editorModal.OpenForImage(imgg);
@@ -372,7 +415,7 @@ namespace My.ClasStars.Pages
         {
             if (editorModal == null)
             {
-                StatusMessage = StringsResource.Students_Status_EditorUnavailable;
+                NotifyStatus(StringsResource.Students_Status_EditorUnavailable, ToastLevel.Error);
                 return;
             }
             await editorModal.OpenForContact(contact);
@@ -398,6 +441,69 @@ namespace My.ClasStars.Pages
             StateHasChanged();
         }
 
+        protected void ClearStudentFilter()
+        {
+            _filteredContactIds.Clear();
+            _isStudentListFiltered = false;
+            _activeFilterLabel = string.Empty;
+            ApplyFilters();
+        }
+
+        private void FilterStudentsForImage(ImageDetail img)
+        {
+            if (img == null || string.IsNullOrWhiteSpace(img.ImageName))
+            {
+                ClearStudentFilter();
+                return;
+            }
+
+            var tokens = ParseTokensFromFileName(Path.GetFileNameWithoutExtension(img.ImageName));
+            if (tokens == null)
+            {
+                ClearStudentFilter();
+                return;
+            }
+
+            var matches = GetMatchesForTokens(tokens)
+                .Where(m => m.IsMatch || m.Score >= 0.45)
+                .OrderByDescending(m => m.Score)
+                .Take(20)
+                .ToList();
+
+            _filteredContactIds = matches.Select(m => m.Contact.ContactID).ToHashSet();
+            _isStudentListFiltered = _filteredContactIds.Count > 0;
+            _activeFilterLabel = Path.GetFileName(img.ImageName);
+            ApplyFilters();
+        }
+
+        private void FilterImagesForStudent(ContactInfoModel student)
+        {
+            if (student == null || ImageURI == null)
+                return;
+
+            EvaluateImageMatches();
+
+            var matchedImages = ImageURI.Where(i => i.IsMatched && i.MatchedContactId == student.ContactID).ToList();
+
+            if (matchedImages.Count == 0)
+            {
+                _selectedContactForAssign = null;
+                _selectedImageForAssign = null;
+                return;
+            }
+
+            foreach (var img in ImageURI)
+            {
+                img.IsVis = matchedImages.Contains(img);
+            }
+
+            refreshClass = ImageURI.Count > matchedImages.Count ? "enablerImg" : "disableImg";
+            _selectedContactForAssign = student;
+            _selectedImageForAssign = matchedImages.FirstOrDefault();
+            isAssignPopupVisible = true;
+            StateHasChanged();
+        }
+
         protected Task OnImageUriChanged(List<ImageDetail> newList)
         {
             ImageURI = newList;
@@ -420,7 +526,7 @@ namespace My.ClasStars.Pages
                     item.ContactPicture = null;
                 }
             }
-            StatusMessage = StringsResource.Common_StatusPictureUpdated;
+            NotifyStatus(StringsResource.Common_StatusPictureUpdated, ToastLevel.Success);
 
             ApplyFilters();
 
@@ -466,6 +572,24 @@ namespace My.ClasStars.Pages
             return string.Join("-", parts);
         }
 
+        protected string GetCurrentFormatExample()
+        {
+            string PartToExample(FileNamePart p) => p switch
+            {
+                FileNamePart.PersonId => "12345",
+                FileNamePart.FirstName => "First Name",
+                FileNamePart.LastName => "Last Name",
+                _ => string.Empty
+            };
+
+            var parts = new List<string>();
+            parts.Add(PartToExample(formatPart1));
+            if (formatPart2 != FileNamePart.None) parts.Add(PartToExample(formatPart2));
+            if (formatPart3 != FileNamePart.None) parts.Add(PartToExample(formatPart3));
+
+            return string.Join("-", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+        }
+
         protected void SaveFileNameFormat()
         {
             // First part cannot be None
@@ -495,7 +619,6 @@ namespace My.ClasStars.Pages
                 img.MatchedContactId = null;
             }
 
-            // Check only visible images (as per requirement)
             var visibleImages = ImageURI.Where(i => i.IsVis).ToList();
 
             foreach (var img in visibleImages)
@@ -504,7 +627,11 @@ namespace My.ClasStars.Pages
                     continue;
 
                 var fileNameWithoutExt = Path.GetFileNameWithoutExtension(img.ImageName);
-                var match = FindContactForFileName(fileNameWithoutExt);
+                var tokens = ParseTokensFromFileName(fileNameWithoutExt);
+                if (tokens == null)
+                    continue;
+
+                var match = GetBestContactMatch(tokens);
 
                 if (match != null)
                 {
@@ -520,82 +647,201 @@ namespace My.ClasStars.Pages
                 .ToList();
         }
 
-        private ContactInfoModel FindContactForFileName(string fileName)
+        private ContactTokens ParseTokensFromFileName(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
                 return null;
 
-            // Split on any non-alphanumeric chars: handles -, _, space, etc.
-            var tokens = Regex.Split(fileName, "[^A-Za-z0-9]+")
-                              .Where(t => !string.IsNullOrWhiteSpace(t))
-                              .ToList();
+            var tokenMatches = Regex.Matches(fileName, "[\\p{L}\\p{Nd}]+");
+            var tokens = tokenMatches.Select(m => m.Value).Where(v => !string.IsNullOrWhiteSpace(v)).ToList();
 
             if (tokens.Count == 0)
                 return null;
 
-            string personIdToken = null;
-            string firstNameToken = null;
-            string lastNameToken = null;
+            var formatParts = new[] { formatPart1, formatPart2, formatPart3 };
+            var lastIndex = Array.FindLastIndex(formatParts, f => f != FileNamePart.None);
 
-            var parts = new[] { formatPart1, formatPart2, formatPart3 };
+            if (lastIndex < 0)
+                return null;
+
             int tokenIndex = 0;
+            ContactTokens parsed = new();
 
-            for (int i = 0; i < parts.Length && tokenIndex < tokens.Count; i++)
+            for (int i = 0; i < formatParts.Length && tokenIndex < tokens.Count; i++)
             {
-                var part = parts[i];
-                var token = tokens[tokenIndex];
-
+                var part = formatParts[i];
                 if (part == FileNamePart.None)
+                    continue;
+
+                bool isLastPart = i == lastIndex;
+                string tokenValue = isLastPart
+                    ? string.Join(" ", tokens.Skip(tokenIndex))
+                    : tokens[tokenIndex];
+
+                if (!isLastPart)
                 {
                     tokenIndex++;
-                    continue;
+                }
+                else
+                {
+                    tokenIndex = tokens.Count;
                 }
 
                 switch (part)
                 {
                     case FileNamePart.PersonId:
-                        personIdToken = token;
+                        parsed.PersonID = tokenValue;
                         break;
                     case FileNamePart.FirstName:
-                        firstNameToken = token;
+                        parsed.FirstName = tokenValue;
                         break;
                     case FileNamePart.LastName:
-                        lastNameToken = token;
+                        parsed.LastName = tokenValue;
                         break;
                 }
-
-                tokenIndex++;
             }
 
-            foreach (var c in _contactModels)
+            if (string.IsNullOrWhiteSpace(parsed.PersonID)
+                && string.IsNullOrWhiteSpace(parsed.FirstName)
+                && string.IsNullOrWhiteSpace(parsed.LastName))
             {
-                bool ok = true;
-
-                if (!string.IsNullOrEmpty(personIdToken))
-                {
-                    var personIdStr = c.PersonID?.ToString() ?? string.Empty;
-                    if (!personIdStr.Equals(personIdToken, StringComparison.OrdinalIgnoreCase))
-                        ok = false;
-                }
-
-                if (ok && !string.IsNullOrEmpty(firstNameToken))
-                {
-                    if (!string.Equals(c.FirstName ?? string.Empty, firstNameToken, StringComparison.OrdinalIgnoreCase))
-                        ok = false;
-                }
-
-                if (ok && !string.IsNullOrEmpty(lastNameToken))
-                {
-                    if (!string.Equals(c.LastName ?? string.Empty, lastNameToken, StringComparison.OrdinalIgnoreCase))
-                        ok = false;
-                }
-
-                if (ok)
-                    return c;
+                return null;
             }
 
-            return null;
+            return parsed;
         }
+
+        private ContactInfoModel GetBestContactMatch(ContactTokens tokens)
+        {
+            if (tokens == null || _contactTokens == null || _contactTokens.Count == 0)
+                return null;
+
+            var matches = GetMatchesForTokens(tokens)
+                .Where(m => m.IsMatch)
+                .OrderByDescending(m => m.Score)
+                .ThenBy(m => m.Contact.LastName)
+                .ToList();
+
+            return matches.FirstOrDefault()?.Contact;
+        }
+
+        private IEnumerable<ContactMatchResult> GetMatchesForTokens(ContactTokens tokens)
+        {
+            foreach (var candidate in _contactTokens)
+            {
+                var score = CalculateMatchScore(candidate, tokens);
+                if (!_contactLookup.TryGetValue(candidate.ID, out var contact))
+                    continue;
+
+                yield return new ContactMatchResult
+                {
+                    Contact = contact,
+                    Score = score.Score,
+                    IsMatch = score.IsMatch
+                };
+            }
+        }
+
+        private MatchScore CalculateMatchScore(ContactTokens candidate, ContactTokens tokens)
+        {
+            double score = 0;
+            int checks = 0;
+            bool personMatch = false;
+
+            if (!string.IsNullOrWhiteSpace(tokens.PersonID))
+            {
+                checks++;
+
+                if (!string.IsNullOrWhiteSpace(candidate.PersonID)
+                    && candidate.PersonID.Equals(tokens.PersonID, StringComparison.OrdinalIgnoreCase))
+                {
+                    score += 1.5;
+                    personMatch = true;
+                }
+                else
+                {
+                    return new MatchScore(0, false);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(tokens.FirstName))
+            {
+                checks++;
+                score += CalculateNameSimilarity(candidate.FirstName, tokens.FirstName);
+            }
+
+            if (!string.IsNullOrWhiteSpace(tokens.LastName))
+            {
+                checks++;
+                score += CalculateNameSimilarity(candidate.LastName, tokens.LastName);
+            }
+
+            if (checks == 0)
+            {
+                return new MatchScore(0, false);
+            }
+
+            double normalized = score / checks;
+            double threshold = enableLooseMatching ? 0.55 : 0.9;
+            bool isMatch = personMatch || normalized >= threshold;
+
+            return new MatchScore(normalized, isMatch);
+        }
+
+        private double CalculateNameSimilarity(string expected, string token)
+        {
+            if (string.IsNullOrWhiteSpace(expected) || string.IsNullOrWhiteSpace(token))
+                return 0;
+
+            if (string.Equals(expected, token, StringComparison.OrdinalIgnoreCase))
+                return 1;
+
+            if (!enableLooseMatching)
+                return 0;
+
+            var a = expected.ToLowerInvariant();
+            var b = token.ToLowerInvariant();
+            var distance = GetLevenshteinDistance(a, b);
+            var maxLength = Math.Max(a.Length, b.Length);
+
+            return maxLength == 0 ? 0 : 1.0 - (double)distance / maxLength;
+        }
+
+        private int GetLevenshteinDistance(string source, string target)
+        {
+            int n = source.Length;
+            int m = target.Length;
+            int[,] d = new int[n + 1, m + 1];
+
+            if (n == 0) return m;
+            if (m == 0) return n;
+
+            for (int i = 0; i <= n; i++) d[i, 0] = i;
+            for (int j = 0; j <= m; j++) d[0, j] = j;
+
+            for (int i = 1; i <= n; i++)
+            {
+                for (int j = 1; j <= m; j++)
+                {
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+
+                    d[i, j] = Math.Min(
+                        Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+                        d[i - 1, j - 1] + cost);
+                }
+            }
+
+            return d[n, m];
+        }
+
+        private class ContactMatchResult
+        {
+            public ContactInfoModel Contact { get; set; }
+            public double Score { get; set; }
+            public bool IsMatch { get; set; }
+        }
+
+        private record MatchScore(double Score, bool IsMatch);
 
         // ===== Image & Student click handlers =====
 
@@ -603,7 +849,12 @@ namespace My.ClasStars.Pages
         {
             StatusMessage = "";
 
-            if (img == null || !img.IsMatched || !img.MatchedContactId.HasValue)
+            if (img == null)
+                return;
+
+            FilterStudentsForImage(img);
+
+            if (!img.IsMatched || !img.MatchedContactId.HasValue)
                 return;
 
             var contact = _contactModels.FirstOrDefault(c => c.ContactID == img.MatchedContactId.Value);
@@ -622,13 +873,7 @@ namespace My.ClasStars.Pages
             if (student == null)
                 return;
 
-            var img = ImageURI.FirstOrDefault(i => i.IsMatched && i.MatchedContactId == student.ContactID && i.IsVis);
-            if (img == null)
-                return;
-
-            _selectedContactForAssign = student;
-            _selectedImageForAssign = img;
-            isAssignPopupVisible = true;
+            FilterImagesForStudent(student);
         }
 
         protected void CancelAssign()
@@ -648,7 +893,7 @@ namespace My.ClasStars.Pages
                 // Enforce square image before saving
                 if (!_selectedImageForAssign.IsSqu.HasValue || !_selectedImageForAssign.IsSqu.Value)
                 {
-                    StatusMessage = StringsResource.Students_Status_NotSquare;
+                    NotifyStatus(StringsResource.Students_Status_NotSquare, ToastLevel.Error);
 
                     // Close popup and open editor so user can crop
                     isAssignPopupVisible = false;
@@ -672,7 +917,7 @@ namespace My.ClasStars.Pages
 
                 if (string.IsNullOrEmpty(payload))
                 {
-                    StatusMessage = StringsResource.Students_Status_NoImageData;
+                    NotifyStatus(StringsResource.Students_Status_NoImageData, ToastLevel.Error);
                     return;
                 }
 
@@ -680,13 +925,13 @@ namespace My.ClasStars.Pages
 
                 _selectedContactForAssign.ContactPicture = bytesData;
                 await ClasStarsServices.SaveContactPicture(_selectedContactForAssign.ContactID, bytesData);
-                StatusMessage = StringsResource.Common_StatusPictureUpdated;
+                NotifyStatus(StringsResource.Common_StatusPictureUpdated, ToastLevel.Success);
 
                 ApplyFilters();
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(StringsResource.Students_Status_SaveError, ex.Message);
+                NotifyStatus(string.Format(StringsResource.Students_Status_SaveError, ex.Message), ToastLevel.Error);
             }
             finally
             {

@@ -612,8 +612,10 @@ namespace My.ClasStars.Pages
                 _ => "None"
             };
 
-            var parts = new List<string>();
-            parts.Add(PartToString(formatPart1));
+            var parts = new List<string>
+            {
+                PartToString(formatPart1)
+            };
             if (formatPart2 != FileNamePart.None) parts.Add(PartToString(formatPart2));
             if (formatPart3 != FileNamePart.None) parts.Add(PartToString(formatPart3));
 
@@ -630,8 +632,10 @@ namespace My.ClasStars.Pages
                 _ => string.Empty
             };
 
-            var parts = new List<string>();
-            parts.Add(PartToExample(formatPart1));
+            var parts = new List<string>
+            {
+                PartToExample(formatPart1)
+            };
             if (formatPart2 != FileNamePart.None) parts.Add(PartToExample(formatPart2));
             if (formatPart3 != FileNamePart.None) parts.Add(PartToExample(formatPart3));
 

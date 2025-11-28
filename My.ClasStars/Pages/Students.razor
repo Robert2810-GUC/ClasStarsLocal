@@ -341,7 +341,7 @@ else
                 <div class="assign-options">
                     @foreach (var option in _matchedImagesForAssign)
                     {
-                        <label class="assign-option">
+                        <label class="assign-option @(option.IsSqu == true ? "box-shadow-green" : "box-shadow-red")">
                             <input type="radio"
                                    name="assignChoice"
                                    value="@option.ImgId"

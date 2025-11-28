@@ -494,6 +494,7 @@ namespace My.ClasStars.Pages
 
             if (matchedImages.Count == 0)
             {
+                All();
                 _selectedContactForAssign = null;
                 _selectedImageForAssign = null;
                 _matchedImagesForAssign = new();
@@ -694,9 +695,7 @@ namespace My.ClasStars.Pages
                 img.MatchedContactId = null;
             }
 
-            var visibleImages = ImageURI.Where(i => i.IsVis).ToList();
-
-            foreach (var img in visibleImages)
+            foreach (var img in ImageURI)
             {
                 if (string.IsNullOrWhiteSpace(img.ImageName))
                     continue;
